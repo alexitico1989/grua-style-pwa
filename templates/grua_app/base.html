@@ -534,23 +534,46 @@
         .hover-lift:hover {
             transform: translateY(-5px);
         }
-        /* Móvil: header más pequeño */
-@media (max-width: 768px) {
-  .navbar { 
-    padding: 0.5rem 0 !important; 
-  }
-}
-        /* Arreglar botones navbar que no responden */
-.navbar-nav .nav-link {
-    position: relative !important;
-    z-index: 1000 !important;
-    pointer-events: auto !important;
-}
 
-.navbar-nav .nav-item {
-    position: relative !important;
-    z-index: 999 !important;
-}
+        /* Móvil: header más pequeño */
+        @media (max-width: 768px) {
+            .navbar { 
+                padding: 0.5rem 0 !important; 
+            }
+        }
+
+        /* Arreglar botones navbar que no responden */
+        .navbar-nav .nav-link {
+            position: relative !important;
+            z-index: 1000 !important;
+            pointer-events: auto !important;
+        }
+
+        .navbar-nav .nav-item {
+            position: relative !important;
+            z-index: 999 !important;
+        }
+
+        /* Botón login especial */
+        .btn-login-special {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white !important;
+            font-weight: 600;
+            padding: 0.6rem 1.5rem !important;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            text-decoration: none !important;
+            display: inline-block;
+            margin: 0.2rem;
+        }
+
+        .btn-login-special:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(103, 151, 255, 0.3);
+            color: white !important;
+            background: linear-gradient(135deg, #7b68ee 0%, #9b59b6 100%);
+        }
     </style>
     
     {% block extra_css %}{% endblock %}
@@ -610,12 +633,12 @@
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'login' %}">
+                        <a class="btn-login-special" href="{% url 'login' %}">
                             <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="btn btn-primary ms-3" href="{% url 'registro' %}">
+                        <a class="btn btn-primary ms-2" href="{% url 'registro' %}">
                             <i class="fas fa-user-plus me-2"></i>Registrarse
                         </a>
                     </li>
