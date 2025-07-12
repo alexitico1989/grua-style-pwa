@@ -5,3 +5,4 @@ reportlab==4.0.4
 resend==0.7.0
 gunicorn==21.2.0
 dj-database-url==2.1.0
+setuptools==69.0.0
