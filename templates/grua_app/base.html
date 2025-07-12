@@ -540,6 +540,17 @@
     padding: 0.5rem 0 !important; 
   }
 }
+        /* Arreglar botones navbar que no responden */
+.navbar-nav .nav-link {
+    position: relative !important;
+    z-index: 1000 !important;
+    pointer-events: auto !important;
+}
+
+.navbar-nav .nav-item {
+    position: relative !important;
+    z-index: 999 !important;
+}
     </style>
     
     {% block extra_css %}{% endblock %}
