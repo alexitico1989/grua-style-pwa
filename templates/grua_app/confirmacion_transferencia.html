@@ -1,0 +1,195 @@
+{% extends 'grua_app/base.html' %}
+
+{% block title %}Transferencia Bancaria - GrúaExpress{% endblock %}
+
+{% block extra_css %}
+<style>
+    .confirmation-container {
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 8px 32px rgba(103, 151, 255, 0.15);
+    }
+    
+    .success-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #10b981, #059669);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        color: white;
+        font-size: 2rem;
+    }
+    
+    .bank-details {
+        background: #f8fafc;
+        border: 2px solid #e2e8f0;
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+    }
+    
+    .bank-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .bank-row:last-child {
+        border-bottom: none;
+        font-weight: bold;
+        color: #6767ff;
+    }
+    
+    .bank-label {
+        color: #64748b;
+        font-weight: 500;
+    }
+    
+    .bank-value {
+        color: #1e293b;
+        font-weight: 600;
+    }
+    
+    .copy-btn {
+        background: #6767ff;
+        color: white;
+        border: none;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.375rem;
+        font-size: 0.75rem;
+        cursor: pointer;
+        margin-left: 0.5rem;
+    }
+    
+    .copy-btn:hover {
+        background: #5a5af0;
+    }
+    
+    .instructions {
+        background: #fef3c7;
+        border: 1px solid #f59e0b;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        margin: 1.5rem 0;
+    }
+    
+    .btn-dashboard {
+        background: linear-gradient(135deg, #6767ff, #5a5af0);
+        color: white;
+        padding: 0.75rem 2rem;
+        border: none;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-dashboard:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(103, 151, 255, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="confirmation-container">
+    <div class="success-icon">
+        💳
+    </div>
+    
+    <div class="text-center mb-4">
+        <h2 class="h3 mb-2">¡Solicitud Registrada!</h2>
+        <p class="text-muted">Solicitud #{{ solicitud.numero_orden }}</p>
+    </div>
+    
+    <div class="bank-details">
+        <h4 class="mb-3 text-center">Datos para Transferencia</h4>
+        
+        <div class="bank-row">
+            <span class="bank-label">Banco:</span>
+            <span class="bank-value">{{ datos_bancarios.banco }}</span>
+        </div>
+        
+        <div class="bank-row">
+            <span class="bank-label">Tipo de Cuenta:</span>
+            <span class="bank-value">{{ datos_bancarios.tipo_cuenta }}</span>
+        </div>
+        
+        <div class="bank-row">
+            <span class="bank-label">Número de Cuenta:</span>
+            <span class="bank-value">
+                {{ datos_bancarios.numero_cuenta }}
+                <button class="copy-btn" onclick="copyToClipboard('{{ datos_bancarios.numero_cuenta }}')">Copiar</button>
+            </span>
+        </div>
+        
+        <div class="bank-row">
+            <span class="bank-label">RUT Titular:</span>
+            <span class="bank-value">{{ datos_bancarios.rut_titular }}</span>
+        </div>
+        
+        <div class="bank-row">
+            <span class="bank-label">Titular:</span>
+            <span class="bank-value">{{ datos_bancarios.nombre_titular }}</span>
+        </div>
+        
+        <div class="bank-row">
+            <span class="bank-label">Monto a Transferir:</span>
+            <span class="bank-value">
+                ${{ solicitud.costo_total|floatformat:0 }}
+                <button class="copy-btn" onclick="copyToClipboard('{{ solicitud.costo_total|floatformat:0 }}')">Copiar</button>
+            </span>
+        </div>
+    </div>
+    
+    <div class="instructions">
+        <h5>📋 Instrucciones:</h5>
+        <ol>
+            <li>Realiza la transferencia por el monto exacto</li>
+            <li>En el concepto incluye: "Grúa #{{ solicitud.numero_orden }}"</li>
+            <li>Envía el comprobante a: <strong>{{ datos_bancarios.email_confirmacion }}</strong></li>
+            <li>Confirmaremos tu pago y programaremos el servicio</li>
+        </ol>
+    </div>
+    
+    <div class="text-center">
+        <h5>📍 Resumen del Servicio</h5>
+        <p><strong>Origen:</strong> {{ solicitud.direccion_origen }}</p>
+        <p><strong>Destino:</strong> {{ solicitud.direccion_destino }}</p>
+        <p><strong>Fecha:</strong> {{ solicitud.fecha_servicio|date:"d/m/Y H:i" }}</p>
+        <p><strong>Total:</strong> ${{ solicitud.costo_total|floatformat:0 }}</p>
+    </div>
+    
+    <div class="text-center">
+        <a href="{% url 'dashboard' %}" class="btn-dashboard">
+            Ver mis Solicitudes
+        </a>
+    </div>
+</div>
+
+<script>
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(function() {
+        // Mostrar feedback visual
+        event.target.textContent = '¡Copiado!';
+        event.target.style.background = '#10b981';
+        
+        setTimeout(() => {
+            event.target.textContent = 'Copiar';
+            event.target.style.background = '#6767ff';
+        }, 2000);
+    });
+}
+</script>
+{% endblock %}

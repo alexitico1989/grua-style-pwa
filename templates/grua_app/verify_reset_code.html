@@ -1,0 +1,292 @@
+{% extends 'grua_app/base.html' %}
+
+{% block title %}Verificar Código - GrúaExpress{% endblock %}
+
+{% block extra_css %}
+<style>
+    .verify-container {
+        max-width: 500px;
+        margin: 3rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 8px 32px rgba(103, 151, 255, 0.15);
+    }
+    
+    .verify-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .verify-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        color: white;
+        font-size: 2rem;
+    }
+    
+    .email-info {
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        border: 2px solid #f59e0b;
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        text-align: center;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .code-input {
+        width: 100%;
+        padding: 1rem;
+        border: 3px solid #e2e8f0;
+        border-radius: 0.75rem;
+        font-size: 2rem;
+        text-align: center;
+        letter-spacing: 0.5rem;
+        font-family: 'Courier New', monospace;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+        background: white !important;
+        color: #333 !important;
+    }
+    
+    .code-input:focus {
+        outline: none !important;
+        border-color: #f59e0b !important;
+        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2) !important;
+        background: white !important;
+    }
+    
+    .btn-verify {
+        width: 100%;
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        color: white;
+        border: none;
+        padding: 1rem;
+        border-radius: 0.75rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 1rem;
+    }
+    
+    .btn-verify:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(245, 158, 11, 0.3);
+    }
+    
+    .btn-resend {
+        width: 100%;
+        background: transparent;
+        color: #6b7280;
+        border: 2px solid #e5e7eb;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-resend:hover {
+        border-color: #f59e0b;
+        color: #f59e0b;
+    }
+    
+    .timer-box {
+        background: #ecfdf5;
+        border: 1px solid #10b981;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        margin: 1rem 0;
+        text-align: center;
+        color: #065f46;
+    }
+    
+    .warning-box {
+        background: #fee2e2;
+        border: 1px solid #ef4444;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        margin: 1rem 0;
+        color: #dc2626;
+    }
+    
+    .form-links {
+        text-align: center;
+        margin-top: 1.5rem;
+    }
+    
+    .form-links a {
+        color: #f59e0b;
+        text-decoration: none;
+    }
+    
+    .form-links a:hover {
+        text-decoration: underline;
+    }
+    
+    label {
+        display: block;
+        margin-bottom: 1rem;
+        font-weight: 600;
+        color: #374151;
+        text-align: center;
+        font-size: 1.1rem;
+    }
+    
+    .countdown {
+        font-weight: bold;
+        color: #f59e0b;
+        font-size: 1.2rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="verify-container">
+    <div class="verify-header">
+        <div class="verify-icon">
+            📱
+        </div>
+        <h2>Verificar Código</h2>
+        <p style="color: #6b7280;">Ingresa el código que enviamos a tu email</p>
+    </div>
+    
+    <div class="email-info">
+        <h4 style="margin-top: 0; color: #92400e;">📧 Código Enviado</h4>
+        <p style="margin-bottom: 0;">
+            Hemos enviado un código de 6 dígitos a:<br>
+            <strong>{{ user_email }}</strong>
+        </p>
+    </div>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}" style="margin-bottom: 1rem; padding: 0.75rem; border-radius: 0.5rem; 
+                 {% if message.tags == 'error' %}background: #fee2e2; border: 1px solid #ef4444; color: #dc2626;
+                 {% else %}background: #d1fae5; border: 1px solid #10b981; color: #065f46;{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    <form method="post" id="verifyForm">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="codigo">Código de Verificación:</label>
+            <input 
+                type="text" 
+                name="codigo" 
+                class="code-input" 
+                id="codigo" 
+                required 
+                maxlength="6"
+                placeholder="000000"
+                autocomplete="one-time-code"
+            >
+        </div>
+        
+        <button type="submit" class="btn-verify">
+            ✅ Verificar Código
+        </button>
+    </form>
+    
+    <div class="timer-box" id="timerBox">
+        <p style="margin: 0;">
+            ⏱️ El código expira en: <span class="countdown" id="countdown">15:00</span>
+        </p>
+    </div>
+    
+    <form method="get" action="{% url 'resend_reset_code' %}" style="margin-top: 1rem;">
+        <button type="submit" class="btn-resend" id="resendBtn">
+            🔄 Reenviar Código
+        </button>
+    </form>
+    
+    <div class="warning-box">
+        <h5 style="margin-top: 0;">⚠️ Consejos:</h5>
+        <ul style="margin-bottom: 0;">
+            <li>Revisa tu bandeja de entrada y spam</li>
+            <li>El código tiene 6 dígitos numéricos</li>
+            <li>Es válido por 15 minutos</li>
+            <li>Si no llega, puedes solicitar uno nuevo</li>
+        </ul>
+    </div>
+    
+    <div class="form-links">
+        <p>
+            <a href="{% url 'forgot_password' %}">← Volver a solicitar reset</a>
+        </p>
+        <p><a href="{% url 'login' %}">Ir al Login</a></p>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Asegurar que el input sea interactivo
+    const input = document.getElementById('codigo');
+    input.style.pointerEvents = 'auto';
+    input.style.userSelect = 'text';
+    
+    // Auto-focus en el input
+    input.focus();
+    
+    // Permitir solo números
+    input.addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^0-9]/g, '');
+        console.log('Código ingresado:', this.value);
+    });
+    
+    // Countdown timer (15 minutos)
+    let timeLeft = 15 * 60; // 15 minutos en segundos
+    const countdownElement = document.getElementById('countdown');
+    const timerBox = document.getElementById('timerBox');
+    
+    function updateCountdown() {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        
+        countdownElement.textContent = 
+            `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        
+        if (timeLeft <= 0) {
+            timerBox.style.background = '#fee2e2';
+            timerBox.style.borderColor = '#ef4444';
+            timerBox.style.color = '#dc2626';
+            countdownElement.textContent = 'EXPIRADO';
+            clearInterval(timer);
+        }
+        
+        timeLeft--;
+    }
+    
+    // Actualizar cada segundo
+    const timer = setInterval(updateCountdown, 1000);
+    updateCountdown(); // Ejecutar inmediatamente
+    
+    // Auto-submit cuando se completen 6 dígitos
+    input.addEventListener('input', function() {
+        if (this.value.length === 6) {
+            console.log('Código completo, enviando...');
+            setTimeout(() => {
+                document.getElementById('verifyForm').submit();
+            }, 500);
+        }
+    });
+    
+    console.log('📱 Verify Code - Template cargado');
+});
+</script>
+{% endblock %}

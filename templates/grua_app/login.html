@@ -1,0 +1,221 @@
+{% extends 'grua_app/base.html' %}
+
+{% block title %}Iniciar Sesión - GrúaExpress{% endblock %}
+
+{% block extra_css %}
+<style>
+    .login-container {
+        max-width: 400px;
+        margin: 3rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 8px 32px rgba(103, 151, 255, 0.15);
+    }
+    
+    .login-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .login-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #6767ff, #5a5af0);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        color: white;
+        font-size: 2rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+        background: white !important;
+        color: #333 !important;
+    }
+    
+    .form-control:focus {
+        outline: none !important;
+        border-color: #6767ff !important;
+        box-shadow: 0 0 0 3px rgba(103, 151, 255, 0.1) !important;
+        background: white !important;
+    }
+    
+    .form-control:hover {
+        border-color: #9ca3af;
+    }
+    
+    .btn-login {
+        width: 100%;
+        background: linear-gradient(135deg, #6767ff, #5a5af0);
+        color: white;
+        border: none;
+        padding: 0.875rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-login:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(103, 151, 255, 0.3);
+    }
+    
+    .error-messages {
+        background: #fee2e2;
+        border: 1px solid #ef4444;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        color: #dc2626;
+    }
+    
+    .form-links {
+        text-align: center;
+        margin-top: 1.5rem;
+    }
+    
+    .form-links a {
+        color: #6767ff;
+        text-decoration: none;
+    }
+    
+    .form-links a:hover {
+        text-decoration: underline;
+    }
+    
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #374151;
+    }
+    
+    input[type="text"], input[type="password"] {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        user-select: text;
+        pointer-events: auto;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="login-header">
+        <div class="login-icon">
+            👤
+        </div>
+        <h2>Iniciar Sesión</h2>
+        <p style="color: #6b7280;">Accede a tu cuenta de GrúaExpress</p>
+    </div>
+    
+    {% if form.errors %}
+        <div class="error-messages">
+            {% for field, errors in form.errors.items %}
+                {% for error in errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}" style="margin-bottom: 1rem; padding: 0.75rem; border-radius: 0.5rem; background: #d1fae5; border: 1px solid #10b981; color: #065f46;">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="id_username">Usuario:</label>
+            <input 
+                type="text" 
+                name="username" 
+                class="form-control" 
+                id="id_username" 
+                required 
+                autocomplete="username"
+                placeholder="Ingresa tu usuario"
+            >
+        </div>
+        
+        <div class="form-group">
+            <label for="id_password">Contraseña:</label>
+            <input 
+                type="password" 
+                name="password" 
+                class="form-control" 
+                id="id_password" 
+                required 
+                autocomplete="current-password"
+                placeholder="Ingresa tu contraseña"
+            >
+        </div>
+        
+        <button type="submit" class="btn-login">
+            Iniciar Sesión
+        </button>
+        
+        {% if next %}
+            <input type="hidden" name="next" value="{{ next }}">
+        {% endif %}
+    </form>
+    
+    <div class="form-links">
+        <p>
+            <a href="{% url 'home' %}">← Volver al Inicio</a>
+        </p>
+        <p>
+            <a href="{% url 'forgot_password' %}">¿Olvidaste tu contraseña?</a>
+        </p>
+        <p>¿No tienes cuenta? <a href="{% url 'registro' %}">Regístrate aquí</a></p>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const inputs = document.querySelectorAll('input[type="text"], input[type="password"]');
+    inputs.forEach(input => {
+        input.style.pointerEvents = 'auto';
+        input.style.userSelect = 'text';
+        
+        input.addEventListener('click', function() {
+            console.log('✅ Input clickeado:', this.name);
+            this.focus();
+        });
+        
+        input.addEventListener('focus', function() {
+            console.log('✅ Input enfocado:', this.name);
+        });
+    });
+});
+
+{% if user.is_authenticated %}
+    console.log('✅ Usuario ya autenticado, redirigiendo...');
+    setTimeout(() => {
+        window.location.href = "{% url 'dashboard' %}";
+    }, 1000);
+{% endif %}
+</script>
+{% endblock %}

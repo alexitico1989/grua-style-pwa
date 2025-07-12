@@ -1,0 +1,7 @@
+Django==5.2.4
+transbank-sdk==3.0.0
+Pillow==10.0.0
+reportlab==4.0.4
+resend==0.7.0
+gunicorn==21.2.0
+dj-database-url==2.1.0

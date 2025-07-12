@@ -1,0 +1,427 @@
+{% extends 'grua_app/base.html' %}
+
+{% block title %}Historial de Servicios - GrúaExpress{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header -->
+    <div class="row mb-5">
+        <div class="col-lg-8">
+            <h1 class="display-5 fw-bold text-white mb-3">
+                <i class="fas fa-history me-3"></i>
+                Historial de Servicios
+            </h1>
+            <p class="lead text-muted">
+                Aquí puedes ver todos tus servicios de grúa, descargar facturas y hacer seguimiento.
+            </p>
+        </div>
+        <div class="col-lg-4 text-lg-end">
+            <a href="{% url 'solicitar_servicio' %}" class="btn btn-accent btn-lg">
+                <i class="fas fa-plus-circle me-2"></i>
+                Nueva Solicitud
+            </a>
+        </div>
+    </div>
+
+    <!-- Filtros y búsqueda -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label text-white">Buscar por orden:</label>
+                            <input type="text" class="form-control" id="searchOrder" placeholder="GR20250710001">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-white">Estado:</label>
+                            <select class="form-control" id="filterStatus">
+                                <option value="">Todos los estados</option>
+                                <option value="pendiente">Pendiente</option>
+                                <option value="confirmada">Confirmada</option>
+                                <option value="completada">Completada</option>
+                                <option value="cancelada">Cancelada</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-white">Pago:</label>
+                            <select class="form-control" id="filterPayment">
+                                <option value="">Todos</option>
+                                <option value="pagado">Pagado</option>
+                                <option value="pendiente">Pendiente</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-white">&nbsp;</label>
+                            <div class="d-grid">
+                                <button class="btn btn-primary" onclick="resetFilters()">
+                                    <i class="fas fa-refresh me-2"></i>Limpiar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de servicios -->
+    <div class="row">
+        <div class="col-12">
+            {% if solicitudes %}
+                <!-- Resumen estadístico -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3">
+                        <div class="text-center p-3" style="background: rgba(103, 151, 255, 0.1); border-radius: 1rem;">
+                            <h4 class="text-primary">{{ solicitudes|length }}</h4>
+                            <small class="text-muted">Total de Servicios</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center p-3" style="background: rgba(0, 212, 170, 0.1); border-radius: 1rem;">
+                            <h4 class="text-success">
+                                {% for s in solicitudes %}{% if s.estado == 'completada' %}1{% endif %}{% empty %}0{% endfor %}
+                            </h4>
+                            <small class="text-muted">Completados</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center p-3" style="background: rgba(254, 202, 87, 0.1); border-radius: 1rem;">
+                            <h4 class="text-warning">
+                                {% for s in solicitudes %}{% if s.pagado %}1{% endif %}{% empty %}0{% endfor %}
+                            </h4>
+                            <small class="text-muted">Pagados</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center p-3" style="background: rgba(255, 107, 107, 0.1); border-radius: 1rem;">
+                            <h4 class="text-danger">
+                                ${% for s in solicitudes %}{% if s.pagado %}{{ s.costo_total|add:0 }}{% endif %}{% empty %}0{% endfor %}
+                            </h4>
+                            <small class="text-muted">Total Pagado</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabla de servicios -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="text-white mb-0">
+                            <i class="fas fa-list me-2"></i>
+                            Todos los Servicios
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-dark table-hover mb-0" id="servicesTable">
+                                <thead style="background: rgba(103, 151, 255, 0.2);">
+                                    <tr>
+                                        <th>Orden</th>
+                                        <th>Fecha</th>
+                                        <th>Ruta Completa</th>
+                                        <th>Vehículo</th>
+                                        <th>Estado</th>
+                                        <th>Pago</th>
+                                        <th>Total</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for solicitud in solicitudes %}
+                                    <tr class="service-row" 
+                                        data-status="{{ solicitud.estado }}" 
+                                        data-payment="{% if solicitud.pagado %}pagado{% else %}pendiente{% endif %}"
+                                        data-order="{{ solicitud.numero_orden }}">
+                                        <td>
+                                            <div>
+                                                <strong class="text-primary">{{ solicitud.numero_orden }}</strong><br>
+                                                <small class="text-muted">{{ solicitud.fecha_solicitud|date:"d/m/Y" }}</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <strong class="text-white">{{ solicitud.fecha_solicitud|date:"d/m/Y" }}</strong><br>
+                                                <small class="text-muted">{{ solicitud.fecha_solicitud|date:"H:i" }}</small>
+                                                {% if solicitud.fecha_confirmacion %}
+                                                    <br><small class="text-success">
+                                                        <i class="fas fa-check me-1"></i>{{ solicitud.fecha_confirmacion|date:"d/m H:i" }}
+                                                    </small>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div style="max-width: 250px;">
+                                                <div class="d-flex align-items-start mb-2">
+                                                    <i class="fas fa-circle text-success me-2 mt-1" style="font-size: 0.6rem;"></i>
+                                                    <div>
+                                                        <strong class="text-success">Origen:</strong><br>
+                                                        <small class="text-muted">{{ solicitud.direccion_origen }}</small>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex align-items-start mb-2">
+                                                    <i class="fas fa-circle text-danger me-2 mt-1" style="font-size: 0.6rem;"></i>
+                                                    <div>
+                                                        <strong class="text-danger">Destino:</strong><br>
+                                                        <small class="text-muted">{{ solicitud.direccion_destino }}</small>
+                                                    </div>
+                                                </div>
+                                                <div class="text-center p-2" style="background: rgba(103, 151, 255, 0.1); border-radius: 0.5rem;">
+                                                    <strong class="text-info">{{ solicitud.distancia_km }} km</strong> • 
+                                                    <small class="text-muted">{{ solicitud.duracion_estimada }} min</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <strong class="text-white">{{ solicitud.marca_vehiculo }}</strong><br>
+                                                <span class="text-muted">{{ solicitud.modelo_vehiculo }}</span><br>
+                                                <div class="badge bg-primary">{{ solicitud.patente }}</div><br>
+                                                <small class="text-muted">{{ solicitud.color }}</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {% if solicitud.estado == 'pendiente' %}
+                                                <span class="badge" style="background-color: #feca57; padding: 0.5rem;">
+                                                    <i class="fas fa-clock me-1"></i>Pendiente
+                                                </span>
+                                            {% elif solicitud.estado == 'confirmada' %}
+                                                <span class="badge" style="background-color: #3b82f6; padding: 0.5rem;">
+                                                    <i class="fas fa-check me-1"></i>Confirmada
+                                                </span>
+                                            {% elif solicitud.estado == 'en_proceso' %}
+                                                <span class="badge" style="background-color: #f59e0b; padding: 0.5rem;">
+                                                    <i class="fas fa-truck me-1"></i>En Proceso
+                                                </span>
+                                            {% elif solicitud.estado == 'completada' %}
+                                                <span class="badge" style="background-color: #00d4aa; padding: 0.5rem;">
+                                                    <i class="fas fa-check-circle me-1"></i>Completada
+                                                </span>
+                                            {% elif solicitud.estado == 'cancelada' %}
+                                                <span class="badge" style="background-color: #ff6b6b; padding: 0.5rem;">
+                                                    <i class="fas fa-times me-1"></i>Cancelada
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div>
+                                                {% if solicitud.pagado %}
+                                                    <span class="badge bg-success">
+                                                        <i class="fas fa-check-circle me-1"></i>Pagado
+                                                    </span><br>
+                                                    <small class="text-success">{{ solicitud.get_metodo_pago_display }}</small>
+                                                {% else %}
+                                                    <span class="badge bg-warning">
+                                                        <i class="fas fa-clock me-1"></i>Pendiente
+                                                    </span><br>
+                                                    <small class="text-warning">Sin pagar</small>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="text-center">
+                                                <h5 class="text-white mb-1">${{ solicitud.costo_total|floatformat:0 }}</h5>
+                                                <small class="text-muted">
+                                                    Base: ${{ solicitud.tarifa_base|floatformat:0 }}<br>
+                                                    KM: ${{ solicitud.tarifa_por_km|floatformat:0 }}
+                                                </small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group-vertical" role="group">
+                                                {% if not solicitud.pagado and solicitud.estado == 'pendiente' %}
+                                                <a href="{% url 'procesar_pago' solicitud.id %}" 
+                                                   class="btn btn-sm btn-success mb-1" title="Pagar Ahora">
+                                                    <i class="fas fa-credit-card me-1"></i>Pagar
+                                                </a>
+                                                {% endif %}
+                                                <button class="btn btn-sm btn-outline-light mb-1" 
+                                                        title="Ver detalles completos"
+                                                        onclick="verDetallesCompletos('{{ solicitud.numero_orden }}', '{{ solicitud.direccion_origen }}', '{{ solicitud.direccion_destino }}', '{{ solicitud.marca_vehiculo }} {{ solicitud.modelo_vehiculo }}', '{{ solicitud.patente }}', '{{ solicitud.color }}', '{{ solicitud.descripcion_problema }}', '{{ solicitud.fecha_solicitud|date:"d/m/Y H:i" }}', '${{ solicitud.costo_total|floatformat:0 }}', '{{ solicitud.distancia_km }}', '{{ solicitud.get_estado_display }}', '{% if solicitud.pagado %}Pagado{% else %}Pendiente{% endif %}')">
+                                                    <i class="fas fa-eye me-1"></i>Ver
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-primary" 
+                                                        title="Descargar factura"
+                                                        onclick="descargarFactura('{{ solicitud.numero_orden }}')">
+                                                    <i class="fas fa-download me-1"></i>PDF
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <!-- Estado vacío -->
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <div class="feature-icon mx-auto mb-4" style="width: 8rem; height: 8rem; font-size: 4rem;">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <h3 class="text-white mb-3">No tienes servicios aún</h3>
+                        <p class="text-muted mb-4 lead">
+                            Una vez que solicites tu primer servicio de grúa, aparecerá aquí con todos los detalles.
+                        </p>
+                        <a href="{% url 'solicitar_servicio' %}" class="btn btn-accent btn-lg">
+                            <i class="fas fa-plus-circle me-2"></i>
+                            Solicitar Mi Primera Grúa
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Modal para detalles completos -->
+<div class="modal fade" id="detallesCompletosModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content" style="background: rgba(26, 26, 46, 0.95); color: #e2e8f0; border: 1px solid rgba(103, 151, 255, 0.3); border-radius: 1rem;">
+            <div class="modal-header" style="border-color: rgba(103, 151, 255, 0.3);">
+                <h5 class="modal-title text-white">
+                    <i class="fas fa-file-alt me-2"></i>
+                    Detalles Completos del Servicio
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="modalContentCompleto">
+                <!-- Contenido cargado dinámicamente -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Filtros en tiempo real
+document.addEventListener('DOMContentLoaded', function() {
+    const searchOrder = document.getElementById('searchOrder');
+    const filterStatus = document.getElementById('filterStatus');
+    const filterPayment = document.getElementById('filterPayment');
+    
+    function filterTable() {
+        const searchTerm = searchOrder.value.toLowerCase();
+        const statusFilter = filterStatus.value;
+        const paymentFilter = filterPayment.value;
+        const rows = document.querySelectorAll('.service-row');
+        
+        rows.forEach(row => {
+            const orderNumber = row.dataset.order.toLowerCase();
+            const status = row.dataset.status;
+            const payment = row.dataset.payment;
+            
+            let showRow = true;
+            
+            if (searchTerm && !orderNumber.includes(searchTerm)) {
+                showRow = false;
+            }
+            
+            if (statusFilter && status !== statusFilter) {
+                showRow = false;
+            }
+            
+            if (paymentFilter && payment !== paymentFilter) {
+                showRow = false;
+            }
+            
+            row.style.display = showRow ? '' : 'none';
+        });
+    }
+    
+    searchOrder.addEventListener('input', filterTable);
+    filterStatus.addEventListener('change', filterTable);
+    filterPayment.addEventListener('change', filterTable);
+});
+
+function resetFilters() {
+    document.getElementById('searchOrder').value = '';
+    document.getElementById('filterStatus').value = '';
+    document.getElementById('filterPayment').value = '';
+    
+    document.querySelectorAll('.service-row').forEach(row => {
+        row.style.display = '';
+    });
+}
+
+function verDetallesCompletos(numeroOrden, origen, destino, vehiculo, patente, color, problema, fecha, costo, distancia, estado, pago) {
+    const modal = new bootstrap.Modal(document.getElementById('detallesCompletosModal'));
+    document.getElementById('modalContentCompleto').innerHTML = `
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="text-white mb-0">
+                            <i class="fas fa-info me-2"></i>Información General
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Número de Orden:</strong><br><span class="text-primary">${numeroOrden}</span></p>
+                        <p><strong>Fecha de Solicitud:</strong><br>${fecha}</p>
+                        <p><strong>Estado:</strong><br><span class="text-info">${estado}</span></p>
+                        <p><strong>Estado de Pago:</strong><br><span class="text-warning">${pago}</span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="text-white mb-0">
+                            <i class="fas fa-route me-2"></i>Detalles del Viaje
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Origen:</strong><br><small class="text-muted">${origen}</small></p>
+                        <p><strong>Destino:</strong><br><small class="text-muted">${destino}</small></p>
+                        <p><strong>Distancia:</strong><br>${distancia} kilómetros</p>
+                        <p><strong>Costo Total:</strong><br><span class="text-success fs-5">${costo}</span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="text-white mb-0">
+                            <i class="fas fa-car me-2"></i>Información del Vehículo
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Vehículo:</strong><br>${vehiculo}</p>
+                        <p><strong>Patente:</strong><br><span class="badge bg-primary">${patente}</span></p>
+                        <p><strong>Color:</strong><br>${color}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="text-white mb-0">
+                            <i class="fas fa-wrench me-2"></i>Descripción del Problema
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted">${problema}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <button class="btn btn-primary me-2" onclick="descargarFactura('${numeroOrden}')">
+                <i class="fas fa-download me-2"></i>Descargar Factura
+            </button>
+            <a href="{% url 'solicitar_servicio' %}" class="btn btn-accent">
+                <i class="fas fa-plus me-2"></i>Solicitar Nuevo Servicio
+            </a>
+        </div>
+    `;
+    modal.show();
+}
+
+function descargarFactura(numeroOrden) {
+    // Simular descarga de factura
+    alert(`Descargando factura para orden: ${numeroOrden}\n\nEsta funcionalidad se implementará próximamente.`);
+}
+</script>
+{% endblock %}

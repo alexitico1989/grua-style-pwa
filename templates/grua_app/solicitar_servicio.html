@@ -1,0 +1,606 @@
+{% extends 'grua_app/base.html' %}
+
+{% block title %}Solicitar Servicio - GrúaExpress{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+    .servicio-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+    
+    .servicio-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        padding: 2rem;
+        border-radius: 1rem;
+    }
+    
+    .servicio-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .formulario-section {
+        background: white;
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    
+    .mapa-section {
+        background: white;
+        padding: 1rem;
+        border-radius: 1rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    
+    #map {
+        height: 500px;
+        border-radius: 0.5rem;
+        border: 2px solid #e2e8f0;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: #374151;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+    }
+    
+    .form-control:focus {
+        outline: none;
+        border-color: #10b981;
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        border: none;
+        padding: 0.875rem 2rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+    }
+    
+    .btn-primary:disabled {
+        background: #9ca3af;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+    
+    .calculadora-precio {
+        background: #f8fafc;
+        border: 2px solid #e2e8f0;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        margin: 1rem 0;
+    }
+    
+    .precio-detalle {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        padding: 0.25rem 0;
+    }
+    
+    .precio-total {
+        border-top: 2px solid #10b981;
+        padding-top: 0.75rem;
+        margin-top: 0.75rem;
+        font-weight: bold;
+        font-size: 1.2rem;
+        color: #10b981;
+    }
+    
+    .instrucciones-mapa {
+        background: #dbeafe;
+        border: 1px solid #3b82f6;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .puntos-seleccionados {
+        background: #ecfdf5;
+        border: 1px solid #10b981;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .punto-info {
+        margin-bottom: 0.5rem;
+        padding: 0.5rem;
+        background: white;
+        border-radius: 0.25rem;
+    }
+    
+    .alert {
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .alert-success {
+        background: #d1fae5;
+        border: 1px solid #10b981;
+        color: #065f46;
+    }
+    
+    .alert-error {
+        background: #fee2e2;
+        border: 1px solid #ef4444;
+        color: #dc2626;
+    }
+    
+    @media (max-width: 768px) {
+        .servicio-content {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="servicio-container">
+    <div class="servicio-header">
+        <h1>🚗 Solicitar Servicio de Grúa</h1>
+        <p>Selecciona los puntos en el mapa y completa el formulario</p>
+    </div>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    <div class="servicio-content">
+        <!-- Formulario -->
+        <div class="formulario-section">
+            <h3>📋 Detalles del Servicio</h3>
+            
+            <form method="post" id="servicioForm">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="{{ form.direccion_origen.id_for_label }}">📍 Dirección de Origen:</label>
+                    {{ form.direccion_origen }}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.direccion_destino.id_for_label }}">🎯 Dirección de Destino:</label>
+                    {{ form.direccion_destino }}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.fecha_servicio.id_for_label }}">📅 Fecha y Hora del Servicio:</label>
+                    {{ form.fecha_servicio }}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.descripcion_problema.id_for_label }}">🔧 Descripción del Problema:</label>
+                    {{ form.descripcion_problema }}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.distancia_km.id_for_label }}">📏 Distancia (km):</label>
+                    {{ form.distancia_km }}
+                    <small style="color: #6b7280;">Se calculará automáticamente al seleccionar puntos en el mapa</small>
+                </div>
+                
+                <!-- Calculadora de Precio -->
+                <div class="calculadora-precio" id="calculadoraPrecio" style="display: none;">
+                    <h4>💰 Cálculo de Precio</h4>
+                    <div class="precio-detalle">
+                        <span>Tarifa Base:</span>
+                        <span>$15.000</span>
+                    </div>
+                    <div class="precio-detalle" id="costoPorKm" style="display: none;">
+                        <span>Costo por Distancia (<span id="distanciaTexto">0</span> km):</span>
+                        <span id="costoDistancia">$0</span>
+                    </div>
+                    <div class="precio-detalle precio-total">
+                        <span>Total a Pagar:</span>
+                        <span id="precioTotal">$20.000</span>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-primary" id="btnSolicitar" disabled>
+                    ✅ Crear Solicitud de Servicio
+                </button>
+            </form>
+        </div>
+        
+        <!-- Mapa -->
+        <div class="mapa-section">
+            <h3>🗺️ Seleccionar Ubicaciones</h3>
+            
+            <div class="instrucciones-mapa">
+                <strong>📍 Instrucciones:</strong><br>
+                1. Primer clic: Selecciona el punto de origen (donde está tu vehículo)<br>
+                2. Segundo clic: Selecciona el punto de destino<br>
+                3. Se calculará automáticamente la ruta y el precio
+            </div>
+            
+            <div id="map"></div>
+            
+            <div class="puntos-seleccionados" id="puntosSeleccionados" style="display: none;">
+                <h4>📌 Puntos Seleccionados:</h4>
+                <div id="puntoOrigen" class="punto-info" style="display: none;">
+                    <strong>🟢 Origen:</strong> <span id="direccionOrigen"></span>
+                </div>
+                <div id="puntoDestino" class="punto-info" style="display: none;">
+                    <strong>🔴 Destino:</strong> <span id="direccionDestino"></span>
+                </div>
+                <div id="infoRuta" class="punto-info" style="display: none;">
+                    <strong>🛣️ Distancia:</strong> <span id="distanciaRuta"></span> km
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🗺️ Inicializando mapa...');
+    
+    // Configuración inicial
+    let map;
+    let puntoOrigen = null;
+    let puntoDestino = null;
+    let markerOrigen = null;
+    let markerDestino = null;
+    let rutaLayer = null;
+    
+    // Tarifas
+    const TARIFA_BASE = 15000;
+    const TARIFA_POR_KM = 1200;
+    const TARIFA_MINIMA = 20000;
+    
+    // Inicializar mapa
+    function initMap() {
+        // Centrar en Santiago, Chile
+        map = L.map('map').setView([-33.4489, -70.6693], 12);
+        
+        // Agregar tiles de OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+        
+        // Evento de clic en el mapa
+        map.on('click', function(e) {
+            manejarClickMapa(e.latlng);
+        });
+        
+        console.log('✅ Mapa inicializado');
+    }
+    
+    // Manejar clic en el mapa
+    function manejarClickMapa(latlng) {
+        if (!puntoOrigen) {
+            // Primer clic - establecer origen
+            establecerOrigen(latlng);
+        } else if (!puntoDestino) {
+            // Segundo clic - establecer destino
+            establecerDestino(latlng);
+        } else {
+            // Tercer clic - reiniciar
+            reiniciarPuntos();
+            establecerOrigen(latlng);
+        }
+    }
+    
+    // Establecer punto de origen
+    function establecerOrigen(latlng) {
+        puntoOrigen = latlng;
+        
+        // Remover marker anterior si existe
+        if (markerOrigen) {
+            map.removeLayer(markerOrigen);
+        }
+        
+        // Crear nuevo marker verde
+        markerOrigen = L.marker([latlng.lat, latlng.lng], {
+            icon: L.icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41]
+            })
+        }).addTo(map);
+        
+        markerOrigen.bindPopup('🟢 Punto de Origen').openPopup();
+        
+        // Obtener dirección
+        obtenerDireccion(latlng, 'origen');
+        
+        console.log('✅ Origen establecido:', latlng);
+    }
+    
+    // Establecer punto de destino
+    function establecerDestino(latlng) {
+        puntoDestino = latlng;
+        
+        // Remover marker anterior si existe
+        if (markerDestino) {
+            map.removeLayer(markerDestino);
+        }
+        
+        // Crear nuevo marker rojo
+        markerDestino = L.marker([latlng.lat, latlng.lng], {
+            icon: L.icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41]
+            })
+        }).addTo(map);
+        
+        markerDestino.bindPopup('🔴 Punto de Destino').openPopup();
+        
+        // Obtener dirección
+        obtenerDireccion(latlng, 'destino');
+        
+        // Calcular ruta
+        calcularRuta();
+        
+        console.log('✅ Destino establecido:', latlng);
+    }
+    
+    // Obtener dirección usando geocodificación inversa
+    function obtenerDireccion(latlng, tipo) {
+        const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latlng.lat}&lon=${latlng.lng}&zoom=18&addressdetails=1`;
+        
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const direccion = data.display_name || `${latlng.lat}, ${latlng.lng}`;
+                
+                if (tipo === 'origen') {
+                    document.getElementById('id_direccion_origen').value = direccion;
+                    document.getElementById('direccionOrigen').textContent = direccion;
+                    document.getElementById('puntoOrigen').style.display = 'block';
+                } else {
+                    document.getElementById('id_direccion_destino').value = direccion;
+                    document.getElementById('direccionDestino').textContent = direccion;
+                    document.getElementById('puntoDestino').style.display = 'block';
+                }
+                
+                document.getElementById('puntosSeleccionados').style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Error obteniendo dirección:', error);
+                const coordenadas = `${latlng.lat.toFixed(6)}, ${latlng.lng.toFixed(6)}`;
+                
+                if (tipo === 'origen') {
+                    document.getElementById('id_direccion_origen').value = coordenadas;
+                    document.getElementById('direccionOrigen').textContent = coordenadas;
+                    document.getElementById('puntoOrigen').style.display = 'block';
+                } else {
+                    document.getElementById('id_direccion_destino').value = coordenadas;
+                    document.getElementById('direccionDestino').textContent = coordenadas;
+                    document.getElementById('puntoDestino').style.display = 'block';
+                }
+                
+                document.getElementById('puntosSeleccionados').style.display = 'block';
+            });
+    }
+    
+    // Calcular ruta entre origen y destino
+    function calcularRuta() {
+        if (!puntoOrigen || !puntoDestino) return;
+        
+        console.log('🛣️ Calculando ruta...');
+        
+        // Usar OpenRouteService API para calcular ruta
+        const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=5b3ce3597851110001cf6248b25936c5e9624d3e8e19d5d4a2f15b95&start=${puntoOrigen.lng},${puntoOrigen.lat}&end=${puntoDestino.lng},${puntoDestino.lat}`;
+        
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                if (data.features && data.features.length > 0) {
+                    const route = data.features[0];
+                    const coordinates = route.geometry.coordinates;
+                    const distanceKm = (route.properties.segments[0].distance / 1000).toFixed(2);
+                    
+                    // Dibujar ruta en el mapa
+                    dibujarRuta(coordinates);
+                    
+                    // Actualizar información
+                    actualizarInfoRuta(distanceKm);
+                    
+                    console.log('✅ Ruta calculada:', distanceKm + ' km');
+                } else {
+                    // Fallback: línea recta
+                    calcularDistanciaDirecta();
+                }
+            })
+            .catch(error => {
+                console.error('Error calculando ruta:', error);
+                // Fallback: línea recta
+                calcularDistanciaDirecta();
+            });
+    }
+    
+    // Calcular distancia en línea recta (fallback)
+    function calcularDistanciaDirecta() {
+        const distancia = map.distance(puntoOrigen, puntoDestino) / 1000; // km
+        const distanciaRedondeada = distancia.toFixed(2);
+        
+        // Dibujar línea recta
+        if (rutaLayer) {
+            map.removeLayer(rutaLayer);
+        }
+        
+        rutaLayer = L.polyline([puntoOrigen, puntoDestino], {
+            color: '#3b82f6',
+            weight: 4,
+            opacity: 0.7
+        }).addTo(map);
+        
+        actualizarInfoRuta(distanciaRedondeada);
+        
+        console.log('✅ Distancia directa calculada:', distanciaRedondeada + ' km');
+    }
+    
+    // Dibujar ruta en el mapa
+    function dibujarRuta(coordinates) {
+        // Remover ruta anterior
+        if (rutaLayer) {
+            map.removeLayer(rutaLayer);
+        }
+        
+        // Convertir coordenadas para Leaflet
+        const latLngs = coordinates.map(coord => [coord[1], coord[0]]);
+        
+        // Crear polyline
+        rutaLayer = L.polyline(latLngs, {
+            color: '#10b981',
+            weight: 4,
+            opacity: 0.8
+        }).addTo(map);
+        
+        // Ajustar vista del mapa
+        map.fitBounds(rutaLayer.getBounds(), { padding: [20, 20] });
+    }
+    
+    // Actualizar información de la ruta
+    function actualizarInfoRuta(distanciaKm) {
+        // Actualizar campo del formulario
+        document.getElementById('id_distancia_km').value = distanciaKm;
+        
+        // Mostrar información
+        document.getElementById('distanciaRuta').textContent = distanciaKm;
+        document.getElementById('infoRuta').style.display = 'block';
+        
+        // Calcular precio
+        calcularPrecio(parseFloat(distanciaKm));
+        
+        // Habilitar botón de envío
+        document.getElementById('btnSolicitar').disabled = false;
+    }
+    
+    // Calcular precio del servicio
+    function calcularPrecio(distanciaKm) {
+        const costoDistancia = distanciaKm * TARIFA_POR_KM;
+        const total = Math.max(TARIFA_BASE + costoDistancia, TARIFA_MINIMA);
+        
+        // Mostrar calculadora
+        document.getElementById('calculadoraPrecio').style.display = 'block';
+        
+        // Actualizar valores
+        document.getElementById('distanciaTexto').textContent = distanciaKm;
+        document.getElementById('costoDistancia').textContent = '$' + costoDistancia.toLocaleString();
+        document.getElementById('precioTotal').textContent = '$' + total.toLocaleString();
+        
+        // Mostrar línea de costo por km solo si hay distancia
+        document.getElementById('costoPorKm').style.display = distanciaKm > 0 ? 'flex' : 'none';
+        
+        console.log('💰 Precio calculado: $' + total.toLocaleString());
+    }
+    
+    // Reiniciar puntos
+    function reiniciarPuntos() {
+        puntoOrigen = null;
+        puntoDestino = null;
+        
+        if (markerOrigen) {
+            map.removeLayer(markerOrigen);
+            markerOrigen = null;
+        }
+        
+        if (markerDestino) {
+            map.removeLayer(markerDestino);
+            markerDestino = null;
+        }
+        
+        if (rutaLayer) {
+            map.removeLayer(rutaLayer);
+            rutaLayer = null;
+        }
+        
+        // Limpiar formulario
+        document.getElementById('id_direccion_origen').value = '';
+        document.getElementById('id_direccion_destino').value = '';
+        document.getElementById('id_distancia_km').value = '';
+        
+        // Ocultar información
+        document.getElementById('puntosSeleccionados').style.display = 'none';
+        document.getElementById('calculadoraPrecio').style.display = 'none';
+        
+        // Deshabilitar botón
+        document.getElementById('btnSolicitar').disabled = true;
+        
+        console.log('🔄 Puntos reiniciados');
+    }
+    
+    // Validación del formulario
+    document.getElementById('servicioForm').addEventListener('submit', function(e) {
+        if (!puntoOrigen || !puntoDestino) {
+            e.preventDefault();
+            alert('Por favor, selecciona ambos puntos en el mapa');
+            return false;
+        }
+        
+        const fechaServicio = document.getElementById('id_fecha_servicio').value;
+        const descripcion = document.getElementById('id_descripcion_problema').value;
+        
+        if (!fechaServicio) {
+            e.preventDefault();
+            alert('Por favor, selecciona una fecha y hora para el servicio');
+            return false;
+        }
+        
+        if (!descripcion.trim()) {
+            e.preventDefault();
+            alert('Por favor, describe el problema de tu vehículo');
+            return false;
+        }
+        
+        console.log('✅ Formulario válido, enviando...');
+    });
+    
+    // Inicializar mapa cuando la página esté lista
+    initMap();
+});
+</script>
+{% endblock %}

@@ -1,0 +1,328 @@
+{% extends 'grua_app/base.html' %}
+
+{% block title %}Dashboard - GrúaExpress{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+    
+    .dashboard-header {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        padding: 2rem;
+        border-radius: 1rem;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 1rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+    
+    .solicitudes-section {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    
+    .section-header {
+        background: #f8fafc;
+        padding: 1.5rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .solicitud-card {
+        border-bottom: 1px solid #e2e8f0;
+        padding: 1.5rem;
+        transition: background-color 0.3s ease;
+    }
+    
+    .solicitud-card:hover {
+        background-color: #f8fafc;
+    }
+    
+    .solicitud-card:last-child {
+        border-bottom: none;
+    }
+    
+    .solicitud-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    
+    .numero-orden {
+        font-size: 1.25rem;
+        font-weight: bold;
+        color: #10b981;
+    }
+    
+    .estado {
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+    
+    .estado-pendiente { background: #fef3c7; color: #92400e; }
+    .estado-confirmada { background: #d1fae5; color: #065f46; }
+    .estado-en_proceso { background: #dbeafe; color: #1e40af; }
+    .estado-completada { background: #dcfce7; color: #166534; }
+    .estado-cancelada { background: #fee2e2; color: #dc2626; }
+    .estado-pendiente_pago { background: #fde68a; color: #92400e; }
+    
+    .solicitud-details {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .detail-item {
+        font-size: 0.875rem;
+        color: #6b7280;
+    }
+    
+    .detail-label {
+        font-weight: 600;
+        color: #374151;
+    }
+    
+    .acciones {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-top: 1rem;
+    }
+    
+    .btn {
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .btn-primary {
+        background: #10b981;
+        color: white;
+    }
+    
+    .btn-secondary {
+        background: #6b7280;
+        color: white;
+    }
+    
+    .btn-outline {
+        background: transparent;
+        border: 1px solid #d1d5db;
+        color: #374151;
+    }
+    
+    .btn-warning {
+        background: #f59e0b;
+        color: white;
+    }
+    
+    .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .btn-floating {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        border: none;
+        box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-floating:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 24px rgba(16, 185, 129, 0.6);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: #6b7280;
+    }
+    
+    .empty-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+    }
+    
+    @media (max-width: 768px) {
+        .solicitud-details {
+            grid-template-columns: 1fr;
+        }
+        
+        .solicitud-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        
+        .acciones {
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1>🚗 Mi Dashboard</h1>
+        <p>Bienvenido, {{ user.get_full_name|default:user.username }}</p>
+    </div>
+    
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>📋 Total Solicitudes</h3>
+            <div style="font-size: 2rem; font-weight: bold; color: #10b981;">
+                {{ solicitudes|length }}
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <h3>⏳ Pendientes</h3>
+            <div style="font-size: 2rem; font-weight: bold; color: #f59e0b;">
+                {{ solicitudes|length }}
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <h3>✅ Completadas</h3>
+            <div style="font-size: 2rem; font-weight: bold; color: #10b981;">
+                0
+            </div>
+        </div>
+    </div>
+    
+    <div class="solicitudes-section">
+        <div class="section-header">
+            <h2>📋 Mis Solicitudes de Servicio</h2>
+        </div>
+        
+        {% if solicitudes %}
+            {% for solicitud in solicitudes %}
+            <div class="solicitud-card">
+                <div class="solicitud-header">
+                    <div class="numero-orden">
+                        {{ solicitud.numero_orden }}
+                    </div>
+                    <div class="estado estado-{{ solicitud.estado }}">
+                        {{ solicitud.get_estado_display }}
+                    </div>
+                </div>
+                
+                <div class="solicitud-details">
+                    <div class="detail-item">
+                        <span class="detail-label">📅 Fecha:</span>
+                        {{ solicitud.fecha_servicio|date:"d/m/Y H:i" }}
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">📍 Origen:</span>
+                        {{ solicitud.direccion_origen|truncatechars:40 }}
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">🎯 Destino:</span>
+                        {{ solicitud.direccion_destino|truncatechars:40 }}
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">💰 Método de Pago:</span>
+                        {{ solicitud.get_metodo_pago_display|default:"No definido" }}
+                    </div>
+                </div>
+                
+                <div class="acciones">
+                    <!-- Ver Detalles -->
+                    <a href="{% url 'confirmacion_solicitud' solicitud.id %}" class="btn btn-primary">
+                        👁️ Ver Detalles
+                    </a>
+                    
+                    <!-- Descargar PDF -->
+                    <a href="{% url 'descargar_pdf_solicitud' solicitud.id %}" class="btn btn-secondary">
+                        📄 Descargar PDF
+                    </a>
+                    
+                    <!-- Imprimir -->
+                    <a href="{% url 'imprimir_solicitud' solicitud.id %}" target="_blank" class="btn btn-outline" onclick="window.open(this.href, '_blank', 'width=800,height=900'); return false;">
+                        🖨️ Imprimir
+                    </a>
+                    
+                    <!-- Comprobante PDF (solo si está confirmada o pagada) -->
+                    {% if solicitud.estado == 'confirmada' or solicitud.estado == 'completada' or solicitud.pagado %}
+                    <a href="{% url 'descargar_pdf_comprobante' solicitud.id %}" class="btn btn-warning">
+                        🧾 Comprobante
+                    </a>
+                    {% endif %}
+                    
+                    <!-- Reenviar Email -->
+                    <a href="{% url 'reenviar_comprobante' solicitud.id %}" class="btn btn-outline">
+                        📧 Reenviar Email
+                    </a>
+                    
+                    <!-- Pagar (solo si está pendiente de pago) -->
+                    {% if solicitud.estado == 'pendiente' or solicitud.estado == 'pendiente_pago' %}
+                    <a href="{% url 'procesar_pago' solicitud.id %}" class="btn btn-primary">
+                        💳 Proceder al Pago
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">📋</div>
+                <h3>No tienes solicitudes aún</h3>
+                <p>¡Crea tu primera solicitud de servicio!</p>
+            </div>
+        {% endif %}
+    </div>
+    
+    <!-- Botón flotante para nueva solicitud -->
+    <a href="{% url 'solicitar_servicio' %}" class="btn-floating" title="Nueva Solicitud">
+        ➕
+    </a>
+</div>
+{% endblock %}

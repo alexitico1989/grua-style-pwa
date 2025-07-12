@@ -1,0 +1,294 @@
+{% extends 'grua_app/base.html' %}
+
+{% block title %}GrúaExpress - Servicio de Grúas 24/7 en Santiago{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold text-white mb-4">
+                    Servicio de Grúa
+                    <span class="text-warning">24/7</span>
+                </h1>
+                <p class="lead text-white-50 mb-4">
+                    Asistencia rápida y confiable para vehículos menores en toda la Región Metropolitana. 
+                    Calcula tu tarifa al instante y paga en línea.
+                </p>
+                <div class="d-flex flex-wrap gap-3">
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'solicitar_servicio' %}" class="btn btn-accent btn-lg">
+                        <i class="fas fa-plus-circle me-2"></i>
+                        Solicitar Grúa Ahora
+                    </a>
+                    <a href="{% url 'dashboard' %}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-tachometer-alt me-2"></i>
+                        Mi Dashboard
+                    </a>
+                    {% else %}
+                    <a href="{% url 'registro' %}" class="btn btn-accent btn-lg">
+                        <i class="fas fa-user-plus me-2"></i>
+                        Registrarse Gratis
+                    </a>
+                    <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>
+                        Iniciar Sesión
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <i class="fas fa-truck display-1 text-white"></i>
+                <h4 class="text-white mt-3">Cobertura Total</h4>
+                <p class="text-white-50">Región Metropolitana</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="display-5 fw-bold text-white mb-4">
+                    ¿Por qué elegir GrúaExpress?
+                </h2>
+                <p class="lead text-muted">
+                    Combinamos tecnología moderna con servicio personalizado para brindarte 
+                    la mejor experiencia en servicios de grúa.
+                </p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body p-4">
+                        <div class="feature-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h4 class="text-white mb-3">Disponible 24/7</h4>
+                        <p class="text-muted">
+                            Servicio de emergencia las 24 horas, los 7 días de la semana. 
+                            Siempre estamos aquí cuando nos necesitas.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body p-4">
+                        <div class="feature-icon">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                        <h4 class="text-white mb-3">Tarifas Transparentes</h4>
+                        <p class="text-muted">
+                            Calcula tu tarifa exacta antes de contratar. Sin sorpresas, 
+                            precios justos basados en distancia real.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body p-4">
+                        <div class="feature-icon">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                        <h4 class="text-white mb-3">Pago en Línea</h4>
+                        <p class="text-muted">
+                            Paga de forma segura con Webpay, transferencia bancaria 
+                            o efectivo. Máxima comodidad y seguridad.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body p-4">
+                        <div class="feature-icon">
+                            <i class="fas fa-map-marked-alt"></i>
+                        </div>
+                        <h4 class="text-white mb-3">Selección en Mapa</h4>
+                        <p class="text-muted">
+                            Selecciona fácilmente tu ubicación y destino en nuestro 
+                            mapa interactivo. Precisión GPS garantizada.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body p-4">
+                        <div class="feature-icon">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <h4 class="text-white mb-3">Historial Completo</h4>
+                        <p class="text-muted">
+                            Accede al historial de todos tus servicios con detalles 
+                            completos y facturas descargables.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body p-4">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h4 class="text-white mb-3">Servicio Confiable</h4>
+                        <p class="text-muted">
+                            Grúa especializada para vehículos menores con plataforma 
+                            y huinche. Equipamiento profesional.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Pricing Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="display-5 fw-bold text-white mb-4">
+                    Tarifas Transparentes
+                </h2>
+                <p class="lead text-muted">
+                    Conoce nuestras tarifas antes de solicitar el servicio
+                </p>
+            </div>
+        </div>
+        
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h3 class="text-white mb-0">
+                            <i class="fas fa-calculator me-2"></i>
+                            Estructura de Precios
+                        </h3>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row text-center">
+                            <div class="col-md-4 mb-3">
+                                <div class="p-3" style="background: rgba(103, 151, 255, 0.1); border-radius: 1rem;">
+                                    <i class="fas fa-flag-checkered display-6 text-primary mb-3"></i>
+                                    <h5 class="text-white">Tarifa Base</h5>
+                                    <h3 class="text-primary mb-0">$15.000</h3>
+                                    <small class="text-muted">Costo inicial del servicio</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="p-3" style="background: rgba(0, 212, 170, 0.1); border-radius: 1rem;">
+                                    <i class="fas fa-route display-6 text-success mb-3"></i>
+                                    <h5 class="text-white">Por Kilómetro</h5>
+                                    <h3 class="text-success mb-0">$1.200</h3>
+                                    <small class="text-muted">Cada kilómetro recorrido</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="p-3" style="background: rgba(255, 107, 107, 0.1); border-radius: 1rem;">
+                                    <i class="fas fa-hand-holding-usd display-6 text-danger mb-3"></i>
+                                    <h5 class="text-white">Tarifa Mínima</h5>
+                                    <h3 class="text-danger mb-0">$20.000</h3>
+                                    <small class="text-muted">Costo mínimo garantizado</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-4">
+                            <div class="alert alert-info d-inline-block">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Ejemplo:</strong> Un viaje de 8 km costaría: $15.000 + (8 × $1.200) = $24.600
+                            </div>
+                        </div>
+                        
+                        {% if not user.is_authenticated %}
+                        <div class="text-center mt-4">
+                            <a href="{% url 'registro' %}" class="btn btn-primary btn-lg">
+                                <i class="fas fa-calculator me-2"></i>
+                                Calcular Mi Tarifa
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <div class="card">
+                    <div class="card-body p-5 text-center">
+                        <h2 class="display-6 fw-bold text-white mb-4">
+                            ¿Necesitas una grúa ahora?
+                        </h2>
+                        <p class="lead text-muted mb-4">
+                            Únete a cientos de clientes satisfechos que confían en nuestro servicio
+                        </p>
+                        
+                        {% if user.is_authenticated %}
+                        <div class="d-flex flex-wrap justify-content-center gap-3">
+                            <a href="{% url 'solicitar_servicio' %}" class="btn btn-accent btn-lg">
+                                <i class="fas fa-truck me-2"></i>
+                                Solicitar Grúa Ahora
+                            </a>
+                            <a href="{% url 'dashboard' %}" class="btn btn-primary btn-lg">
+                                <i class="fas fa-tachometer-alt me-2"></i>
+                                Mi Dashboard
+                            </a>
+                        </div>
+                        {% else %}
+                        <div class="d-flex flex-wrap justify-content-center gap-3">
+                            <a href="{% url 'registro' %}" class="btn btn-accent btn-lg">
+                                <i class="fas fa-user-plus me-2"></i>
+                                Crear Cuenta Gratis
+                            </a>
+                            <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg">
+                                <i class="fas fa-sign-in-alt me-2"></i>
+                                Ya tengo cuenta
+                            </a>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="row mt-5 text-center">
+                            <div class="col-md-3 col-6 mb-3">
+                                <h4 class="text-primary fw-bold">24/7</h4>
+                                <small class="text-muted">Disponibilidad</small>
+                            </div>
+                            <div class="col-md-3 col-6 mb-3">
+                                <h4 class="text-primary fw-bold">&lt;30min</h4>
+                                <small class="text-muted">Tiempo respuesta</small>
+                            </div>
+                            <div class="col-md-3 col-6 mb-3">
+                                <h4 class="text-primary fw-bold">100%</h4>
+                                <small class="text-muted">Satisfacción</small>
+                            </div>
+                            <div class="col-md-3 col-6 mb-3">
+                                <h4 class="text-primary fw-bold">RM</h4>
+                                <small class="text-muted">Cobertura total</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

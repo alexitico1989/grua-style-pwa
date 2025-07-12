@@ -1,0 +1,298 @@
+{% extends 'grua_app/base.html' %}
+
+{% block title %}Registro - GrúaExpress{% endblock %}
+
+{% block extra_css %}
+<style>
+    .registro-container {
+        max-width: 600px;
+        margin: 3rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 8px 32px rgba(103, 151, 255, 0.15);
+    }
+    
+    .registro-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .registro-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #10b981, #059669);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        color: white;
+        font-size: 2rem;
+    }
+    
+    .form-row {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-group {
+        flex: 1;
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+        background: white !important;
+        color: #333 !important;
+    }
+    
+    .form-control:focus {
+        outline: none !important;
+        border-color: #10b981 !important;
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+        background: white !important;
+    }
+    
+    .form-control.error {
+        border-color: #ef4444 !important;
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+    }
+    
+    .btn-registro {
+        width: 100%;
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        border: none;
+        padding: 0.875rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-registro:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+    }
+    
+    .error-messages {
+        background: #fee2e2;
+        border: 1px solid #ef4444;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        color: #dc2626;
+    }
+    
+    .field-error {
+        color: #dc2626;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+        display: block;
+    }
+    
+    .form-links {
+        text-align: center;
+        margin-top: 1.5rem;
+    }
+    
+    .form-links a {
+        color: #10b981;
+        text-decoration: none;
+    }
+    
+    .form-links a:hover {
+        text-decoration: underline;
+    }
+    
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #374151;
+    }
+    
+    .help-text {
+        font-size: 0.875rem;
+        color: #6b7280;
+        margin-top: 0.25rem;
+    }
+    
+    .success-message {
+        background: #d1fae5;
+        border: 1px solid #10b981;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        color: #065f46;
+    }
+    
+    .warning-message {
+        background: #fef3c7;
+        border: 1px solid #f59e0b;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        color: #92400e;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="registro-container">
+    <div class="registro-header">
+        <div class="registro-icon">
+            📝
+        </div>
+        <h2>Crear Cuenta</h2>
+        <p style="color: #6b7280;">Únete a GrúaExpress</p>
+    </div>
+    
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'error' %}
+                <div class="error-messages">
+                    {{ message }}
+                </div>
+            {% elif message.tags == 'warning' %}
+                <div class="warning-message">
+                    {{ message }}
+                </div>
+            {% else %}
+                <div class="success-message">
+                    {{ message }}
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    
+    {% if form.non_field_errors %}
+        <div class="error-messages">
+            {% for error in form.non_field_errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    <form method="post" id="registroForm">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="{{ form.username.id_for_label }}">Nombre de Usuario:</label>
+            {{ form.username }}
+            {% if form.username.errors %}
+                {% for error in form.username.errors %}
+                    <span class="field-error">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
+            {% if form.username.help_text %}
+                <div class="help-text">{{ form.username.help_text }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.email.id_for_label }}">Correo Electrónico:</label>
+            {{ form.email }}
+            {% if form.email.errors %}
+                {% for error in form.email.errors %}
+                    <span class="field-error">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label for="{{ form.telefono.id_for_label }}">Teléfono:</label>
+                {{ form.telefono }}
+                {% if form.telefono.errors %}
+                    {% for error in form.telefono.errors %}
+                        <span class="field-error">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.rut.id_for_label }}">RUT:</label>
+                {{ form.rut }}
+                {% if form.rut.errors %}
+                    {% for error in form.rut.errors %}
+                        <span class="field-error">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.direccion.id_for_label }}">Dirección:</label>
+            {{ form.direccion }}
+            {% if form.direccion.errors %}
+                {% for error in form.direccion.errors %}
+                    <span class="field-error">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label for="{{ form.password1.id_for_label }}">Contraseña:</label>
+                {{ form.password1 }}
+                {% if form.password1.errors %}
+                    {% for error in form.password1.errors %}
+                        <span class="field-error">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+                {% if form.password1.help_text %}
+                    <div class="help-text">{{ form.password1.help_text }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.password2.id_for_label }}">Confirmar Contraseña:</label>
+                {{ form.password2 }}
+                {% if form.password2.errors %}
+                    {% for error in form.password2.errors %}
+                        <span class="field-error">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+        
+        <button type="submit" class="btn-registro">
+            Crear Cuenta
+        </button>
+    </form>
+    
+    <div class="form-links">
+        <p>
+            <a href="{% url 'home' %}">← Volver al Inicio</a>
+        </p>
+        <p>¿Ya tienes cuenta? <a href="{% url 'login' %}">Inicia sesión aquí</a></p>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Asegurar que los campos sean interactivos
+    const inputs = document.querySelectorAll('input');
+    inputs.forEach(input => {
+        input.style.pointerEvents = 'auto';
+        input.style.userSelect = 'text';
+        
+        // Agregar clase error si hay errores
+        const fieldGroup = input.closest('.form-group');
+        if (fieldGroup && fieldGroup.querySelector('.field-error')) {
+            input.classList.add('error');
+        }
+    });
+    
+    console.log('📝 Registro - Template cargado');
+});
+</script>
+{% endblock %}

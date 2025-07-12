@@ -1,0 +1,233 @@
+{% extends 'grua_app/base.html' %}
+
+{% block title %}Pago en Efectivo - GrúaExpress{% endblock %}
+
+{% block extra_css %}
+<style>
+    .confirmation-container {
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 8px 32px rgba(103, 151, 255, 0.15);
+    }
+    
+    .success-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #10b981, #059669);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        color: white;
+        font-size: 2rem;
+    }
+    
+    .service-details {
+        background: #f8fafc;
+        border: 2px solid #e2e8f0;
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+    }
+    
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .detail-row:last-child {
+        border-bottom: none;
+        font-weight: bold;
+        color: #6767ff;
+        font-size: 1.1rem;
+    }
+    
+    .detail-label {
+        color: #64748b;
+        font-weight: 500;
+    }
+    
+    .detail-value {
+        color: #1e293b;
+        font-weight: 600;
+    }
+    
+    .cash-info {
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        border: 2px solid #f59e0b;
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        text-align: center;
+    }
+    
+    .cash-amount {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #92400e;
+        margin: 0.5rem 0;
+    }
+    
+    .important-note {
+        background: #dbeafe;
+        border: 2px solid #3b82f6;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        margin: 1.5rem 0;
+    }
+    
+    .btn-dashboard {
+        background: linear-gradient(135deg, #6767ff, #5a5af0);
+        color: white;
+        padding: 0.75rem 2rem;
+        border: none;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-dashboard:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(103, 151, 255, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .timeline {
+        margin: 2rem 0;
+    }
+    
+    .timeline-item {
+        display: flex;
+        align-items: center;
+        margin: 1rem 0;
+        padding: 0.5rem;
+    }
+    
+    .timeline-icon {
+        width: 40px;
+        height: 40px;
+        background: #6767ff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        margin-right: 1rem;
+        font-size: 1.2rem;
+    }
+    
+    .timeline-content {
+        flex: 1;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="confirmation-container">
+    <div class="success-icon">
+        💰
+    </div>
+    
+    <div class="text-center mb-4">
+        <h2 class="h3 mb-2">¡Servicio Confirmado!</h2>
+        <p class="text-muted">Solicitud #{{ solicitud.numero_orden }}</p>
+        <p class="text-success"><strong>✅ Pago en Efectivo</strong></p>
+    </div>
+    
+    <div class="cash-info">
+        <h4>💵 Monto a Pagar al Conductor</h4>
+        <div class="cash-amount">${{ solicitud.costo_total|floatformat:0 }}</div>
+        <p class="mb-0">Pago en efectivo al momento del servicio</p>
+    </div>
+    
+    <div class="service-details">
+        <h5 class="mb-3 text-center">📍 Detalles del Servicio</h5>
+        
+        <div class="detail-row">
+            <span class="detail-label">Origen:</span>
+            <span class="detail-value">{{ solicitud.direccion_origen }}</span>
+        </div>
+        
+        <div class="detail-row">
+            <span class="detail-label">Destino:</span>
+            <span class="detail-value">{{ solicitud.direccion_destino }}</span>
+        </div>
+        
+        <div class="detail-row">
+            <span class="detail-label">Fecha y Hora:</span>
+            <span class="detail-value">{{ solicitud.fecha_servicio|date:"d/m/Y H:i" }}</span>
+        </div>
+        
+        <div class="detail-row">
+            <span class="detail-label">Tipo de Vehículo:</span>
+            <span class="detail-value">{{ solicitud.tipo_vehiculo|title }}</span>
+        </div>
+        
+        {% if solicitud.distancia_km %}
+        <div class="detail-row">
+            <span class="detail-label">Distancia:</span>
+            <span class="detail-value">{{ solicitud.distancia_km|floatformat:1 }} km</span>
+        </div>
+        {% endif %}
+        
+        <div class="detail-row">
+            <span class="detail-label">Total a Pagar:</span>
+            <span class="detail-value">${{ solicitud.costo_total|floatformat:0 }}</span>
+        </div>
+    </div>
+    
+    <div class="timeline">
+        <h5 class="text-center mb-3">🚛 ¿Qué sigue?</h5>
+        
+        <div class="timeline-item">
+            <div class="timeline-icon">1</div>
+            <div class="timeline-content">
+                <strong>Confirmación</strong><br>
+                Recibirás una llamada para confirmar los detalles
+            </div>
+        </div>
+        
+        <div class="timeline-item">
+            <div class="timeline-icon">2</div>
+            <div class="timeline-content">
+                <strong>Conductor en Camino</strong><br>
+                Te notificaremos cuando la grúa esté en camino
+            </div>
+        </div>
+        
+        <div class="timeline-item">
+            <div class="timeline-icon">3</div>
+            <div class="timeline-content">
+                <strong>Pago en Efectivo</strong><br>
+                Paga al conductor al finalizar el servicio
+            </div>
+        </div>
+    </div>
+    
+    <div class="important-note">
+        <h5>📋 Importante:</h5>
+        <ul class="mb-0">
+            <li>Ten el monto exacto preparado: <strong>${{ solicitud.costo_total|floatformat:0 }}</strong></li>
+            <li>El conductor te dará un recibo oficial</li>
+            <li>Puedes cancelar hasta 30 minutos antes sin costo</li>
+            <li>Para emergencias: contacta al +56 9 1234 5678</li>
+        </ul>
+    </div>
+    
+    <div class="text-center">
+        <a href="{% url 'dashboard' %}" class="btn-dashboard">
+            Ver mis Solicitudes
+        </a>
+    </div>
+</div>
+{% endblock %}
