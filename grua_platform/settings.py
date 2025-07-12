@@ -27,8 +27,7 @@ SECRET_KEY = 'django-insecure-tu-clave-secreta-aqui'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'gruastyle.com',
-                 'www.gruastyle.com', '10.204.157.26', '.railway.app']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'gruastyle.com', 'www.gruastyle.com', '10.204.157.26', '.railway.app']
 
 
 # Application definition
@@ -45,6 +44,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Para servir archivos estáticos
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -86,8 +86,7 @@ DATABASES = {
 
 # En producción usar PostgreSQL de Railway
 if 'DATABASE_URL' in os.environ:
-    DATABASES['default'] = dj_database_url.parse(
-        os.environ.get('DATABASE_URL'))
+    DATABASES['default'] = dj_database_url.parse(os.environ.get('DATABASE_URL'))
 
 
 # Password validation
@@ -125,8 +124,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Configuración de WhiteNoise para servir archivos estáticos
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -144,8 +148,7 @@ EMAIL_HOST = 'smtp.resend.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'resend'
-EMAIL_HOST_PASSWORD = os.environ.get(
-    'RESEND_API_KEY', 'tu-api-key-resend-aqui')
+EMAIL_HOST_PASSWORD = os.environ.get('RESEND_API_KEY', 'tu-api-key-resend-aqui')
 
 # Configuración de emails
 DEFAULT_FROM_EMAIL = 'Grúa Style <onboarding@resend.dev>'
@@ -161,28 +164,26 @@ ADMINS = [
 
 # Configuración de Transbank
 TRANSBANK_ENVIRONMENT = os.environ.get('TRANSBANK_ENVIRONMENT', 'integration')
-TRANSBANK_COMMERCE_CODE = os.environ.get(
-    'TRANSBANK_COMMERCE_CODE', '597055555532')
-TRANSBANK_API_KEY = os.environ.get(
-    'TRANSBANK_API_KEY', 'tu-api-key-transbank-aqui')
+TRANSBANK_COMMERCE_CODE = os.environ.get('TRANSBANK_COMMERCE_CODE', '597055555532')
+TRANSBANK_API_KEY = os.environ.get('TRANSBANK_API_KEY', 'tu-api-key-transbank-aqui')
 
 # URLs de retorno de Transbank - se actualizarán automáticamente
-TRANSBANK_RETURN_URL = os.environ.get(
-    'RAILWAY_PUBLIC_DOMAIN', 'http://127.0.0.1:8000') + '/webpay/return/'
-TRANSBANK_FINAL_URL = os.environ.get(
-    'RAILWAY_PUBLIC_DOMAIN', 'http://127.0.0.1:8000') + '/webpay/final/'
+if 'RAILWAY_PUBLIC_DOMAIN' in os.environ:
+    domain = f"https://{os.environ.get('RAILWAY_PUBLIC_DOMAIN')}"
+else:
+    domain = 'http://127.0.0.1:8000'
+
+TRANSBANK_RETURN_URL = f"{domain}/webpay/return/"
+TRANSBANK_FINAL_URL = f"{domain}/webpay/final/"
 
 # Configuración de seguridad para producción
-if not DEBUG:
+if 'RAILWAY_ENVIRONMENT' in os.environ:
+    DEBUG = False
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
     X_FRAME_OPTIONS = 'DENY'
     SECURE_HSTS_SECONDS = 86400
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
-
-# Variables de entorno para Railway
-if 'RAILWAY_ENVIRONMENT' in os.environ:
-    DEBUG = False
     SECURE_SSL_REDIRECT = True
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
