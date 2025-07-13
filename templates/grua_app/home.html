@@ -16,7 +16,6 @@
         color: #fff;
         line-height: 1.4;
         -webkit-font-smoothing: antialiased;
-        cursor: none; /* Ocultar cursor en toda la página */
         overflow-x: hidden;
     }
     
@@ -365,29 +364,6 @@
         }
     }
     
-    @keyframes cursor-fade {
-        0% {
-            opacity: 1;
-            transform: scale(1);
-            filter: blur(2px);
-        }
-        30% {
-            opacity: 0.8;
-            transform: scale(1.3);
-            filter: blur(3px);
-        }
-        60% {
-            opacity: 0.5;
-            transform: scale(1.8);
-            filter: blur(5px);
-        }
-        100% {
-            opacity: 0;
-            transform: scale(3);
-            filter: blur(10px);
-        }
-    }
-    
     /* Animaciones de glow ultra suave */
     @keyframes glow-pulse {
         0% {
@@ -410,38 +386,6 @@
                 0 0 500px rgba(0, 213, 99, 0.1),
                 0 0 600px rgba(0, 213, 99, 0.05),
                 0 15px 30px rgba(0, 0, 0, 0.4);
-        }
-    }
-    
-    /* Partículas de fondo */
-    .hero-title::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle, rgba(0, 213, 99, 0.05) 1px, transparent 1px);
-        background-size: 50px 50px;
-        animation: particles-move 20s linear infinite;
-        pointer-events: none;
-        z-index: -1;
-        opacity: 0;
-        animation-delay: 3s;
-        animation-fill-mode: forwards;
-    }
-    
-    @keyframes particles-move {
-        0% {
-            transform: translate(0, 0) rotate(0deg);
-            opacity: 0;
-        }
-        10% {
-            opacity: 0.3;
-        }
-        100% {
-            transform: translate(-50px, -50px) rotate(360deg);
-            opacity: 0.3;
         }
     }
     
@@ -863,77 +807,7 @@
 </section>
 
 <script>
-// Cursor trail effect global
-document.addEventListener('DOMContentLoaded', function() {
-    let trails = [];
-    let customCursor;
-    
-    // Crear cursor personalizado
-    function createCustomCursor() {
-        customCursor = document.createElement('div');
-        customCursor.className = 'custom-cursor';
-        document.body.appendChild(customCursor);
-    }
-    
-    function createTrail(x, y) {
-        const trail = document.createElement('div');
-        trail.className = 'cursor-trail';
-        trail.style.left = (x - 12) + 'px';
-        trail.style.top = (y - 12) + 'px';
-        document.body.appendChild(trail);
-        
-        trails.push(trail);
-        
-        // Remover después de la animación
-        setTimeout(() => {
-            if (trail.parentNode) {
-                trail.parentNode.removeChild(trail);
-            }
-            trails = trails.filter(t => t !== trail);
-        }, 2000);
-    }
-    
-    let lastTime = 0;
-    document.addEventListener('mousemove', function(e) {
-        // Actualizar cursor personalizado
-        if (customCursor) {
-            customCursor.style.left = (e.clientX - 7) + 'px';
-            customCursor.style.top = (e.clientY - 7) + 'px';
-        }
-        
-        // Crear trail con throttle
-        const now = Date.now();
-        if (now - lastTime > 30) { // Throttle a 30ms para más suavidad
-            createTrail(e.clientX, e.clientY);
-            lastTime = now;
-        }
-    });
-    
-    // Inicializar cursor personalizado
-    createCustomCursor();
-    
-    // Limpiar trails al salir de la ventana
-    document.addEventListener('mouseleave', function() {
-        trails.forEach(trail => {
-            if (trail.parentNode) {
-                trail.style.opacity = '0';
-            }
-        });
-    });
-    
-    // Ocultar cursor personalizado al salir
-    document.addEventListener('mouseleave', function() {
-        if (customCursor) {
-            customCursor.style.opacity = '0';
-        }
-    });
-    
-    document.addEventListener('mouseenter', function() {
-        if (customCursor) {
-            customCursor.style.opacity = '1';
-        }
-    });
-});
+// No hay scripts de cursor - cursor normal del navegador
 </script>
                     <span class="stat-number">100%</span>
                     <span class="stat-label">Confiable</span>
