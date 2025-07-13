@@ -58,11 +58,112 @@
         font-weight: 700;
         margin-bottom: 24px;
         line-height: 1.1;
+        perspective: 1000px;
+        transform-style: preserve-3d;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    
+    .hero-title-3d {
+        display: inline-block;
+        transform: rotateX(0deg) rotateY(0deg);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        text-shadow: 
+            0 0 20px rgba(0, 213, 99, 0.5),
+            0 0 40px rgba(0, 213, 99, 0.3),
+            0 0 80px rgba(0, 213, 99, 0.1),
+            0 10px 20px rgba(0, 0, 0, 0.3);
+        animation: glow-pulse 3s ease-in-out infinite alternate;
+    }
+    
+    .hero-title-3d:hover {
+        transform: rotateX(-10deg) rotateY(15deg) translateZ(20px);
+        text-shadow: 
+            0 0 30px rgba(0, 213, 99, 0.8),
+            0 0 60px rgba(0, 213, 99, 0.6),
+            0 0 120px rgba(0, 213, 99, 0.4),
+            0 20px 40px rgba(0, 0, 0, 0.5),
+            -5px 15px 30px rgba(0, 213, 99, 0.3);
     }
     
     .hero-highlight {
         color: #00D563;
         display: block;
+        transform: translateZ(30px);
+        animation: float-3d 4s ease-in-out infinite;
+        text-shadow: 
+            0 0 25px rgba(0, 213, 99, 0.8),
+            0 0 50px rgba(0, 213, 99, 0.6),
+            0 0 100px rgba(0, 213, 99, 0.4),
+            0 0 150px rgba(0, 213, 99, 0.2);
+    }
+    
+    .hero-highlight:hover {
+        transform: translateZ(50px) rotateX(-15deg);
+        text-shadow: 
+            0 0 40px rgba(0, 213, 99, 1),
+            0 0 80px rgba(0, 213, 99, 0.8),
+            0 0 160px rgba(0, 213, 99, 0.6),
+            0 0 240px rgba(0, 213, 99, 0.4),
+            0 30px 60px rgba(0, 0, 0, 0.6);
+    }
+    
+    /* Animaciones */
+    @keyframes glow-pulse {
+        0% {
+            text-shadow: 
+                0 0 20px rgba(0, 213, 99, 0.5),
+                0 0 40px rgba(0, 213, 99, 0.3),
+                0 0 80px rgba(0, 213, 99, 0.1),
+                0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        100% {
+            text-shadow: 
+                0 0 30px rgba(0, 213, 99, 0.8),
+                0 0 60px rgba(0, 213, 99, 0.5),
+                0 0 120px rgba(0, 213, 99, 0.3),
+                0 15px 30px rgba(0, 0, 0, 0.4);
+        }
+    }
+    
+    @keyframes float-3d {
+        0%, 100% {
+            transform: translateZ(30px) translateY(0px) rotateX(0deg);
+        }
+        25% {
+            transform: translateZ(35px) translateY(-5px) rotateX(2deg);
+        }
+        50% {
+            transform: translateZ(40px) translateY(-8px) rotateX(0deg);
+        }
+        75% {
+            transform: translateZ(35px) translateY(-5px) rotateX(-2deg);
+        }
+    }
+    
+    /* Partículas de fondo */
+    .hero-title::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(0, 213, 99, 0.1) 1px, transparent 1px);
+        background-size: 50px 50px;
+        animation: particles-move 20s linear infinite;
+        pointer-events: none;
+        z-index: -1;
+    }
+    
+    @keyframes particles-move {
+        0% {
+            transform: translate(0, 0) rotate(0deg);
+        }
+        100% {
+            transform: translate(-50px, -50px) rotate(360deg);
+        }
     }
     
     .hero-subtitle {
@@ -414,7 +515,7 @@
     <div class="container">
         <div class="hero-content">
             <h1 class="hero-title">
-                Servicio de Grúa
+                <span class="hero-title-3d">Servicio de Grúa</span>
                 <span class="hero-highlight">24/7</span>
             </h1>
             <p class="hero-subtitle">
