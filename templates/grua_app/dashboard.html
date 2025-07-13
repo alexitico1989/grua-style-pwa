@@ -9,127 +9,6 @@
         margin: 2rem auto;
         padding: 0 1rem;
     }
-</style>
-{% endblock %}
-
-{% block content %}
-<div class="dashboard-container">
-    <div class="dashboard-header">
-        <h1>🚗 Mi Dashboard</h1>
-        <p>Bienvenido, {{ user.get_full_name|default:user.username }}</p>
-    </div>
-    
-    <div class="stats-grid">
-        <div class="stat-card">
-            <h3>📋 Total Solicitudes</h3>
-            <div style="font-size: 2rem; font-weight: bold; color: #10b981;">
-                {{ solicitudes|length }}
-            </div>
-        </div>
-        
-        <div class="stat-card">
-            <h3>⏳ Pendientes</h3>
-            <div style="font-size: 2rem; font-weight: bold; color: #f59e0b;">
-                {{ solicitudes|length }}
-            </div>
-        </div>
-        
-        <div class="stat-card">
-            <h3>✅ Completadas</h3>
-            <div style="font-size: 2rem; font-weight: bold; color: #10b981;">
-                0
-            </div>
-        </div>
-    </div>
-    
-    <div class="solicitudes-section">
-        <div class="section-header">
-            <h2>📋 Mis Solicitudes de Servicio</h2>
-        </div>
-        
-        {% if solicitudes %}
-            {% for solicitud in solicitudes %}
-            <div class="solicitud-card">
-                <div class="solicitud-header">
-                    <div class="numero-orden">
-                        {{ solicitud.numero_orden }}
-                    </div>
-                    <div class="estado estado-{{ solicitud.estado }}">
-                        {{ solicitud.get_estado_display }}
-                    </div>
-                </div>
-                
-                <div class="solicitud-details">
-                    <div class="detail-item">
-                        <span class="detail-label">📅 Fecha:</span>
-                        {{ solicitud.fecha_servicio|date:"d/m/Y H:i" }}
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">📍 Origen:</span>
-                        {{ solicitud.direccion_origen|truncatechars:40 }}
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">🎯 Destino:</span>
-                        {{ solicitud.direccion_destino|truncatechars:40 }}
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">💰 Método de Pago:</span>
-                        {{ solicitud.get_metodo_pago_display|default:"No definido" }}
-                    </div>
-                </div>
-                
-                <div class="acciones">
-                    <!-- Ver Detalles -->
-                    <a href="{% url 'confirmacion_solicitud' solicitud.id %}" class="btn btn-primary">
-                        👁️ Ver Detalles
-                    </a>
-                    
-                    <!-- Descargar PDF -->
-                    <a href="{% url 'descargar_pdf_solicitud' solicitud.id %}" class="btn btn-secondary">
-                        📄 Descargar PDF
-                    </a>
-                    
-                    <!-- Imprimir -->
-                    <a href="{% url 'imprimir_solicitud' solicitud.id %}" target="_blank" class="btn btn-outline" onclick="window.open(this.href, '_blank', 'width=800,height=900'); return false;">
-                        🖨️ Imprimir
-                    </a>
-                    
-                    <!-- Comprobante PDF (solo si está confirmada o pagada) -->
-                    {% if solicitud.estado == 'confirmada' or solicitud.estado == 'completada' or solicitud.pagado %}
-                    <a href="{% url 'descargar_pdf_comprobante' solicitud.id %}" class="btn btn-warning">
-                        🧾 Comprobante
-                    </a>
-                    {% endif %}
-                    
-                    <!-- Reenviar Email -->
-                    <a href="{% url 'reenviar_comprobante' solicitud.id %}" class="btn btn-outline">
-                        📧 Reenviar Email
-                    </a>
-                    
-                    <!-- Pagar (solo si está pendiente de pago) -->
-                    {% if solicitud.estado == 'pendiente' or solicitud.estado == 'pendiente_pago' %}
-                    <a href="{% url 'procesar_pago' solicitud.id %}" class="btn btn-primary">
-                        💳 Proceder al Pago
-                    </a>
-                    {% endif %}
-                </div>
-            </div>
-            {% endfor %}
-        {% else %}
-            <div class="empty-state">
-                <div class="empty-icon">📋</div>
-                <h3>No tienes solicitudes aún</h3>
-                <p>¡Crea tu primera solicitud de servicio!</p>
-            </div>
-        {% endif %}
-    </div>
-    
-    <!-- Botón flotante para nueva solicitud -->
-    <a href="{% url 'solicitar_servicio' %}" class="btn-floating" title="Nueva Solicitud">
-        ➕
-    </a>
-</div>
-{% endblock %}
     
     .dashboard-header {
         background: linear-gradient(135deg, #10b981, #059669);
@@ -326,3 +205,124 @@
             justify-content: center;
         }
     }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1>🚗 Mi Dashboard</h1>
+        <p>Bienvenido, {{ user.get_full_name|default:user.username }}</p>
+    </div>
+    
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>📋 Total Solicitudes</h3>
+            <div style="font-size: 2rem; font-weight: bold; color: #10b981;">
+                {{ solicitudes|length }}
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <h3>⏳ Pendientes</h3>
+            <div style="font-size: 2rem; font-weight: bold; color: #f59e0b;">
+                {{ solicitudes|length }}
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <h3>✅ Completadas</h3>
+            <div style="font-size: 2rem; font-weight: bold; color: #10b981;">
+                0
+            </div>
+        </div>
+    </div>
+    
+    <div class="solicitudes-section">
+        <div class="section-header">
+            <h2>📋 Mis Solicitudes de Servicio</h2>
+        </div>
+        
+        {% if solicitudes %}
+            {% for solicitud in solicitudes %}
+            <div class="solicitud-card">
+                <div class="solicitud-header">
+                    <div class="numero-orden">
+                        {{ solicitud.numero_orden }}
+                    </div>
+                    <div class="estado estado-{{ solicitud.estado }}">
+                        {{ solicitud.get_estado_display }}
+                    </div>
+                </div>
+                
+                <div class="solicitud-details">
+                    <div class="detail-item">
+                        <span class="detail-label">📅 Fecha:</span>
+                        {{ solicitud.fecha_servicio|date:"d/m/Y H:i" }}
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">📍 Origen:</span>
+                        {{ solicitud.direccion_origen|truncatechars:40 }}
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">🎯 Destino:</span>
+                        {{ solicitud.direccion_destino|truncatechars:40 }}
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">💰 Método de Pago:</span>
+                        {{ solicitud.get_metodo_pago_display|default:"No definido" }}
+                    </div>
+                </div>
+                
+                <div class="acciones">
+                    <!-- Ver Detalles -->
+                    <a href="{% url 'confirmacion_solicitud' solicitud.id %}" class="btn btn-primary">
+                        👁️ Ver Detalles
+                    </a>
+                    
+                    <!-- Descargar PDF -->
+                    <a href="{% url 'descargar_pdf_solicitud' solicitud.id %}" class="btn btn-secondary">
+                        📄 Descargar PDF
+                    </a>
+                    
+                    <!-- Imprimir -->
+                    <a href="{% url 'imprimir_solicitud' solicitud.id %}" target="_blank" class="btn btn-outline" onclick="window.open(this.href, '_blank', 'width=800,height=900'); return false;">
+                        🖨️ Imprimir
+                    </a>
+                    
+                    <!-- Comprobante PDF (solo si está confirmada o pagada) -->
+                    {% if solicitud.estado == 'confirmada' or solicitud.estado == 'completada' or solicitud.pagado %}
+                    <a href="{% url 'descargar_pdf_comprobante' solicitud.id %}" class="btn btn-warning">
+                        🧾 Comprobante
+                    </a>
+                    {% endif %}
+                    
+                    <!-- Reenviar Email -->
+                    <a href="{% url 'reenviar_comprobante' solicitud.id %}" class="btn btn-outline">
+                        📧 Reenviar Email
+                    </a>
+                    
+                    <!-- Pagar (solo si está pendiente de pago) -->
+                    {% if solicitud.estado == 'pendiente' or solicitud.estado == 'pendiente_pago' %}
+                    <a href="{% url 'procesar_pago' solicitud.id %}" class="btn btn-primary">
+                        💳 Proceder al Pago
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">📋</div>
+                <h3>No tienes solicitudes aún</h3>
+                <p>¡Crea tu primera solicitud de servicio!</p>
+            </div>
+        {% endif %}
+    </div>
+    
+    <!-- Botón flotante para nueva solicitud -->
+    <a href="{% url 'solicitar_servicio' %}" class="btn-floating" title="Nueva Solicitud">
+        ➕
+    </a>
+</div>
+{% endblock %}
