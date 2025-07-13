@@ -1,6 +1,6 @@
 {% extends 'grua_app/base.html' %}
 
-{% block title %}Grúa Style{% endblock %}
+{% block title %}Dashboard - Grúa Style{% endblock %}
 
 {% block extra_css %}
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -9,180 +9,298 @@
 <meta name="theme-color" content="#000000">
 
 <style>
+    /* Variables para diferentes contextos */
+    :root {
+        --bottom-nav-height: 0px;
+        --content-padding-bottom: 20px;
+        --floating-btn-bottom: 20px;
+    }
+    
+    /* Solo mostrar barra inferior en modo app */
+    .bottom-nav {
+        display: none;
+    }
+    
+    .floating-btn {
+        display: none;
+    }
+    
+    @media (display-mode: standalone) {
+        :root {
+            --bottom-nav-height: 80px;
+            --content-padding-bottom: 100px;
+            --floating-btn-bottom: 100px;
+        }
+        
+        .bottom-nav {
+            display: flex;
+        }
+        
+        .floating-btn {
+            display: flex;
+        }
+        
+        .web-only-dashboard {
+            display: none !important;
+        }
+    }
+    
+    /* Reset y base */
     * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
         -webkit-tap-highlight-color: transparent;
-        -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        user-select: none;
-    }
-    
-    html, body {
-        height: 100%;
-        overflow-x: hidden;
-        position: fixed;
-        width: 100%;
-        background: #000;
     }
     
     body {
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         background: #000;
         color: #fff;
-        line-height: 1.3;
+        line-height: 1.4;
         font-size: 16px;
         -webkit-font-smoothing: antialiased;
     }
     
-    /* Container principal tipo app */
-    .app-container {
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
+    /* Container principal */
+    .dashboard-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        min-height: 100vh;
         background: #000;
+        padding-bottom: var(--content-padding-bottom);
+    }
+    
+    /* Header del dashboard */
+    .dashboard-header {
+        background: linear-gradient(135deg, #000 0%, #1a1a1a 50%, #000 100%);
+        padding: 2rem 1.5rem;
+        border-bottom: 2px solid rgba(0, 213, 99, 0.3);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
         position: relative;
     }
     
-    /* Header minimalista */
-    .app-header {
-        background: #000;
-        padding: env(safe-area-inset-top, 20px) 20px 15px 20px;
+    .dashboard-header::before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, 
+            transparent 0%, 
+            rgba(0, 213, 99, 0.5) 25%, 
+            rgba(0, 213, 99, 0.8) 50%, 
+            rgba(0, 213, 99, 0.5) 75%, 
+            transparent 100%);
+    }
+    
+    .header-content {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        border-bottom: 1px solid #1a1a1a;
-        z-index: 10;
+        margin-bottom: 1rem;
     }
     
-    .app-logo {
-        color: #fff;
-        font-size: 18px;
+    .welcome-text {
+        font-size: 1.5rem;
         font-weight: 700;
-    }
-    
-    .user-pill {
-        background: #1a1a1a;
-        padding: 8px 12px;
-        border-radius: 20px;
-        font-size: 14px;
-        font-weight: 600;
         color: #fff;
     }
     
-    /* Contenido scrolleable */
-    .app-content {
-        flex: 1;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-        padding-bottom: env(safe-area-inset-bottom, 80px);
+    .user-info {
+        background: rgba(0, 213, 99, 0.1);
+        padding: 0.75rem 1rem;
+        border-radius: 25px;
+        border: 1px solid rgba(0, 213, 99, 0.3);
+        color: #00D563;
+        font-weight: 600;
     }
     
-    /* Botón principal grande tipo Uber */
-    .main-action {
-        margin: 20px;
-        background: linear-gradient(135deg, #00D563, #00B853);
-        border-radius: 16px;
+    /* Botón principal mejorado */
+    .main-action-card {
+        margin: 2rem 1.5rem;
+        background: linear-gradient(135deg, #00D563 0%, #00B853 100%);
+        border-radius: 20px;
         overflow: hidden;
-        box-shadow: 0 4px 20px rgba(0, 213, 99, 0.3);
+        box-shadow: 
+            0 8px 30px rgba(0, 213, 99, 0.4),
+            0 0 20px rgba(0, 213, 99, 0.2);
+        position: relative;
+    }
+    
+    .main-action-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, 
+            transparent, 
+            rgba(255, 255, 255, 0.2), 
+            transparent);
+        transition: left 0.6s ease;
+    }
+    
+    .main-action-card:hover::before {
+        left: 100%;
     }
     
     .main-action-btn {
         display: block;
-        padding: 30px 24px;
+        padding: 2rem 1.5rem;
         text-decoration: none;
         color: #000;
         text-align: center;
         position: relative;
-        background: none;
-        border: none;
-        width: 100%;
+        transition: all 0.3s ease;
     }
     
-    .main-action-btn:active {
-        background: rgba(0,0,0,0.1);
+    .main-action-btn:hover {
+        color: #000;
+        transform: translateY(-2px);
     }
     
     .action-icon {
-        font-size: 48px;
-        margin-bottom: 12px;
+        font-size: 3rem;
+        margin-bottom: 1rem;
         display: block;
     }
     
     .action-title {
-        font-size: 20px;
+        font-size: 1.5rem;
         font-weight: 700;
-        margin-bottom: 4px;
+        margin-bottom: 0.5rem;
     }
     
     .action-subtitle {
-        font-size: 14px;
+        font-size: 1rem;
         opacity: 0.8;
+        font-weight: 500;
     }
     
-    /* Lista de solicitudes tipo Uber */
-    .trips-section {
-        background: #000;
+    /* Sección de solicitudes */
+    .solicitudes-section {
+        padding: 0 1.5rem;
     }
     
-    .section-title {
-        padding: 24px 20px 16px 20px;
-        font-size: 18px;
-        font-weight: 700;
-        color: #fff;
-        border-bottom: 1px solid #1a1a1a;
-    }
-    
-    .trip-card {
-        background: #000;
-        border-bottom: 1px solid #1a1a1a;
-        padding: 20px;
-        position: relative;
-    }
-    
-    .trip-card:active {
-        background: #0a0a0a;
-    }
-    
-    .trip-header {
+    .section-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 16px;
+        margin-bottom: 1.5rem;
+        padding: 1rem 0;
+        border-bottom: 1px solid #1a1a1a;
     }
     
-    .trip-id {
-        font-size: 16px;
-        font-weight: 600;
+    .section-title {
+        font-size: 1.25rem;
+        font-weight: 700;
         color: #fff;
     }
     
-    .status-badge {
-        padding: 6px 12px;
-        border-radius: 12px;
-        font-size: 12px;
+    .solicitudes-count {
+        background: #1a1a1a;
+        color: #00D563;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
         font-weight: 600;
-        text-transform: uppercase;
     }
     
-    .status-pendiente { background: #FF8500; color: #000; }
-    .status-confirmada { background: #00D563; color: #000; }
-    .status-en_proceso { background: #1FB6FF; color: #000; }
-    .status-completada { background: #00D563; color: #000; }
-    .status-cancelada { background: #FF3040; color: #fff; }
-    .status-pendiente_pago { background: #FFAA00; color: #000; }
+    /* Cards de solicitudes mejoradas */
+    .solicitud-card {
+        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+        border: 1px solid #333;
+        border-radius: 16px;
+        margin-bottom: 1rem;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        position: relative;
+    }
     
-    /* Route info tipo Uber */
-    .route-info {
-        margin-bottom: 16px;
+    .solicitud-card:hover {
+        border-color: rgba(0, 213, 99, 0.5);
+        box-shadow: 0 8px 25px rgba(0, 213, 99, 0.1);
+        transform: translateY(-2px);
+    }
+    
+    .card-header {
+        padding: 1.5rem 1.5rem 1rem 1.5rem;
+        border-bottom: 1px solid #2a2a2a;
+    }
+    
+    .header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    
+    .orden-number {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: #fff;
+        font-family: 'Courier New', monospace;
+    }
+    
+    .status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .status-pendiente { 
+        background: linear-gradient(135deg, #FF8500, #FF6B00); 
+        color: #000; 
+    }
+    .status-confirmada { 
+        background: linear-gradient(135deg, #00D563, #00B853); 
+        color: #000; 
+    }
+    .status-en_proceso { 
+        background: linear-gradient(135deg, #1FB6FF, #0EA5E9); 
+        color: #000; 
+    }
+    .status-completada { 
+        background: linear-gradient(135deg, #00D563, #00B853); 
+        color: #000; 
+    }
+    .status-cancelada { 
+        background: linear-gradient(135deg, #FF3040, #DC2626); 
+        color: #fff; 
+    }
+    .status-pendiente_pago { 
+        background: linear-gradient(135deg, #FFAA00, #F59E0B); 
+        color: #000; 
+    }
+    
+    /* Información de ruta mejorada */
+    .route-container {
+        position: relative;
+        margin: 1rem 0;
+    }
+    
+    .route-line {
+        position: absolute;
+        left: 0.75rem;
+        top: 1.5rem;
+        bottom: 1.5rem;
+        width: 2px;
+        background: linear-gradient(to bottom, #00D563, #FF3040);
+        border-radius: 1px;
     }
     
     .route-point {
         display: flex;
         align-items: flex-start;
-        margin-bottom: 12px;
-        font-size: 14px;
+        margin-bottom: 1.5rem;
+        position: relative;
+        z-index: 2;
     }
     
     .route-point:last-child {
@@ -190,12 +308,14 @@
     }
     
     .route-dot {
-        width: 8px;
-        height: 8px;
+        width: 12px;
+        height: 12px;
         border-radius: 50%;
-        margin-right: 12px;
-        margin-top: 6px;
+        margin-right: 1rem;
+        margin-top: 0.25rem;
         flex-shrink: 0;
+        border: 2px solid #000;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
     
     .route-dot.origin {
@@ -208,62 +328,115 @@
     
     .route-text {
         color: #ccc;
-        line-height: 1.4;
+        line-height: 1.5;
+        font-size: 0.9rem;
     }
     
-    /* Fecha y hora */
-    .trip-time {
+    .route-label {
+        font-size: 0.75rem;
+        color: #999;
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+    
+    /* Información adicional */
+    .card-info {
+        padding: 1rem 1.5rem;
+        background: rgba(0, 0, 0, 0.3);
+        border-bottom: 1px solid #2a2a2a;
+    }
+    
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 0;
+    }
+    
+    .info-label {
+        color: #999;
+        font-size: 0.875rem;
         display: flex;
         align-items: center;
-        color: #999;
-        font-size: 13px;
-        margin-bottom: 16px;
     }
     
-    .time-icon {
-        margin-right: 6px;
+    .info-label i {
+        margin-right: 0.5rem;
+        color: #00D563;
     }
     
-    /* Acciones rápidas */
-    .quick-actions {
-        display: flex;
-        gap: 8px;
+    .info-value {
+        color: #fff;
+        font-weight: 600;
+        font-size: 0.875rem;
     }
     
-    .quick-btn {
-        flex: 1;
-        padding: 12px 8px;
+    /* Acciones mejoradas */
+    .card-actions {
+        padding: 1.5rem;
+        background: rgba(0, 0, 0, 0.2);
+    }
+    
+    .actions-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+    }
+    
+    .action-btn {
+        padding: 0.875rem 1rem;
         background: #1a1a1a;
         border: 1px solid #333;
-        border-radius: 8px;
+        border-radius: 12px;
         text-decoration: none;
         color: #fff;
         text-align: center;
-        font-size: 12px;
+        font-size: 0.875rem;
         font-weight: 600;
-        transition: background 0.2s;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
     }
     
-    .quick-btn:active {
+    .action-btn:hover {
         background: #333;
+        border-color: #555;
+        color: #fff;
+        transform: translateY(-1px);
     }
     
-    .quick-btn.primary {
-        background: #00D563;
+    .action-btn.primary {
+        background: linear-gradient(135deg, #00D563, #00B853);
         color: #000;
         border-color: #00D563;
     }
     
-    .quick-btn.primary:active {
-        background: #00B853;
+    .action-btn.primary:hover {
+        background: linear-gradient(135deg, #00E570, #00C760);
+        color: #000;
     }
     
-    /* Bottom navigation tipo Uber */
+    .action-btn.secondary {
+        background: linear-gradient(135deg, #1FB6FF, #0EA5E9);
+        color: #000;
+        border-color: #1FB6FF;
+    }
+    
+    .action-btn.secondary:hover {
+        background: linear-gradient(135deg, #38BDF8, #0284C7);
+        color: #000;
+    }
+    
+    /* Bottom Navigation (solo en app) */
     .bottom-nav {
         position: fixed;
         bottom: 0;
         left: 0;
         right: 0;
+        height: var(--bottom-nav-height);
         background: #000;
         border-top: 1px solid #1a1a1a;
         display: flex;
@@ -273,214 +446,289 @@
     
     .nav-item {
         flex: 1;
-        padding: 12px 8px;
+        padding: 0.75rem 0.5rem;
         text-align: center;
         text-decoration: none;
         color: #666;
-        border: none;
-        background: none;
-        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
     }
     
     .nav-item.active {
         color: #00D563;
     }
     
-    .nav-item:active {
+    .nav-item:hover {
         background: #0a0a0a;
+        color: #00D563;
     }
     
     .nav-icon {
-        font-size: 24px;
-        display: block;
-        margin-bottom: 4px;
+        font-size: 1.5rem;
+        margin-bottom: 0.25rem;
     }
     
     .nav-label {
-        font-size: 10px;
+        font-size: 0.75rem;
         font-weight: 600;
+    }
+    
+    /* Botón flotante (solo en app) */
+    .floating-btn {
+        position: fixed;
+        bottom: var(--floating-btn-bottom);
+        right: 1.5rem;
+        width: 56px;
+        height: 56px;
+        background: linear-gradient(135deg, #FF3040, #DC2626);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 20px rgba(255, 48, 64, 0.4);
+        text-decoration: none;
+        color: #fff;
+        font-size: 1.5rem;
+        z-index: 99;
+        transition: all 0.3s ease;
+    }
+    
+    .floating-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 25px rgba(255, 48, 64, 0.6);
+        color: #fff;
     }
     
     /* Empty state */
     .empty-state {
         text-align: center;
-        padding: 60px 40px;
+        padding: 4rem 2rem;
         color: #666;
     }
     
     .empty-icon {
-        font-size: 64px;
-        margin-bottom: 20px;
+        font-size: 4rem;
+        margin-bottom: 1.5rem;
         opacity: 0.3;
     }
     
     .empty-title {
-        font-size: 18px;
-        font-weight: 600;
-        margin-bottom: 8px;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
         color: #fff;
     }
     
     .empty-text {
-        font-size: 14px;
-        line-height: 1.4;
+        font-size: 1rem;
+        line-height: 1.5;
         color: #999;
+        max-width: 300px;
+        margin: 0 auto;
     }
     
-    /* Botón flotante para emergencias */
-    .floating-btn {
-        position: fixed;
-        bottom: 100px;
-        right: 20px;
-        width: 56px;
-        height: 56px;
-        background: #FF3040;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 16px rgba(255, 48, 64, 0.4);
-        text-decoration: none;
-        color: #fff;
-        font-size: 24px;
-        z-index: 99;
-    }
-    
-    .floating-btn:active {
-        transform: scale(0.95);
-    }
-    
-    /* Ocultar scrollbars pero mantener funcionalidad */
-    .app-content::-webkit-scrollbar {
-        display: none;
-    }
-    
-    /* Pull to refresh indicator */
-    .pull-indicator {
-        text-align: center;
-        padding: 20px;
-        color: #666;
-        font-size: 14px;
-    }
-    
-    /* Landscape orientation lock */
-    @media screen and (orientation: landscape) and (max-height: 500px) {
-        .app-container {
-            transform: rotate(90deg);
-            transform-origin: center;
+    /* Responsive */
+    @media (max-width: 768px) {
+        .dashboard-header {
+            padding: 1.5rem 1rem;
+        }
+        
+        .main-action-card {
+            margin: 1.5rem 1rem;
+        }
+        
+        .solicitudes-section {
+            padding: 0 1rem;
+        }
+        
+        .actions-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .floating-btn {
+            right: 1rem;
         }
     }
+    
+    /* Animaciones */
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .solicitud-card {
+        animation: slideIn 0.3s ease forwards;
+    }
+    
+    .solicitud-card:nth-child(2) { animation-delay: 0.1s; }
+    .solicitud-card:nth-child(3) { animation-delay: 0.2s; }
+    .solicitud-card:nth-child(4) { animation-delay: 0.3s; }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="app-container">
-    <!-- Header minimalista -->
-    <div class="app-header">
-        <div class="app-logo">Grúa Style</div>
-        <div class="user-pill">{{ user.first_name|default:user.username }}</div>
+<div class="dashboard-container">
+    <!-- Header del dashboard -->
+    <div class="dashboard-header web-only-dashboard">
+        <div class="header-content">
+            <div class="welcome-text">Bienvenido de vuelta</div>
+            <div class="user-info">
+                <i class="fas fa-user"></i> {{ user.first_name|default:user.username }}
+            </div>
+        </div>
     </div>
     
-    <!-- Contenido principal -->
-    <div class="app-content">
-        <!-- Botón principal tipo Uber -->
-        <div class="main-action">
-            <a href="{% url 'solicitar_servicio' %}" class="main-action-btn">
-                <div class="action-title">Solicitar Grúa</div>
-                <div class="action-subtitle">Disponible 24/7</div>
-            </a>
+    <!-- Botón principal tipo Uber -->
+    <div class="main-action-card">
+        <a href="{% url 'solicitar_servicio' %}" class="main-action-btn">
+            <div class="action-icon">🚚</div>
+            <div class="action-title">Solicitar Grúa</div>
+            <div class="action-subtitle">Servicio disponible 24/7</div>
+        </a>
+    </div>
+    
+    <!-- Sección de solicitudes -->
+    <div class="solicitudes-section">
+        <div class="section-header">
+            <div class="section-title">Mis Solicitudes</div>
+            {% if solicitudes %}
+            <div class="solicitudes-count">{{ solicitudes|length }} solicitud{{ solicitudes|length|pluralize:"es" }}</div>
+            {% endif %}
         </div>
         
-        <!-- Lista de viajes/solicitudes -->
-        <div class="trips-section">
-            <div class="section-title">Mis Solicitudes</div>
-            
-            {% if solicitudes %}
-                {% for solicitud in solicitudes %}
-                <div class="trip-card">
-                    <!-- Header del viaje -->
-                    <div class="trip-header">
-                        <div class="trip-id">{{ solicitud.numero_orden }}</div>
+        {% if solicitudes %}
+            {% for solicitud in solicitudes %}
+            <div class="solicitud-card">
+                <!-- Header de la solicitud -->
+                <div class="card-header">
+                    <div class="header-row">
+                        <div class="orden-number">{{ solicitud.numero_orden }}</div>
                         <div class="status-badge status-{{ solicitud.estado }}">
                             {{ solicitud.get_estado_display }}
                         </div>
                     </div>
                     
                     <!-- Información de ruta -->
-                    <div class="route-info">
+                    <div class="route-container">
+                        <div class="route-line"></div>
                         <div class="route-point">
                             <div class="route-dot origin"></div>
-                            <div class="route-text">{{ solicitud.direccion_origen|truncatechars:45 }}</div>
+                            <div>
+                                <div class="route-label">Origen</div>
+                                <div class="route-text">{{ solicitud.direccion_origen }}</div>
+                            </div>
                         </div>
                         <div class="route-point">
                             <div class="route-dot destination"></div>
-                            <div class="route-text">{{ solicitud.direccion_destino|truncatechars:45 }}</div>
+                            <div>
+                                <div class="route-label">Destino</div>
+                                <div class="route-text">{{ solicitud.direccion_destino }}</div>
+                            </div>
                         </div>
                     </div>
-                    
-                    <!-- Fecha y hora -->
-                    <div class="trip-time">
-                        <span class="time-icon">🕒</span>
-                        {{ solicitud.fecha_servicio|date:"d/m/Y H:i" }}
+                </div>
+                
+                <!-- Información adicional -->
+                <div class="card-info">
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-calendar"></i>
+                            Fecha de servicio
+                        </div>
+                        <div class="info-value">{{ solicitud.fecha_servicio|date:"d/m/Y H:i" }}</div>
                     </div>
-                    
-                    <!-- Acciones rápidas -->
-                    <div class="quick-actions">
-                        <a href="{% url 'confirmacion_solicitud' solicitud.id %}" class="quick-btn primary">
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-car"></i>
+                            Vehículo
+                        </div>
+                        <div class="info-value">{{ solicitud.marca_vehiculo }} {{ solicitud.modelo_vehiculo }}</div>
+                    </div>
+                    {% if solicitud.total %}
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-dollar-sign"></i>
+                            Total
+                        </div>
+                        <div class="info-value">${{ solicitud.total|floatformat:0 }}</div>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Acciones -->
+                <div class="card-actions">
+                    <div class="actions-grid">
+                        <a href="{% url 'confirmacion_solicitud' solicitud.id %}" class="action-btn primary">
+                            <i class="fas fa-eye"></i>
                             Ver Detalles
                         </a>
-                        <a href="{% url 'descargar_pdf_solicitud' solicitud.id %}" class="quick-btn">
-                            PDF
+                        <a href="{% url 'descargar_pdf_solicitud' solicitud.id %}" class="action-btn">
+                            <i class="fas fa-file-pdf"></i>
+                            Descargar PDF
                         </a>
                         {% if solicitud.estado == 'confirmada' or solicitud.estado == 'completada' or solicitud.pagado %}
-                        <a href="{% url 'descargar_pdf_comprobante' solicitud.id %}" class="quick-btn">
+                        <a href="{% url 'descargar_pdf_comprobante' solicitud.id %}" class="action-btn secondary">
+                            <i class="fas fa-receipt"></i>
                             Comprobante
                         </a>
                         {% endif %}
-                        <a href="{% url 'reenviar_comprobante' solicitud.id %}" class="quick-btn">
-                            Email
+                        <a href="{% url 'reenviar_comprobante' solicitud.id %}" class="action-btn">
+                            <i class="fas fa-envelope"></i>
+                            Enviar Email
                         </a>
                         {% if solicitud.estado == 'pendiente' or solicitud.estado == 'pendiente_pago' %}
-                        <a href="{% url 'procesar_pago' solicitud.id %}" class="quick-btn primary">
-                            Pagar
+                        <a href="{% url 'procesar_pago' solicitud.id %}" class="action-btn primary">
+                            <i class="fas fa-credit-card"></i>
+                            Pagar Ahora
                         </a>
                         {% endif %}
                     </div>
                 </div>
-                {% endfor %}
-            {% else %}
-                <div class="empty-state">
-                    <div class="empty-icon">🚚</div>
-                    <div class="empty-title">No hay solicitudes</div>
-                    <div class="empty-text">Solicita tu primera grúa cuando la necesites</div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">🚚</div>
+                <div class="empty-title">No hay solicitudes</div>
+                <div class="empty-text">
+                    Cuando necesites un servicio de grúa, tu historial aparecerá aquí.
                 </div>
-            {% endif %}
-        </div>
+            </div>
+        {% endif %}
     </div>
-    
-    <!-- Bottom Navigation -->
-    <div class="bottom-nav">
-        <a href="{% url 'dashboard' %}" class="nav-item active">
-            <div class="nav-icon">🏠</div>
-            <div class="nav-label">Inicio</div>
-        </a>
-        <a href="{% url 'solicitar_servicio' %}" class="nav-item">
-            <div class="nav-icon">➕</div>
-            <div class="nav-label">Solicitar</div>
-        </a>
-        <a href="{% url 'dashboard' %}" class="nav-item">
-            <div class="nav-icon">📋</div>
-            <div class="nav-label">Historial</div>
-        </a>
-        <a href="#" class="nav-item">
-            <div class="nav-icon">👤</div>
-            <div class="nav-label">Perfil</div>
-        </a>
-    </div>
-    
-    <!-- Botón flotante para nueva solicitud -->
-    <a href="{% url 'solicitar_servicio' %}" class="floating-btn">
-        ➕
+</div>
+
+<!-- Bottom Navigation (solo visible en app) -->
+<div class="bottom-nav">
+    <a href="{% url 'dashboard' %}" class="nav-item active">
+        <div class="nav-icon">🏠</div>
+        <div class="nav-label">Inicio</div>
+    </a>
+    <a href="{% url 'solicitar_servicio' %}" class="nav-item">
+        <div class="nav-icon">➕</div>
+        <div class="nav-label">Solicitar</div>
+    </a>
+    <a href="{% url 'dashboard' %}" class="nav-item">
+        <div class="nav-icon">📋</div>
+        <div class="nav-label">Historial</div>
+    </a>
+    <a href="#" class="nav-item">
+        <div class="nav-icon">👤</div>
+        <div class="nav-label">Perfil</div>
     </a>
 </div>
+
+<!-- Botón flotante (solo visible en app) -->
+<a href="{% url 'solicitar_servicio' %}" class="floating-btn">
+    ➕
+</a>
 {% endblock %}
