@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -63,7 +64,7 @@
         }
         
         .navbar-logo {
-            height: 40px;
+            height: 45px;
             width: auto;
             margin-right: 12px;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -73,6 +74,9 @@
                 drop-shadow(0 0 20px rgba(255, 215, 0, 0.4))
                 drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
             will-change: transform, filter;
+            /* Asegurar que el PNG se vea nítido */
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
         }
         
         .navbar-brand:hover .navbar-logo {
@@ -227,6 +231,10 @@
             .navbar-brand {
                 font-size: 1.3rem;
             }
+            
+            .navbar-logo {
+                height: 38px;
+            }
         }
         
         /* Efecto de partículas en el navbar */
@@ -251,11 +259,12 @@
     <!-- Navbar fluor negro 3D -->
     <nav class="navbar navbar-expand-lg navbar-fluor">
         <div class="container">
-            <!-- Logo 3D con imagen personalizada -->
+            <!-- Logo 3D con imagen PNG desde GitHub -->
             <a class="navbar-brand" href="{% url 'home' %}">
-                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0xMDAgMjBMMTIwIDQwTDEwMCA2MEw4MCA0MEwxMDAgMjBaIiBmaWxsPSIjRkZENzAwIi8+CjxwYXRoIGQ9Ik04MCA0MEwxMDAgMjBMMTMwIDMwTDE0MCA2MEwxMjAgODBMMTAwIDYwTDgwIDQwWiIgZmlsbD0iI0ZGRDcwMCIvPgo8cGF0aCBkPSJNMTIwIDgwTDE0MCA2MEwxNjAgODBMMTQwIDEwMEwxMjAgODBaIiBmaWxsPSIjRkZENzAwIi8+CjxwYXRoIGQ9Ik02MCA0MEw4MCA0MEwxMDAgNjBMODAgODBMNjAgNjBMNjAgNDBaIiBmaWxsPSIjRkZENzAwIi8+CjxwYXRoIGQ9Ik02MCA2MEw4MCA4MEwxMDAgMTAwTDgwIDEyMEw2MCAxMDBMNjAgNjBaIiBmaWxsPSIjRkZENzAwIi8+CjxwYXRoIGQ9Ik0xMDAgMTAwTDEyMCA4MEwxNDAgMTAwTDEyMCAxMjBMMTAwIDEwMFoiIGZpbGw9IiNGRkQ3MDAiLz4KPHA+Cjx0ZXh0IHg9IjEwMCIgeT0iMTQwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMDAwIiBmb250LWZhbWlseT0iY3Vyc2l2ZSIgZm9udC1zaXplPSIyNCIgZm9udC13ZWlnaHQ9ImJvbGQiPkdyw7phPC90ZXh0Pgo8dGV4dCB4PSIxMDAiIHk9IjE2NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzAwMCIgZm9udC1mYW1pbHk9ImN1cnNpdmUiIGZvbnQtc2l6ZT0iMjQiIGZvbnQtd2VpZ2h0PSJib2xkIj5TdHlsZTwvdGV4dD4KPC9zdmc+Cg==" 
+                <img src="{% static 'images/ChatGPT Image Jul 13, 2025, 05_06_45 PM.png' %}" 
                      alt="Grúa Style" 
-                     class="navbar-logo">
+                     class="navbar-logo"
+                     onerror="this.style.display='none'; console.error('Error cargando logo desde static');">
                 <span class="brand-text">Grúa Style</span>
             </a>
             
@@ -283,7 +292,7 @@
                         <a href="{% url 'dashboard' %}" class="btn-3d">
                             <i class="fas fa-tachometer-alt"></i>Dashboard
                         </a>
-                        <a href="{% url 'custom_logout' %}" class="btn-3d">
+                        <a href="{% url 'logout' %}" class="btn-3d">
                             <i class="fas fa-sign-out-alt"></i>Cerrar Sesión
                         </a>
                     {% else %}
