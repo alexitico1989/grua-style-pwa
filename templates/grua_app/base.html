@@ -3,406 +3,200 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Grúa Style - Servicio de Grúas 24/7{% endblock %}</title>
-    
-    <!-- PWA Meta Tags -->
-    <meta name="theme-color" content="#2d5bff">
-    <meta name="background_color" content="#ffffff">
-    <meta name="display" content="standalone">
-    <meta name="orientation" content="portrait-primary">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Grúa Style">
-    <meta name="msapplication-TileColor" content="#2d5bff">
-    <meta name="msapplication-TileImage" content="{% load static %}{% static 'pwa/icon-144x144.png' %}">
-    
-    <!-- PWA Manifest -->
-    {% load static %}
-    <link rel="manifest" href="{% static 'pwa/manifest.json' %}">
-    
-    <!-- PWA Icons -->
-    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'pwa/icon-32x32.png' %}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'pwa/icon-16x16.png' %}">
-    <link rel="apple-touch-icon" href="{% static 'pwa/icon-180x180.png' %}">
-    <link rel="apple-touch-icon" sizes="152x152" href="{% static 'pwa/icon-152x152.png' %}">
-    <link rel="apple-touch-icon" sizes="144x144" href="{% static 'pwa/icon-144x144.png' %}">
-    <link rel="apple-touch-icon" sizes="120x120" href="{% static 'pwa/icon-120x120.png' %}">
-    <link rel="apple-touch-icon" sizes="114x114" href="{% static 'pwa/icon-114x114.png' %}">
-    <link rel="apple-touch-icon" sizes="76x76" href="{% static 'pwa/icon-76x76.png' %}">
-    <link rel="apple-touch-icon" sizes="72x72" href="{% static 'pwa/icon-72x72.png' %}">
-    <link rel="apple-touch-icon" sizes="60x60" href="{% static 'pwa/icon-60x60.png' %}">
-    <link rel="apple-touch-icon" sizes="57x57" href="{% static 'pwa/icon-57x57.png' %}">
+    <title>{% block title %}Grúa Style{% endblock %}</title>
     
     <!-- Bootstrap CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        :root {
-            --primary-color: #2d5bff;
-            --secondary-color: #6c5ce7;
-            --accent-color: #ff6b6b;
-            --success-color: #00d4aa;
-            --warning-color: #feca57;
-            --danger-color: #ff5757;
-            --dark-color: #1a1a2e;
-            --light-color: #f8f9fa;
-            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --gradient-accent: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            --gradient-bg: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
-            --shadow-elegant: 0 10px 40px rgba(103, 151, 255, 0.15);
-            --shadow-hover: 0 20px 60px rgba(103, 151, 255, 0.25);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: var(--gradient-bg);
-            min-height: 100vh;
-            color: #ffffff;
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        /* PWA Mode específico */
-        .pwa-mode {
-            padding-top: env(safe-area-inset-top);
-            padding-bottom: env(safe-area-inset-bottom);
-        }
-
-        .pwa-mode .navbar {
-            padding-top: calc(env(safe-area-inset-top) + 1rem);
-        }
-
-        /* Fondo elegante con patrón sutil */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 20%, rgba(103, 151, 255, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(255, 107, 107, 0.06) 0%, transparent 50%),
-                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="0.5" fill="rgba(255,255,255,0.03)"/><circle cx="30" cy="25" r="0.3" fill="rgba(255,255,255,0.02)"/><circle cx="60" cy="15" r="0.4" fill="rgba(255,255,255,0.03)"/><circle cx="80" cy="35" r="0.2" fill="rgba(255,255,255,0.02)"/><circle cx="25" cy="50" r="0.3" fill="rgba(255,255,255,0.03)"/><circle cx="75" cy="65" r="0.4" fill="rgba(255,255,255,0.02)"/><circle cx="45" cy="80" r="0.2" fill="rgba(255,255,255,0.03)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-            animation: subtleMove 25s ease-in-out infinite;
-            z-index: -2;
-        }
-
-        @keyframes subtleMove {
-            0%, 100% { transform: translateX(0) translateY(0); }
-            50% { transform: translateX(-20px) translateY(-10px); }
-        }
-
-        /* Navbar elegante */
-        .navbar {
-            background: rgba(26, 26, 46, 0.95);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(103, 151, 255, 0.2);
-            box-shadow: 0 4px 30px rgba(103, 151, 255, 0.1);
-            padding: 1rem 0;
-        }
-
-        .navbar-brand {
-            font-family: 'Playfair Display', serif;
-            font-weight: 700;
-            font-size: 2rem;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .navbar-brand .truck-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--gradient-primary);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.2rem;
-            box-shadow: var(--shadow-elegant);
-        }
-
-        /* Actualizar nombre a "Grúa Style" */
-        .navbar-brand::after {
-            content: "";
-        }
-
-        .pwa-mode .navbar-brand::after {
-            content: " 📱";
-        }
-
-        .navbar-nav .nav-link {
-            color: rgba(255, 255, 255, 0.9) !important;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            position: relative;
-            padding: 0.8rem 1.5rem !important;
-            border-radius: 12px;
-            margin: 0 0.2rem;
-        }
-
-        .navbar-nav .nav-link::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--gradient-primary);
-            opacity: 0;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-            z-index: -1;
-        }
-
-        .navbar-nav .nav-link:hover {
-            color: #ffffff !important;
-            transform: translateY(-2px);
-        }
-
-        .navbar-nav .nav-link:hover::before {
-            opacity: 0.15;
-        }
-
-        /* Botones hermosos */
-        .btn-primary {
-            background: var(--gradient-primary);
-            border: none;
-            font-weight: 600;
-            padding: 1rem 2.5rem;
-            border-radius: 50px;
-            transition: all 0.4s ease;
-            box-shadow: var(--shadow-elegant);
-            position: relative;
-            overflow: hidden;
-            text-transform: none;
-            letter-spacing: 0.5px;
-        }
-
-        .btn-primary::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: all 0.6s ease;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-hover);
-            background: linear-gradient(135deg, #7b68ee 0%, #9b59b6 100%);
-        }
-
-        .btn-primary:hover::before {
-            left: 100%;
-        }
-
-        .btn-accent {
-            background: var(--gradient-accent);
-            border: none;
-            color: white;
-            font-weight: 600;
-            padding: 1rem 2.5rem;
-            border-radius: 50px;
-            transition: all 0.4s ease;
-            box-shadow: 0 10px 40px rgba(79, 172, 254, 0.15);
-            position: relative;
-            overflow: hidden;
-            text-transform: none;
-            letter-spacing: 0.5px;
-        }
-
-        .btn-accent::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: all 0.6s ease;
-        }
-
-        .btn-accent:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 20px 60px rgba(79, 172, 254, 0.25);
-            background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%);
-            color: white;
-        }
-
-        .btn-accent:hover::before {
-            left: 100%;
-        }
-
-        /* PWA Install Button - Botón flotante de instalación */
-        .pwa-install-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1000;
-            border-radius: 50px;
-            padding: 12px 20px;
-            font-size: 14px;
-            font-weight: 600;
-            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
-            display: none;
-            align-items: center;
-            gap: 8px;
-            animation: pulse 2s infinite;
+        /* Navbar fluor negro */
+        .navbar-fluor {
+            background: linear-gradient(135deg, #000 0%, #1a1a1a 50%, #000 100%);
             backdrop-filter: blur(10px);
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        .pwa-install-btn:hover {
-            transform: scale(1.1);
-            transition: transform 0.2s;
-        }
-
-        /* Cards elegantes */
-        .card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            box-shadow: var(--shadow-elegant);
-            transition: all 0.4s ease;
+            border-bottom: 2px solid rgba(0, 213, 99, 0.3);
+            box-shadow: 
+                0 4px 20px rgba(0, 0, 0, 0.8),
+                0 0 30px rgba(0, 213, 99, 0.2),
+                inset 0 1px 0 rgba(0, 213, 99, 0.1);
             position: relative;
-            overflow: hidden;
+            z-index: 1000;
         }
-
-        .card::before {
+        
+        .navbar-fluor::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             height: 1px;
-            background: var(--gradient-primary);
-            transform: translateX(-100%);
-            transition: all 0.8s ease;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(0, 213, 99, 0.5) 25%, 
+                rgba(0, 213, 99, 0.8) 50%, 
+                rgba(0, 213, 99, 0.5) 75%, 
+                transparent 100%);
+            animation: navbar-glow 3s ease-in-out infinite alternate;
         }
-
-        .card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-hover);
-            border-color: rgba(103, 151, 255, 0.3);
+        
+        @keyframes navbar-glow {
+            0% {
+                box-shadow: 0 0 5px rgba(0, 213, 99, 0.3);
+            }
+            100% {
+                box-shadow: 0 0 15px rgba(0, 213, 99, 0.6);
+            }
         }
-
-        .card:hover::before {
-            transform: translateX(0);
-        }
-
-        .card-header {
-            background: var(--gradient-primary);
-            border-radius: 24px 24px 0 0 !important;
-            border: none;
-            padding: 2rem;
-        }
-
-        .card-body h4, .card-body h5 {
-            color: #ffffff !important;
-            font-weight: 600;
-            margin-bottom: 1rem;
-        }
-
-        .card-body p {
-            color: rgba(255, 255, 255, 0.8) !important;
-            line-height: 1.7;
-            font-weight: 400;
-        }
-
-        .card-body .text-muted {
-            color: rgb(255, 255, 255) !important;
-        }
-
-        .card-body small {
-            color: rgba(255, 255, 255, 0.6) !important;
-        }
-
-        /* Form controls hermosos */
-        .form-control {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 16px;
-            color: #ffffff;
-            padding: 1rem 1.5rem;
+        
+        /* Logo 3D */
+        .navbar-brand {
+            color: #fff !important;
+            font-weight: 700;
+            font-size: 1.5rem;
+            text-shadow: 
+                0 0 10px rgba(0, 213, 99, 0.6),
+                0 0 20px rgba(0, 213, 99, 0.4),
+                0 0 30px rgba(0, 213, 99, 0.2);
             transition: all 0.3s ease;
-            font-weight: 400;
+            transform-style: preserve-3d;
+            perspective: 1000px;
         }
-
-        .form-control:focus {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(103, 151, 255, 0.5);
-            box-shadow: 0 0 0 0.2rem rgba(103, 151, 255, 0.15);
-            color: #ffffff;
+        
+        .navbar-brand:hover {
+            color: #00D563 !important;
+            transform: rotateY(5deg) rotateX(-5deg) translateZ(10px);
+            text-shadow: 
+                0 0 15px rgba(0, 213, 99, 0.8),
+                0 0 30px rgba(0, 213, 99, 0.6),
+                0 0 45px rgba(0, 213, 99, 0.4),
+                0 5px 15px rgba(0, 0, 0, 0.3);
         }
-
-        .form-control::placeholder {
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        /* Alerts elegantes */
-        .alert {
+        
+        /* Botones 3D uniformes */
+        .btn-3d {
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
             border: none;
-            border-radius: 16px;
-            padding: 1.5rem 2rem;
-            margin-bottom: 2rem;
-            border-left: 4px solid;
-        }
-
-        .alert-success {
-            background: rgba(0, 212, 170, 0.1);
-            color: #00d4aa;
-            border-left-color: #00d4aa;
-        }
-
-        .alert-danger {
-            background: rgba(255, 87, 87, 0.1);
-            color: #ff5757;
-            border-left-color: #ff5757;
-        }
-
-        .alert-info {
-            background: rgba(103, 151, 255, 0.1);
-            color: #6797ff;
-            border-left-color: #6797ff;
-        }
-
-        /* Hero section hermosa */
-        .hero-section {
-            background: var(--gradient-primary);
-            padding: 8rem 0;
-            text-align: center;
+            cursor: pointer;
             position: relative;
             overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            margin: 0 8px;
+            background: linear-gradient(135deg, #00D563 0%, #00B853 100%);
+            color: #000;
+            box-shadow: 
+                0 4px 15px rgba(0, 213, 99, 0.3),
+                0 0 20px rgba(0, 213, 99, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            will-change: transform, box-shadow;
         }
-
-        .hero-section::before {
+        
+        .btn-3d::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.3), 
+                transparent);
+            transition: left 0.6s ease;
+        }
+        
+        .btn-3d:hover {
+            transform: 
+                rotateX(-10deg) 
+                rotateY(5deg) 
+                translateZ(15px) 
+                translateY(-5px);
+            box-shadow: 
+                0 8px 30px rgba(0, 213, 99, 0.5),
+                0 0 40px rgba(0, 213, 99, 0.4),
+                0 15px 25px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            background: linear-gradient(135deg, #00E570 0%, #00C760 100%);
+            color: #000;
+            text-decoration: none;
+        }
+        
+        .btn-3d:hover::before {
+            left: 100%;
+        }
+        
+        .btn-3d:active {
+            transform: 
+                rotateX(-5deg) 
+                rotateY(2deg) 
+                translateZ(8px) 
+                translateY(-2px);
+            transition: all 0.1s ease;
+        }
+        
+        /* Iconos 3D */
+        .btn-3d i {
+            margin-right: 8px;
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+        }
+        
+        .btn-3d:hover i {
+            transform: rotateY(15deg) translateZ(5px);
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Navegación 3D */
+        .nav-link-3d {
+            color: #ccc !important;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+            position: relative;
+        }
+        
+        .nav-link-3d:hover {
+            color: #00D563 !important;
+            transform: rotateX(-5deg) translateZ(5px);
+            text-shadow: 
+                0 0 10px rgba(0, 213, 99, 0.6),
+                0 2px 5px rgba(0, 0, 0, 0.3);
+            background: rgba(0, 213, 99, 0.1);
+        }
+        
+        .nav-link-3d i {
+            margin-right: 6px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link-3d:hover i {
+            transform: rotateY(10deg);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .btn-3d {
+                margin: 4px 0;
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .navbar-brand {
+                font-size: 1.3rem;
+            }
+        }
+        
+        /* Efecto de partículas en el navbar */
+        .navbar-fluor::after {
             content: '';
             position: absolute;
             top: 0;
@@ -410,383 +204,83 @@
             right: 0;
             bottom: 0;
             background: 
-                radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 60%),
-                radial-gradient(circle at 70% 70%, rgba(255, 107, 107, 0.1) 0%, transparent 60%);
-            animation: heroFloat 12s ease-in-out infinite;
-        }
-
-        @keyframes heroFloat {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-10px) scale(1.02); }
-        }
-
-        /* Feature icons hermosos */
-        .feature-icon {
-            width: 5rem;
-            height: 5rem;
-            background: var(--gradient-accent);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1.5rem;
-            font-size: 1.8rem;
-            color: white;
-            box-shadow: 0 10px 40px rgba(79, 172, 254, 0.2);
-            transition: all 0.4s ease;
-        }
-
-        .card:hover .feature-icon {
-            transform: scale(1.1) rotateY(10deg);
-            box-shadow: 0 15px 50px rgba(79, 172, 254, 0.3);
-        }
-
-        /* Imagen de grúa hermosa */
-        .truck-hero {
-            max-width: 100%;
-            height: auto;
-            filter: drop-shadow(0 20px 40px rgba(103, 151, 255, 0.3));
-            animation: truckFloat 6s ease-in-out infinite;
-        }
-
-        @keyframes truckFloat {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-15px) rotate(1deg); }
-        }
-
-        /* Footer elegante */
-        .footer {
-            background: rgba(26, 26, 46, 0.95);
-            border-top: 1px solid rgba(103, 151, 255, 0.2);
-            padding: 3rem 0;
-            margin-top: 4rem;
-        }
-
-        /* Pricing cards especiales */
-        .pricing-card {
-            background: rgba(255, 255, 255, 0.08);
-            border: 2px solid transparent;
-            background-clip: padding-box;
-            position: relative;
-        }
-
-        .pricing-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            padding: 2px;
-            background: var(--gradient-primary);
-            border-radius: 20px;
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask-composite: exclude;
+                radial-gradient(circle at 20% 80%, rgba(0, 213, 99, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 213, 99, 0.1) 0%, transparent 50%);
+            pointer-events: none;
             z-index: -1;
         }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero-section {
-                padding: 4rem 0;
-            }
-            
-            .navbar-brand {
-                font-size: 1.5rem;
-            }
-
-            .btn-primary, .btn-accent {
-                padding: 0.8rem 2rem;
-                font-size: 0.9rem;
-            }
-
-            .pwa-install-btn {
-                bottom: 10px;
-                right: 10px;
-                padding: 10px 16px;
-                font-size: 12px;
-            }
-        }
-
-        /* Scrollbar hermosa */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(26, 26, 46, 0.5);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--gradient-primary);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--gradient-accent);
-        }
-
-        /* Efectos de hover suaves */
-        .hover-lift {
-            transition: all 0.3s ease;
-        }
-
-        .hover-lift:hover {
-            transform: translateY(-5px);
-        }
-
-        /* Móvil: header más pequeño */
-        @media (max-width: 768px) {
-            .navbar { 
-                padding: 0.5rem 0 !important; 
-            }
-        }
-
-        /* Arreglar botones navbar que no responden */
-        .navbar-nav .nav-link {
-            position: relative !important;
-            z-index: 1000 !important;
-            pointer-events: auto !important;
-        }
-
-        .navbar-nav .nav-item {
-            position: relative !important;
-            z-index: 999 !important;
-        }
-
-        /* Botón login especial */
-        .btn-login-special {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            color: white !important;
-            font-weight: 600;
-            padding: 0.6rem 1.5rem !important;
-            border-radius: 25px;
-            transition: all 0.3s ease;
-            text-decoration: none !important;
-            display: inline-block;
-            margin: 0.2rem;
-            cursor: pointer;
-        }
-
-        .btn-login-special:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(103, 151, 255, 0.3);
-            color: white !important;
-            background: linear-gradient(135deg, #7b68ee 0%, #9b59b6 100%);
-        }
-        /* FORZAR interacción en botones login */
-.btn-outline-light,
-.btn[onclick*="login"],
-button[onclick*="login"],
-a[href*="login"] {
-    cursor: pointer !important;
-    pointer-events: auto !important;
-    position: relative !important;
-    z-index: 9999 !important;
-    opacity: 1 !important;
-    user-select: none !important;
-}
-
-/* Efecto hover para botones login */
-.btn-outline-light:hover,
-.btn[onclick*="login"]:hover,
-button[onclick*="login"]:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3) !important;
-    border-color: #fff !important;
-    background-color: rgba(255, 255, 255, 0.1) !important;
-}
     </style>
     
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg sticky-top">
+    <!-- Navbar fluor negro 3D -->
+    <nav class="navbar navbar-expand-lg navbar-fluor">
         <div class="container">
+            <!-- Logo 3D -->
             <a class="navbar-brand" href="{% url 'home' %}">
-                <div class="truck-icon">
-                    <i class="fas fa-truck-moving"></i>
-                </div>
-                Grúa Style
+                🚚 Grúa Style
             </a>
             
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" style="border: none;">
-                <i class="fas fa-bars text-white"></i>
+            <!-- Toggle para móvil -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" style="border: 1px solid rgba(0, 213, 99, 0.5); background: rgba(0, 213, 99, 0.1);">
+                <span style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 30 30%22><path stroke=%22rgba(0, 213, 99, 1)%22 stroke-linecap=%22round%22 stroke-miterlimit=%2210%22 stroke-width=%222%22 d=%22M4 7h22M4 15h22M4 23h22%22/></svg>');"></span>
             </button>
             
+            <!-- Navegación -->
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home' %}">
-                            <i class="fas fa-home me-2"></i>Inicio
+                        <a class="nav-link-3d" href="{% url 'home' %}">
+                            <i class="fas fa-home"></i>Inicio
                         </a>
                     </li>
-                    {% if user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'dashboard' %}">
-                            <i class="fas fa-chart-line me-2"></i>Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'solicitar_servicio' %}">
-                            <i class="fas fa-plus-circle me-2"></i>Solicitar Grúa
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'historial_servicios' %}">
-                            <i class="fas fa-history me-2"></i>Historial
-                        </a>
-                    </li>
-                    {% endif %}
                 </ul>
                 
-                <ul class="navbar-nav">
+                <!-- Botones de autenticación 3D -->
+                <div class="d-flex flex-column flex-lg-row align-items-center">
                     {% if user.is_authenticated %}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-user-circle me-2"></i>{{ user.first_name|default:user.username }}
+                        <span class="nav-link-3d me-3">
+                            <i class="fas fa-user"></i>{{ user.username }}
+                        </span>
+                        <a href="{% url 'dashboard' %}" class="btn-3d">
+                            <i class="fas fa-tachometer-alt"></i>Dashboard
                         </a>
-                        <ul class="dropdown-menu" style="background: rgba(26, 26, 46, 0.95); border: 1px solid rgba(103, 151, 255, 0.2); border-radius: 12px;">
-                            <li><a class="dropdown-item text-white" href="{% url 'logout' %}" style="border-radius: 8px; transition: all 0.3s ease;">
-                                <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
-                            </a></li>
-                        </ul>
-                    </li>
+                        <a href="{% url 'custom_logout' %}" class="btn-3d">
+                            <i class="fas fa-sign-out-alt"></i>Cerrar Sesión
+                        </a>
                     {% else %}
-                    <li class="nav-item">
-                        <button class="btn-login-special" onclick="window.location.href='/login/';" type="button">
-                            <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
-                        </button>
-                    </li>
-                    <li class="nav-item">
-                        <a class="btn btn-primary ms-2" href="{% url 'registro' %}">
-                            <i class="fas fa-user-plus me-2"></i>Registrarse
+                        <a href="{% url 'login' %}" class="btn-3d">
+                            <i class="fas fa-sign-in-alt"></i>Iniciar Sesión
                         </a>
-                    </li>
+                        <a href="{% url 'registro' %}" class="btn-3d">
+                            <i class="fas fa-user-plus"></i>Registrarse
+                        </a>
                     {% endif %}
-                </ul>
+                </div>
             </div>
         </div>
     </nav>
 
-    <!-- Messages -->
+    <!-- Mensajes -->
     {% if messages %}
-    <div class="container mt-4">
-        {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-            <i class="fas fa-info-circle me-2"></i>{{ message }}
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+        <div class="container mt-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
         </div>
-        {% endfor %}
-    </div>
     {% endif %}
 
-    <!-- Main Content -->
+    <!-- Contenido principal -->
     <main>
-        {% block content %}{% endblock %}
+        {% block content %}
+        {% endblock %}
     </main>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5 class="mb-4" style="background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-                        <i class="fas fa-truck-moving me-2" style="color: #6797ff;"></i>Grúa Style
-                    </h5>
-                    <p style="color: rgba(255, 255, 255, 0.7); line-height: 1.6;">
-                        Servicio de grúa profesional 24/7 en la Región Metropolitana. 
-                        Tecnología avanzada, atención personalizada y respuesta inmediata.
-                    </p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <h6 class="mb-3" style="color: #6797ff;">Contacto Directo</h6>
-                    <p class="mb-2" style="color: rgba(255, 255, 255, 0.8);">
-                        <i class="fas fa-phone me-2" style="color: #00d4aa;"></i>+56 9 61833876
-                    </p>
-                    <p class="mb-2" style="color: rgba(255, 255, 255, 0.8);">
-                        <i class="fas fa-envelope me-2" style="color: #00d4aa;"></i>monardes.luis@gmail.com
-                    </p>
-                    <p style="color: rgba(255, 255, 255, 0.8);">
-                        <i class="fas fa-clock me-2" style="color: #00d4aa;"></i>24 horas, 365 días
-                    </p>
-                </div>
-            </div>
-            <hr class="my-4" style="border-color: rgba(103, 151, 255, 0.2);">
-            <div class="text-center" style="color: rgba(255, 255, 255, 0.6);">
-                <p>&copy; 2025 AMIA Solutions. Diseñado con inteligencia artificial.</p>
-            </div>
-        </div>
-    </footer>
-
     <!-- Bootstrap JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- PWA Installation Script -->
-    <script src="{% static 'pwa/pwa-install.js' %}"></script>
-    
-    <!-- Efectos suaves -->
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Efecto de aparición suave para las cards
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver(function(entries) {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
-
-        // Aplicar efecto a todas las cards
-        document.querySelectorAll('.card').forEach(card => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(30px)';
-            card.style.transition = 'all 0.6s ease';
-            observer.observe(card);
-        });
-
-        // Efecto hover mejorado para botones
-        document.querySelectorAll('.btn').forEach(btn => {
-            btn.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-3px) scale(1.02)';
-            });
-            
-            btn.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0) scale(1)';
-            });
-        });
-    });
-    </script>
-
-    <!-- Script para arreglar botón login -->
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Forzar navegación del botón login
-        const loginBtn = document.querySelector('.btn-login-special');
-        if (loginBtn) {
-            // Remover todos los event listeners existentes
-            loginBtn.onclick = null;
-            
-            // Agregar nuestro event listener con alta prioridad
-            loginBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                e.stopImmediatePropagation();
-                console.log('🚀 Navegando a login...');
-                window.location.href = '/login/';
-            }, true); // true = captura el evento antes que otros
-        }
-    });
-    </script>
-    
-    {% block extra_js %}{% endblock %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
