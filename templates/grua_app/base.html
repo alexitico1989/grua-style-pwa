@@ -633,8 +633,10 @@
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a class="btn-login-special" href="{% url 'login' %}">
-                            <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
+                        <button class="btn-login-special" onclick="window.location.href='/login/';" type="button">
+    <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
+</button>
+                            
                         </a>
                     </li>
                     <li class="nav-item">
