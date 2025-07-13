@@ -575,6 +575,28 @@
             color: white !important;
             background: linear-gradient(135deg, #7b68ee 0%, #9b59b6 100%);
         }
+        /* FORZAR interacción en botones login */
+.btn-outline-light,
+.btn[onclick*="login"],
+button[onclick*="login"],
+a[href*="login"] {
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    position: relative !important;
+    z-index: 9999 !important;
+    opacity: 1 !important;
+    user-select: none !important;
+}
+
+/* Efecto hover para botones login */
+.btn-outline-light:hover,
+.btn[onclick*="login"]:hover,
+button[onclick*="login"]:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3) !important;
+    border-color: #fff !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
     </style>
     
     {% block extra_css %}{% endblock %}
