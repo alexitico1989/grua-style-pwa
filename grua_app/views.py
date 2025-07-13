@@ -315,16 +315,32 @@ def imprimir_solicitud(request, solicitud_id):
 
 
 @login_required
+@login_required
 def reenviar_comprobante(request, solicitud_id):
-    """Reenvía el comprobante por email con debug mejorado"""
+    """Reenvía el comprobante por email con debug de variables"""
+    import os
+    from django.conf import settings
+    
     solicitud = get_object_or_404(
         SolicitudServicio, id=solicitud_id, cliente=request.user)
 
-    print(f"🔍 DEBUG Reenviar comprobante:")
+    print(f"🔍 DEBUG COMPLETO Reenviar comprobante:")
     print(f"   Solicitud ID: {solicitud.id}")
     print(f"   Usuario: {request.user.username}")
     print(f"   Email usuario: {request.user.email}")
     print(f"   EMAIL_UTILS_AVAILABLE: {EMAIL_UTILS_AVAILABLE}")
+    
+    # DEBUG DE VARIABLES DE ENTORNO
+    print(f"📧 DEBUG EMAIL SETTINGS:")
+    print(f"   EMAIL_HOST_USER (env): {os.environ.get('EMAIL_HOST_USER', 'NO_DEFINIDO')}")
+    print(f"   EMAIL_HOST_PASSWORD (env): {'DEFINIDO' if os.environ.get('EMAIL_HOST_PASSWORD') else 'NO_DEFINIDO'}")
+    print(f"   EMAIL_HOST (env): {os.environ.get('EMAIL_HOST', 'NO_DEFINIDO')}")
+    print(f"   EMAIL_PORT (env): {os.environ.get('EMAIL_PORT', 'NO_DEFINIDO')}")
+    
+    # DEBUG DE SETTINGS DE DJANGO
+    print(f"   settings.EMAIL_HOST_USER: {getattr(settings, 'EMAIL_HOST_USER', 'NO_DEFINIDO')}")
+    print(f"   settings.EMAIL_HOST: {getattr(settings, 'EMAIL_HOST', 'NO_DEFINIDO')}")
+    print(f"   settings.EMAIL_PORT: {getattr(settings, 'EMAIL_PORT', 'NO_DEFINIDO')}")
 
     if not EMAIL_UTILS_AVAILABLE:
         print("❌ email_utils no disponible")
@@ -355,6 +371,8 @@ def reenviar_comprobante(request, solicitud_id):
         import traceback
         print(f"   Traceback: {traceback.format_exc()}")
         messages.error(request, 'Error al enviar el comprobante.')
+
+    return redirect('dashboard')
 
     return redirect('dashboard')
 
