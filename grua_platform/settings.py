@@ -27,7 +27,17 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-tu-clave-secreta-aqui
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',') + ['gruastyle.com', 'www.gruastyle.com', '10.204.157.26', '.railway.app']
+# ALLOWED_HOSTS actualizado con dominios personalizados
+ALLOWED_HOSTS = [
+    'web-production-1eac8.up.railway.app',
+    '*.railway.app',
+    'gruastyle.com',
+    'www.gruastyle.com',
+    '10.204.157.26',
+    '.railway.app',
+    '127.0.0.1',
+    'localhost'
+]
 
 
 # Application definition
