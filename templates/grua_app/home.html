@@ -1,6 +1,6 @@
 {% extends 'grua_app/base.html' %}
 
-{% block title %}GrúaExpress - Servicio de Grúas 24/7 en Santiago{% endblock %}
+{% block title %}Grúa Style - Servicio de Grúas 24/7 en Santiago{% endblock %}
 
 {% block content %}
 <!-- Hero Section -->
@@ -31,10 +31,10 @@
                         <i class="fas fa-user-plus me-2"></i>
                         Registrarse Gratis
                     </a>
-                    <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg">
+                    <button onclick="window.location.href='{% url 'login' %}';" class="btn btn-outline-light btn-lg" type="button">
                         <i class="fas fa-sign-in-alt me-2"></i>
                         Iniciar Sesión
-                    </a>
+                    </button>
                     {% endif %}
                 </div>
             </div>
@@ -53,7 +53,7 @@
         <div class="row text-center mb-5">
             <div class="col-lg-8 mx-auto">
                 <h2 class="display-5 fw-bold text-white mb-4">
-                    ¿Por qué elegir GrúaExpress?
+                    ¿Por qué elegir Grúa Style?
                 </h2>
                 <p class="lead text-muted">
                     Combinamos tecnología moderna con servicio personalizado para brindarte 
@@ -260,10 +260,10 @@
                                 <i class="fas fa-user-plus me-2"></i>
                                 Crear Cuenta Gratis
                             </a>
-                            <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg">
+                            <button onclick="window.location.href='{% url 'login' %}';" class="btn btn-outline-light btn-lg" type="button">
                                 <i class="fas fa-sign-in-alt me-2"></i>
                                 Ya tengo cuenta
-                            </a>
+                            </button>
                         </div>
                         {% endif %}
                         
