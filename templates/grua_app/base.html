@@ -634,7 +634,7 @@
                     {% else %}
                     <li class="nav-item">
                         <button class="btn-login-special" onclick="window.location.href='/login/';" type="button">
-    <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
+                            <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
 </button>
                             
                         </a>
@@ -746,5 +746,24 @@
     </script>
     
     {% block extra_js %}{% endblock %}
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Forzar navegación del botón login
+    const loginBtn = document.querySelector('.btn-login-special');
+    if (loginBtn) {
+        // Remover todos los event listeners existentes
+        loginBtn.onclick = null;
+        
+        // Agregar nuestro event listener con alta prioridad
+        loginBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            console.log('🚀 Navegando a login...');
+            window.location.href = '/login/';
+        }, true); // true = captura el evento antes que otros
+    }
+});
+</script>
 </body>
 </html>
