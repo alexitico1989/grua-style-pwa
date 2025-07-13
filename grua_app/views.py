@@ -316,24 +316,45 @@ def imprimir_solicitud(request, solicitud_id):
 
 @login_required
 def reenviar_comprobante(request, solicitud_id):
-    """Reenvía el comprobante por email"""
+    """Reenvía el comprobante por email con debug mejorado"""
     solicitud = get_object_or_404(
         SolicitudServicio, id=solicitud_id, cliente=request.user)
 
-    if EMAIL_UTILS_AVAILABLE:
-        try:
-            email_enviado = enviar_comprobante_solicitud(solicitud)
-            if email_enviado:
-                messages.success(
-                    request, f'📧 Comprobante reenviado a {request.user.email}')
-            else:
-                messages.error(
-                    request, 'Error al enviar el comprobante. Inténtalo más tarde.')
-        except Exception as e:
-            print(f"⚠️ Error reenviando comprobante: {e}")
-            messages.error(request, 'Error al enviar el comprobante.')
-    else:
+    print(f"🔍 DEBUG Reenviar comprobante:")
+    print(f"   Solicitud ID: {solicitud.id}")
+    print(f"   Usuario: {request.user.username}")
+    print(f"   Email usuario: {request.user.email}")
+    print(f"   EMAIL_UTILS_AVAILABLE: {EMAIL_UTILS_AVAILABLE}")
+
+    if not EMAIL_UTILS_AVAILABLE:
+        print("❌ email_utils no disponible")
         messages.error(request, 'Sistema de email no disponible.')
+        return redirect('dashboard')
+
+    if not request.user.email:
+        print("❌ Usuario sin email")
+        messages.error(request, 'No tienes un email configurado en tu cuenta.')
+        return redirect('dashboard')
+
+    try:
+        print("🔄 Intentando enviar comprobante...")
+        email_enviado = enviar_comprobante_solicitud(solicitud)
+        print(f"   Resultado: {email_enviado}")
+        
+        if email_enviado:
+            print("✅ Email enviado exitosamente")
+            messages.success(
+                request, f'📧 Comprobante reenviado a {request.user.email}')
+        else:
+            print("❌ email_enviado retornó False/None")
+            messages.error(
+                request, 'Error al enviar el comprobante. Inténtalo más tarde.')
+    except Exception as e:
+        print(f"❌ Excepción al reenviar comprobante: {e}")
+        print(f"   Tipo de error: {type(e)}")
+        import traceback
+        print(f"   Traceback: {traceback.format_exc()}")
+        messages.error(request, 'Error al enviar el comprobante.')
 
     return redirect('dashboard')
 
