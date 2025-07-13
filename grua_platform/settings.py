@@ -142,14 +142,25 @@ LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/'
 
-# Configuración de Email (Hostinger con SSL puerto 465)
+# Configuración de Email (Debug temporal)
+import os
+
+# Debug de variables
+print(f"🔍 DEBUG SETTINGS.PY:")
+print(f"   EMAIL_HOST env: {os.environ.get('EMAIL_HOST', 'NO_DEFINIDO')}")
+print(f"   EMAIL_HOST_USER env: {os.environ.get('EMAIL_HOST_USER', 'NO_DEFINIDO')}")
+print(f"   Todas las variables env que empiecen con EMAIL:")
+for key, value in os.environ.items():
+    if key.startswith('EMAIL'):
+        print(f"     {key}: {'DEFINIDO' if value else 'VACIO'}")
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.hostinger.com')
-EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 465))
-EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', 'True') == 'True'
-EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'False') == 'True'
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587))
+EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', 'False') == 'True'
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'monardes.luis@gmail.com')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'sin-password')
 
 # Configuración de emails - usando tu dominio corporativo
 DEFAULT_FROM_EMAIL = f'Grúa Style <{os.environ.get("EMAIL_HOST_USER", "contacto@gruastyle.com")}>'
