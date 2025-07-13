@@ -1,30 +1,18 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comprobante de Pago - {{ solicitud.numero_orden }}</title>
+    <title>Comprobante - {{ solicitud.numero_orden }}</title>
     <style>
-        @page {
-            margin: 2cm;
-            @top-center {
-                content: "Comprobante de Pago - Grúa Style";
-            }
-            @bottom-center {
-                content: "Página " counter(page) " de " counter(pages);
-            }
-        }
-        
         body {
-            font-family: 'Arial', sans-serif;
-            line-height: 1.6;
+            font-family: Arial, sans-serif;
+            margin: 20px;
             color: #333;
-            font-size: 12px;
         }
         
         .header {
             text-align: center;
-            border-bottom: 3px solid #007bff;
+            border-bottom: 2px solid #007bff;
             padding-bottom: 20px;
             margin-bottom: 30px;
         }
@@ -32,406 +20,188 @@
         .header h1 {
             color: #007bff;
             margin: 0;
-            font-size: 28px;
-            font-weight: bold;
+            font-size: 24px;
         }
         
         .header h2 {
             color: #666;
-            margin: 10px 0 5px 0;
-            font-size: 18px;
-            font-weight: normal;
-        }
-        
-        .header p {
-            color: #888;
-            margin: 5px 0;
-            font-size: 11px;
-        }
-        
-        .comprobante-header {
-            background: linear-gradient(135deg, #007bff, #0056b3);
-            color: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 25px;
-            text-align: center;
-        }
-        
-        .comprobante-header h3 {
-            margin: 0;
-            font-size: 20px;
-            font-weight: bold;
-        }
-        
-        .comprobante-header .numero-orden {
-            font-size: 24px;
-            font-weight: bold;
-            margin-top: 5px;
-            letter-spacing: 2px;
-        }
-        
-        .info-grid {
-            display: table;
-            width: 100%;
-            margin-bottom: 25px;
-        }
-        
-        .info-column {
-            display: table-cell;
-            width: 50%;
-            vertical-align: top;
-            padding-right: 15px;
-        }
-        
-        .info-section {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            border-left: 4px solid #007bff;
-        }
-        
-        .info-section h4 {
-            margin: 0 0 15px 0;
-            color: #007bff;
-            font-size: 14px;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-        
-        .info-row {
-            display: table;
-            width: 100%;
-            margin-bottom: 8px;
-            border-bottom: 1px dotted #dee2e6;
-            padding-bottom: 5px;
-        }
-        
-        .info-row:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-        }
-        
-        .label {
-            display: table-cell;
-            font-weight: bold;
-            color: #495057;
-            width: 40%;
-            font-size: 11px;
-        }
-        
-        .value {
-            display: table-cell;
-            color: #212529;
-            font-size: 11px;
-        }
-        
-        .payment-summary {
-            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 25px;
-            border: 2px solid #2196f3;
-        }
-        
-        .payment-summary h4 {
-            margin: 0 0 15px 0;
-            color: #1976d2;
+            margin: 10px 0;
             font-size: 16px;
-            text-align: center;
-            font-weight: bold;
         }
         
-        .cost-row {
-            display: table;
+        .comprobante-info {
+            background-color: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+        }
+        
+        .comprobante-info h3 {
+            margin: 0 0 10px 0;
+            color: #007bff;
+        }
+        
+        .info-table {
             width: 100%;
-            margin-bottom: 10px;
-            padding: 8px 0;
+            border-collapse: collapse;
+            margin-bottom: 20px;
         }
         
-        .cost-label {
-            display: table-cell;
-            font-weight: bold;
-            color: #1976d2;
-            width: 60%;
+        .info-table th,
+        .info-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
         }
         
-        .cost-value {
-            display: table-cell;
-            color: #1976d2;
-            text-align: right;
+        .info-table th {
+            background-color: #f1f1f1;
             font-weight: bold;
+        }
+        
+        .total-section {
+            background-color: #e3f2fd;
+            padding: 15px;
+            border: 2px solid #2196f3;
+            margin-bottom: 20px;
         }
         
         .total-row {
-            border-top: 2px solid #1976d2;
-            border-bottom: 2px solid #1976d2;
-            background: white;
-            padding: 12px 0;
-            margin-top: 15px;
-        }
-        
-        .total-row .cost-label,
-        .total-row .cost-value {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: bold;
             color: #1976d2;
         }
         
-        .status-section {
-            background: #e8f5e8;
-            border: 2px solid #4caf50;
-            border-radius: 8px;
-            padding: 20px;
+        .status {
             text-align: center;
-            margin-bottom: 25px;
-        }
-        
-        .status-badge {
-            display: inline-block;
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-weight: bold;
-            text-transform: uppercase;
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-        
-        .status-confirmada {
-            background: #4caf50;
-            color: white;
-        }
-        
-        .status-pendiente {
-            background: #ff9800;
-            color: white;
-        }
-        
-        .status-completada {
-            background: #2196f3;
-            color: white;
-        }
-        
-        .payment-method {
-            background: #fff3e0;
-            border-left: 4px solid #ff9800;
-            padding: 15px;
+            padding: 10px;
             margin-bottom: 20px;
-        }
-        
-        .payment-method h4 {
-            margin: 0 0 10px 0;
-            color: #ef6c00;
-            font-size: 14px;
-        }
-        
-        .service-details {
-            border: 1px solid #dee2e6;
-            border-radius: 6px;
-            overflow: hidden;
-            margin-bottom: 25px;
-        }
-        
-        .service-details-header {
-            background: #007bff;
-            color: white;
-            padding: 12px 15px;
-            font-weight: bold;
-            font-size: 14px;
-        }
-        
-        .service-details-body {
-            padding: 15px;
+            border: 2px solid #4caf50;
+            background-color: #e8f5e8;
         }
         
         .footer {
-            border-top: 2px solid #007bff;
+            border-top: 1px solid #ddd;
             padding-top: 20px;
             margin-top: 30px;
             text-align: center;
-            color: #6c757d;
-            font-size: 10px;
-        }
-        
-        .footer h5 {
-            color: #007bff;
-            margin-bottom: 15px;
-            font-size: 14px;
-        }
-        
-        .contact-info {
-            margin-bottom: 15px;
-        }
-        
-        .legal-text {
-            font-style: italic;
-            color: #999;
-            font-size: 9px;
-            margin-top: 15px;
-        }
-        
-        .qr-section {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
-        .verification-code {
-            background: #f8f9fa;
-            border: 2px dashed #007bff;
-            padding: 15px;
-            text-align: center;
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
-            letter-spacing: 3px;
-            color: #007bff;
-            margin-bottom: 20px;
+            font-size: 12px;
+            color: #666;
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>🚛 Grúa Style</h1>
-        <h2>Comprobante de Pago Oficial</h2>
-        <p>Servicio Profesional de Grúa 24/7 - Región Metropolitana</p>
-        <p>RUT: 76.XXX.XXX-X | Giro: Servicios de Grúa y Auxilio Mecánico</p>
+        <h1>GRÚA STYLE</h1>
+        <h2>Comprobante de Pago</h2>
+        <p>Servicio Profesional de Grúa 24/7</p>
     </div>
 
-    <div class="comprobante-header">
+    <div class="comprobante-info">
         <h3>COMPROBANTE DE PAGO</h3>
-        <div class="numero-orden">{{ solicitud.numero_orden }}</div>
+        <p><strong>Número de Orden:</strong> {{ solicitud.numero_orden }}</p>
+        <p><strong>Fecha:</strong> {{ fecha_generacion|date:"d/m/Y H:i" }}</p>
+        <p><strong>Estado:</strong> {{ solicitud.get_estado_display }}</p>
     </div>
 
-    <div class="verification-code">
-        CÓDIGO DE VERIFICACIÓN: {{ solicitud.numero_orden }}{{ solicitud.id }}
-    </div>
+    <table class="info-table">
+        <tr>
+            <th colspan="2">INFORMACIÓN DEL CLIENTE</th>
+        </tr>
+        <tr>
+            <td><strong>Nombre:</strong></td>
+            <td>{{ solicitud.cliente.get_full_name|default:solicitud.cliente.username }}</td>
+        </tr>
+        <tr>
+            <td><strong>Email:</strong></td>
+            <td>{{ solicitud.cliente.email|default:"No especificado" }}</td>
+        </tr>
+        <tr>
+            <td><strong>Fecha Solicitud:</strong></td>
+            <td>{{ solicitud.fecha_solicitud|date:"d/m/Y H:i" }}</td>
+        </tr>
+    </table>
 
-    <div class="status-section">
-        <div class="status-badge status-{{ solicitud.estado }}">
-            {% if solicitud.pagado %}
-                ✅ PAGADO
-            {% else %}
-                ⏳ ESTADO: {{ solicitud.get_estado_display|upper }}
-            {% endif %}
-        </div>
-        <p><strong>Fecha de Emisión:</strong> {{ fecha_generacion|date:"d/m/Y H:i" }}</p>
-    </div>
-
-    <div class="info-grid">
-        <div class="info-column">
-            <div class="info-section">
-                <h4>📋 Datos del Cliente</h4>
-                <div class="info-row">
-                    <span class="label">Nombre:</span>
-                    <span class="value">{{ solicitud.cliente.get_full_name|default:solicitud.cliente.username }}</span>
-                </div>
-                <div class="info-row">
-                    <span class="label">Email:</span>
-                    <span class="value">{{ solicitud.cliente.email|default:"No especificado" }}</span>
-                </div>
-                <div class="info-row">
-                    <span class="label">Fecha Solicitud:</span>
-                    <span class="value">{{ solicitud.fecha_solicitud|date:"d/m/Y H:i" }}</span>
-                </div>
-            </div>
-
-            {% if solicitud.metodo_pago %}
-            <div class="payment-method">
-                <h4>💳 Método de Pago</h4>
-                <p><strong>{{ solicitud.get_metodo_pago_display }}</strong></p>
-                {% if solicitud.webpay_authorization_code %}
-                <p><small>Código Autorización: {{ solicitud.webpay_authorization_code }}</small></p>
-                {% endif %}
-            </div>
-            {% endif %}
-        </div>
-
-        <div class="info-column">
-            <div class="service-details">
-                <div class="service-details-header">
-                    🚛 Detalles del Servicio
-                </div>
-                <div class="service-details-body">
-                    <div class="info-row">
-                        <span class="label">Origen:</span>
-                        <span class="value">{{ solicitud.origen }}</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="label">Destino:</span>
-                        <span class="value">{{ solicitud.destino }}</span>
-                    </div>
-                    {% if solicitud.distancia_km %}
-                    <div class="info-row">
-                        <span class="label">Distancia:</span>
-                        <span class="value">{{ solicitud.distancia_km }} km</span>
-                    </div>
-                    {% endif %}
-                    <div class="info-row">
-                        <span class="label">Tipo Vehículo:</span>
-                        <span class="value">{{ solicitud.get_tipo_vehiculo_display }}</span>
-                    </div>
-                    {% if solicitud.observaciones %}
-                    <div class="info-row">
-                        <span class="label">Observaciones:</span>
-                        <span class="value">{{ solicitud.observaciones }}</span>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="payment-summary">
-        <h4>💰 RESUMEN DE PAGO</h4>
-        
-        <div class="cost-row">
-            <span class="cost-label">Tarifa Base:</span>
-            <span class="cost-value">${{ tarifa_base|floatformat:0 }}</span>
-        </div>
-        
+    <table class="info-table">
+        <tr>
+            <th colspan="2">DETALLES DEL SERVICIO</th>
+        </tr>
+        <tr>
+            <td><strong>Origen:</strong></td>
+            <td>{{ solicitud.origen }}</td>
+        </tr>
+        <tr>
+            <td><strong>Destino:</strong></td>
+            <td>{{ solicitud.destino }}</td>
+        </tr>
         {% if solicitud.distancia_km %}
-        <div class="cost-row">
-            <span class="cost-label">Kilómetros ({{ solicitud.distancia_km }} km × ${{ tarifa_por_km|floatformat:0 }}):</span>
-            <span class="cost-value">${{ costo_km|floatformat:0 }}</span>
-        </div>
+        <tr>
+            <td><strong>Distancia:</strong></td>
+            <td>{{ solicitud.distancia_km }} km</td>
+        </tr>
         {% endif %}
-        
-        <div class="cost-row">
-            <span class="cost-label">Subtotal:</span>
-            <span class="cost-value">${{ total|floatformat:0 }}</span>
-        </div>
-        
-        <div class="cost-row total-row">
-            <span class="cost-label">TOTAL PAGADO:</span>
-            <span class="cost-value">${{ solicitud.costo_total|default:total|floatformat:0 }}</span>
-        </div>
+        <tr>
+            <td><strong>Tipo de Vehículo:</strong></td>
+            <td>{{ solicitud.get_tipo_vehiculo_display }}</td>
+        </tr>
+        {% if solicitud.metodo_pago %}
+        <tr>
+            <td><strong>Método de Pago:</strong></td>
+            <td>{{ solicitud.get_metodo_pago_display }}</td>
+        </tr>
+        {% endif %}
+    </table>
+
+    <div class="total-section">
+        <h3>DESGLOSE DE COSTOS</h3>
+        <table class="info-table">
+            <tr>
+                <td><strong>Tarifa Base:</strong></td>
+                <td>${{ tarifa_base|floatformat:0 }}</td>
+            </tr>
+            {% if solicitud.distancia_km %}
+            <tr>
+                <td><strong>Costo por Kilómetro ({{ solicitud.distancia_km }} km):</strong></td>
+                <td>${{ costo_km|floatformat:0 }}</td>
+            </tr>
+            {% endif %}
+            <tr class="total-row">
+                <td><strong>TOTAL:</strong></td>
+                <td><strong>${{ total|floatformat:0 }}</strong></td>
+            </tr>
+        </table>
     </div>
 
     {% if solicitud.pagado %}
-    <div class="status-section">
-        <p><strong>✅ PAGO CONFIRMADO</strong></p>
+    <div class="status">
+        <h3>✅ PAGO CONFIRMADO</h3>
         <p>Este comprobante certifica que el pago ha sido procesado exitosamente.</p>
-        {% if solicitud.fecha_pago %}
-        <p><small>Fecha de Pago: {{ solicitud.fecha_pago|date:"d/m/Y H:i" }}</small></p>
-        {% endif %}
+    </div>
+    {% else %}
+    <div class="status">
+        <h3>⏳ ESTADO: {{ solicitud.get_estado_display|upper }}</h3>
     </div>
     {% endif %}
 
+    {% if solicitud.observaciones %}
+    <table class="info-table">
+        <tr>
+            <th>OBSERVACIONES</th>
+        </tr>
+        <tr>
+            <td>{{ solicitud.observaciones }}</td>
+        </tr>
+    </table>
+    {% endif %}
+
     <div class="footer">
-        <h5>Grúa Style - Servicio Profesional de Grúa</h5>
-        
-        <div class="contact-info">
-            <p><strong>📞 Contacto:</strong> +56 9 61833876</p>
-            <p><strong>📧 Email:</strong> contacto@gruastyle.com</p>
-            <p><strong>🌐 Web:</strong> www.gruastyle.com</p>
-            <p><strong>📍 Cobertura:</strong> Región Metropolitana</p>
-        </div>
-        
-        <div class="legal-text">
-            <p>Este documento constituye un comprobante oficial de pago por servicios de grúa.</p>
-            <p>Documento generado electrónicamente el {{ fecha_generacion|date:"d/m/Y H:i" }}</p>
-            <p>Para verificar la autenticidad de este documento, contacte a Grúa Style con el código de verificación.</p>
-        </div>
+        <h4>Grúa Style - Servicio Profesional</h4>
+        <p><strong>Teléfono:</strong> +56 9 61833876</p>
+        <p><strong>Email:</strong> contacto@gruastyle.com</p>
+        <p><strong>Cobertura:</strong> Región Metropolitana</p>
+        <hr>
+        <p><em>Documento generado el {{ fecha_generacion|date:"d/m/Y H:i" }}</em></p>
+        <p><em>Este documento es válido sin firma ni timbre</em></p>
     </div>
 </body>
 </html>
