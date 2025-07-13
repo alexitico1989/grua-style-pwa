@@ -1,67 +1,323 @@
-{% extends 'grua_app/base.html' %}
+<!-- Header estilo Uber -->
+<div class="uber-header">
+    <div class="header-content">
+        <div class="logo">
+            <i class="ph ph-truck fluor-icon-white" style="font-size: 1.8rem;"></i>
+            Grúa Style
+        </div>
+        <div class="user-avatar">
+            {{ user.first_name.0|default:user.username.0|upper }}
+        </div>
+    </div>
+</div>
 
-{% block title %}Dashboard - GrúaExpress{% endblock %}
+<!-- Container principal -->
+<div class="uber-container">
+    <!-- Card de ubicación -->
+    <div class="location-card">
+        <div class="location-header">
+            <div class="location-icon">
+                <i class="ph ph-map-pin fluor-icon" style="font-size: 1.8rem;"></i>
+            </div>
+            <div>
+                <div class="location-text">Tu ubicación actual</div>
+                <div class="location-address">Lampa, Santiago Metropolitano</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Botón principal de solicitar -->
+    <div class="main-action-card">
+        <a href="{% url 'solicitar_servicio' %}" class="main-action-btn">
+            <span class="action-icon">
+                <i class="ph ph-truck" style="font-size: 3.5rem;"></i>
+            </span>
+            <div class="action-title">Solicitar Grúa</div>
+            <div class="action-subtitle">Servicio 24/7 disponible</div>
+        </a>
+    </div>
+    
+    <!-- Sección de solicitudes -->
+    <div class="solicitudes-section">
+        <h2 class="section-title">
+            <i class="ph ph-list-checks fluor-icon" style="margin-right: 0.5rem;"></i>
+            Mis Solicitudes
+        </h2>
+        
+        {% if solicitudes %}
+            {% for solicitud in solicitudes %}
+            <div class="solicitud-uber-card">
+                <!-- Header de la solicitud -->
+                <div class="solicitud-header">
+                    <div class="solicitud-top">
+                        <div class="numero-orden">{{ solicitud.numero_orden }}</div>
+                        <div class="estado-badge estado-{{ solicitud.estado }}">
+                            {{ solicitud.get_estado_display }}
+                        </div>
+                    </div>
+                    
+                    <!-- Información de ruta -->
+                    <div class="ruta-info">
+                        <div class="ruta-item">
+                            <div class="ruta-icon">
+                                <i class="ph ph-circle fluor-icon" style="font-size: 1rem;"></i>
+                            </div>
+                            <div class="ruta-text">{{ solicitud.direccion_origen|truncatechars:50 }}</div>
+                        </div>
+                        <div class="ruta-item">
+                            <div class="ruta-icon">
+                                <i class="ph ph-map-pin fluor-icon-blue" style="font-size: 1rem;"></i>
+                            </div>
+                            <div class="ruta-text">{{ solicitud.direccion_destino|truncatechars:50 }}</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Información de fecha -->
+                    <div class="fecha-info">
+                        <span class="fecha-info-icon">
+                            <i class="ph ph-clock fluor-icon-white" style="font-size: 1rem;"></i>
+                        </span>
+                        {{ solicitud.fecha_servicio|date:"d/m/Y H:i" }}
+                    </div>
+                </div>
+                
+                <!-- Acciones principales -->
+                <div class="solicitud-actions">
+                    <a href="{% url 'confirmacion_solicitud' solicitud.id %}" class="uber-btn btn-primary">
+                        <span class="btn-icon">
+                            <i class="ph ph-eye" style="font-size: 1.2rem; margin-right: 0.5rem;"></i>
+                        </span>
+                        Ver Detalles
+                    </a>
+                    <a href="{% url 'descargar_pdf_solicitud' solicitud.id %}" class="uber-btn btn-secondary">
+                        <span class="btn-icon">
+                            <i class="ph ph-file-pdf" style="font-size: 1.2rem; margin-right: 0.5rem;"></i>{% extends 'grua_app/base.html' %}
+
+{% block title %}Dashboard - Grúa Style{% endblock %}
 
 {% block extra_css %}
+<!-- Phosphor Icons CDN -->
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+
 <style>
-    .dashboard-container {
-        max-width: 1200px;
-        margin: 2rem auto;
-        padding: 0 1rem;
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
     }
     
-    .dashboard-header {
-        background: linear-gradient(135deg, #10b981, #059669);
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        background-color: #0a0a0a;
+        color: #fff;
+        line-height: 1.4;
+    }
+    
+    /* Efecto fluor para iconos */
+    .fluor-icon {
+        color: #00ff88;
+        filter: drop-shadow(0 0 8px rgba(0, 255, 136, 0.6));
+        transition: all 0.3s ease;
+    }
+    
+    .fluor-icon:hover {
+        color: #00ffaa;
+        filter: drop-shadow(0 0 12px rgba(0, 255, 170, 0.8));
+        transform: scale(1.1);
+    }
+    
+    .fluor-icon-white {
+        color: #ffffff;
+        filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.4));
+    }
+    
+    .fluor-icon-blue {
+        color: #00aaff;
+        filter: drop-shadow(0 0 8px rgba(0, 170, 255, 0.6));
+    }
+    
+    /* Header estilo Uber */
+    .uber-header {
+        background: linear-gradient(135deg, #000, #1a1a1a);
         color: white;
-        padding: 2rem;
-        border-radius: 1rem;
-        margin-bottom: 2rem;
-        text-align: center;
+        padding: 1rem 1.5rem;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 20px rgba(0, 255, 136, 0.2);
+        border-bottom: 1px solid rgba(0, 255, 136, 0.1);
     }
     
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
-        margin-bottom: 2rem;
+    .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
     
-    .stat-card {
-        background: white;
+    .logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #00ff88, #00cc6a);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: #000;
+        box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
+    }
+    
+    /* Container principal */
+    .uber-container {
+        padding: 0 0 80px 0; /* Espacio para bottom nav */
+        min-height: 100vh;
+        background: #0a0a0a;
+    }
+    
+    /* Card de ubicación */
+    .location-card {
+        background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+        margin: 1rem 1.5rem;
         padding: 1.5rem;
-        border-radius: 1rem;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        text-align: center;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 255, 136, 0.1);
+        border: 1px solid rgba(0, 255, 136, 0.2);
     }
     
-    .solicitudes-section {
-        background: white;
-        border-radius: 1rem;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    .location-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.5rem;
+    }
+    
+    .location-icon {
+        font-size: 1.5rem;
+        margin-right: 1rem;
+    }
+    
+    .location-text {
+        font-size: 0.9rem;
+        color: #888;
+        margin-bottom: 0.25rem;
+    }
+    
+    .location-address {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #fff;
+    }
+    
+    /* Botón principal estilo Uber */
+    .main-action-card {
+        background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+        margin: 0 1.5rem 1.5rem 1.5rem;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 255, 136, 0.2);
+        border: 1px solid rgba(0, 255, 136, 0.3);
         overflow: hidden;
     }
     
-    .section-header {
-        background: #f8fafc;
-        padding: 1.5rem;
-        border-bottom: 1px solid #e2e8f0;
+    .main-action-btn {
+        display: block;
+        width: 100%;
+        padding: 2rem 1.5rem;
+        background: linear-gradient(135deg, #00ff88, #00cc6a);
+        color: #000;
+        text-decoration: none;
+        text-align: center;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
     }
     
-    .solicitud-card {
-        border-bottom: 1px solid #e2e8f0;
-        padding: 1.5rem;
-        transition: background-color 0.3s ease;
+    .main-action-btn:hover {
+        background: linear-gradient(135deg, #00ffaa, #00dd7a);
+        color: #000;
+        text-decoration: none;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(0, 255, 136, 0.4);
     }
     
-    .solicitud-card:hover {
-        background-color: #f8fafc;
+    .main-action-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s;
     }
     
-    .solicitud-card:last-child {
-        border-bottom: none;
+    .main-action-btn:hover::before {
+        left: 100%;
+    }
+    
+    .action-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        display: block;
+    }
+    
+    .action-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .action-subtitle {
+        font-size: 1rem;
+        opacity: 0.8;
+    }
+    
+    /* Sección de solicitudes */
+    .solicitudes-section {
+        margin: 0 1.5rem;
+    }
+    
+    .section-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: #fff;
+        padding: 0 0.5rem;
+    }
+    
+    /* Cards de solicitudes estilo Uber */
+    .solicitud-uber-card {
+        background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+        border-radius: 16px;
+        margin-bottom: 1rem;
+        box-shadow: 0 4px 20px rgba(0, 255, 136, 0.1);
+        border: 1px solid rgba(0, 255, 136, 0.2);
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .solicitud-uber-card:hover {
+        box-shadow: 0 8px 30px rgba(0, 255, 136, 0.2);
+        transform: translateY(-4px);
+        border-color: rgba(0, 255, 136, 0.4);
     }
     
     .solicitud-header {
+        padding: 1.5rem 1.5rem 1rem 1.5rem;
+        border-bottom: 1px solid rgba(0, 255, 136, 0.1);
+    }
+    
+    .solicitud-top {
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -69,243 +325,381 @@
     }
     
     .numero-orden {
-        font-size: 1.25rem;
-        font-weight: bold;
-        color: #10b981;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #fff;
     }
     
-    .estado {
+    .estado-badge {
         padding: 0.5rem 1rem;
-        border-radius: 2rem;
-        font-size: 0.875rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
         font-weight: 600;
+        text-transform: uppercase;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     }
     
-    .estado-pendiente { background: #fef3c7; color: #92400e; }
-    .estado-confirmada { background: #d1fae5; color: #065f46; }
-    .estado-en_proceso { background: #dbeafe; color: #1e40af; }
-    .estado-completada { background: #dcfce7; color: #166534; }
-    .estado-cancelada { background: #fee2e2; color: #dc2626; }
-    .estado-pendiente_pago { background: #fde68a; color: #92400e; }
+    .estado-pendiente { 
+        background: linear-gradient(135deg, #ff8800, #ff6600); 
+        color: #fff;
+        box-shadow: 0 0 15px rgba(255, 136, 0, 0.4);
+    }
+    .estado-confirmada { 
+        background: linear-gradient(135deg, #00ff88, #00cc6a); 
+        color: #000;
+        box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
+    }
+    .estado-en_proceso { 
+        background: linear-gradient(135deg, #00aaff, #0088cc); 
+        color: #fff;
+        box-shadow: 0 0 15px rgba(0, 170, 255, 0.4);
+    }
+    .estado-completada { 
+        background: linear-gradient(135deg, #00ff88, #00cc6a); 
+        color: #000;
+        box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
+    }
+    .estado-cancelada { 
+        background: linear-gradient(135deg, #ff4444, #cc2222); 
+        color: #fff;
+        box-shadow: 0 0 15px rgba(255, 68, 68, 0.4);
+    }
+    .estado-pendiente_pago { 
+        background: linear-gradient(135deg, #ffaa00, #ff8800); 
+        color: #000;
+        box-shadow: 0 0 15px rgba(255, 170, 0, 0.4);
+    }
     
-    .solicitud-details {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1rem;
+    .ruta-info {
         margin-bottom: 1rem;
     }
     
-    .detail-item {
-        font-size: 0.875rem;
-        color: #6b7280;
-    }
-    
-    .detail-label {
-        font-weight: 600;
-        color: #374151;
-    }
-    
-    .acciones {
+    .ruta-item {
         display: flex;
-        gap: 0.5rem;
-        flex-wrap: wrap;
-        margin-top: 1rem;
+        align-items: flex-start;
+        margin-bottom: 0.75rem;
+        font-size: 0.95rem;
     }
     
-    .btn {
-        padding: 0.5rem 1rem;
-        border-radius: 0.5rem;
-        font-size: 0.875rem;
-        font-weight: 600;
-        text-decoration: none;
-        border: none;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        display: inline-flex;
+    .ruta-item:last-child {
+        margin-bottom: 0;
+    }
+    
+    .ruta-icon {
+        font-size: 1.2rem;
+        margin-right: 1rem;
+        margin-top: 0.1rem;
+        width: 20px;
+    }
+    
+    .ruta-text {
+        flex: 1;
+        color: #ccc;
+        line-height: 1.4;
+    }
+    
+    .fecha-info {
+        display: flex;
         align-items: center;
-        gap: 0.5rem;
+        color: #888;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
     }
     
-    .btn-primary {
-        background: #10b981;
-        color: white;
+    .fecha-info-icon {
+        margin-right: 0.5rem;
     }
     
-    .btn-secondary {
-        background: #6b7280;
-        color: white;
+    /* Acciones estilo Uber */
+    .solicitud-actions {
+        padding: 1rem 1.5rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        background: rgba(0, 0, 0, 0.2);
     }
     
-    .btn-outline {
-        background: transparent;
-        border: 1px solid #d1d5db;
-        color: #374151;
-    }
-    
-    .btn-warning {
-        background: #f59e0b;
-        color: white;
-    }
-    
-    .btn:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
-    
-    .btn-floating {
-        position: fixed;
-        bottom: 2rem;
-        right: 2rem;
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #10b981, #059669);
-        color: white;
-        border: none;
-        box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+    .uber-btn {
+        padding: 0.75rem 1rem;
+        border-radius: 12px;
+        text-decoration: none;
+        text-align: center;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        border: 1px solid;
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #00ff88, #00cc6a);
+        color: #000;
+        border-color: #00ff88;
+        box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #00ffaa, #00dd7a);
+        color: #000;
         text-decoration: none;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(0, 255, 136, 0.5);
+    }
+    
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        border-color: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+    }
+    
+    .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: #fff;
+        text-decoration: none;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+    }
+    
+    .btn-icon {
+        font-size: 1.1rem;
+        margin-right: 0.5rem;
+    }
+    
+    /* Acciones adicionales */
+    .more-actions {
+        padding: 0 1.5rem 1rem 1.5rem;
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+    
+    .btn-small {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8rem;
+        border-radius: 6px;
+        flex: 1;
+        min-width: 100px;
+    }
+    
+    /* Bottom Navigation estilo Uber */
+    .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(135deg, #1a1a1a, #000);
+        border-top: 1px solid rgba(0, 255, 136, 0.2);
+        display: flex;
+        z-index: 100;
+        box-shadow: 0 -4px 20px rgba(0, 255, 136, 0.1);
+        backdrop-filter: blur(10px);
+    }
+    
+    .nav-item {
+        flex: 1;
+        text-align: center;
+        padding: 0.75rem 0.5rem;
+        text-decoration: none;
+        color: #888;
+        transition: all 0.3s ease;
+        border: none;
+        background: none;
+        cursor: pointer;
+        position: relative;
+    }
+    
+    .nav-item.active {
+        color: #00ff88;
+    }
+    
+    .nav-item.active .nav-icon {
+        color: #00ff88;
+        filter: drop-shadow(0 0 8px rgba(0, 255, 136, 0.6));
+        transform: scale(1.1);
+    }
+    
+    .nav-item:hover {
+        color: #00ff88;
+        text-decoration: none;
+    }
+    
+    .nav-item:hover .nav-icon {
+        color: #00ff88;
+        filter: drop-shadow(0 0 6px rgba(0, 255, 136, 0.4));
+        transform: scale(1.05);
+    }
+    
+    .nav-icon {
+        font-size: 1.4rem;
+        display: block;
+        margin-bottom: 0.25rem;
         transition: all 0.3s ease;
     }
     
-    .btn-floating:hover {
-        transform: scale(1.1);
-        box-shadow: 0 6px 24px rgba(16, 185, 129, 0.6);
-        color: white;
-        text-decoration: none;
+    .nav-label {
+        font-size: 0.7rem;
+        font-weight: 600;
     }
     
+    /* Empty state */
     .empty-state {
         text-align: center;
-        padding: 3rem;
-        color: #6b7280;
+        padding: 3rem 1.5rem;
+        color: #666;
     }
     
     .empty-icon {
         font-size: 4rem;
         margin-bottom: 1rem;
+        opacity: 0.5;
     }
     
-    @media (max-width: 768px) {
-        .solicitud-details {
-            grid-template-columns: 1fr;
+    .empty-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #000;
+    }
+    
+    .empty-description {
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+    
+    /* Responsive para pantallas grandes */
+    @media (min-width: 768px) {
+        .uber-container {
+            max-width: 400px;
+            margin: 0 auto;
         }
         
-        .solicitud-header {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 0.5rem;
-        }
-        
-        .acciones {
-            justify-content: center;
+        .solicitud-actions {
+            grid-template-columns: repeat(3, 1fr);
         }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="dashboard-container">
-    <div class="dashboard-header">
-        <h1>🚗 Mi Dashboard</h1>
-        <p>Bienvenido, {{ user.get_full_name|default:user.username }}</p>
+<!-- Header estilo Uber -->
+<div class="uber-header">
+    <div class="header-content">
+        <div class="logo">🚗 Grúa Style</div>
+        <div class="user-avatar">
+            {{ user.first_name.0|default:user.username.0|upper }}
+        </div>
     </div>
-    
-    <div class="stats-grid">
-        <div class="stat-card">
-            <h3>📋 Total Solicitudes</h3>
-            <div style="font-size: 2rem; font-weight: bold; color: #10b981;">
-                {{ solicitudes|length }}
-            </div>
-        </div>
-        
-        <div class="stat-card">
-            <h3>⏳ Pendientes</h3>
-            <div style="font-size: 2rem; font-weight: bold; color: #f59e0b;">
-                {{ solicitudes|length }}
-            </div>
-        </div>
-        
-        <div class="stat-card">
-            <h3>✅ Completadas</h3>
-            <div style="font-size: 2rem; font-weight: bold; color: #10b981;">
-                0
+</div>
+
+<!-- Container principal -->
+<div class="uber-container">
+    <!-- Card de ubicación -->
+    <div class="location-card">
+        <div class="location-header">
+            <div class="location-icon">📍</div>
+            <div>
+                <div class="location-text">Tu ubicación actual</div>
+                <div class="location-address">Lampa, Santiago Metropolitano</div>
             </div>
         </div>
     </div>
     
+    <!-- Botón principal de solicitar -->
+    <div class="main-action-card">
+        <a href="{% url 'solicitar_servicio' %}" class="main-action-btn">
+            <span class="action-icon">🚚</span>
+            <div class="action-title">Solicitar Grúa</div>
+            <div class="action-subtitle">Servicio 24/7 disponible</div>
+        </a>
+    </div>
+    
+    <!-- Sección de solicitudes -->
     <div class="solicitudes-section">
-        <div class="section-header">
-            <h2>📋 Mis Solicitudes de Servicio</h2>
-        </div>
+        <h2 class="section-title">Mis Solicitudes</h2>
         
         {% if solicitudes %}
             {% for solicitud in solicitudes %}
-            <div class="solicitud-card">
+            <div class="solicitud-uber-card">
+                <!-- Header de la solicitud -->
                 <div class="solicitud-header">
-                    <div class="numero-orden">
-                        {{ solicitud.numero_orden }}
+                    <div class="solicitud-top">
+                        <div class="numero-orden">{{ solicitud.numero_orden }}</div>
+                        <div class="estado-badge estado-{{ solicitud.estado }}">
+                            {{ solicitud.get_estado_display }}
+                        </div>
                     </div>
-                    <div class="estado estado-{{ solicitud.estado }}">
-                        {{ solicitud.get_estado_display }}
+                    
+                    <!-- Información de ruta -->
+                    <div class="ruta-info">
+                        <div class="ruta-item">
+                            <div class="ruta-icon">🟢</div>
+                            <div class="ruta-text">{{ solicitud.direccion_origen|truncatechars:50 }}</div>
+                        </div>
+                        <div class="ruta-item">
+                            <div class="ruta-icon">🔴</div>
+                            <div class="ruta-text">{{ solicitud.direccion_destino|truncatechars:50 }}</div>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="solicitud-details">
-                    <div class="detail-item">
-                        <span class="detail-label">📅 Fecha:</span>
+                    
+                    <!-- Información de fecha -->
+                    <div class="fecha-info">
+                        <span class="fecha-info-icon">🕒</span>
                         {{ solicitud.fecha_servicio|date:"d/m/Y H:i" }}
                     </div>
-                    <div class="detail-item">
-                        <span class="detail-label">📍 Origen:</span>
-                        {{ solicitud.direccion_origen|truncatechars:40 }}
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">🎯 Destino:</span>
-                        {{ solicitud.direccion_destino|truncatechars:40 }}
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">💰 Método de Pago:</span>
-                        {{ solicitud.get_metodo_pago_display|default:"No definido" }}
-                    </div>
                 </div>
                 
-                <div class="acciones">
-                    <!-- Ver Detalles -->
-                    <a href="{% url 'confirmacion_solicitud' solicitud.id %}" class="btn btn-primary">
-                        👁️ Ver Detalles
+                <!-- Acciones principales -->
+                <div class="solicitud-actions">
+                    <a href="{% url 'confirmacion_solicitud' solicitud.id %}" class="uber-btn btn-primary">
+                        <span class="btn-icon">👁️</span>
+                        Ver Detalles
+                    </a>
+                    <a href="{% url 'descargar_pdf_solicitud' solicitud.id %}" class="uber-btn btn-secondary">
+                        <span class="btn-icon">📄                    <a href="{% url 'descargar_pdf_solicitud' solicitud.id %}" class="uber-btn btn-secondary">
+                        <span class="btn-icon">
+                            <i class="ph ph-file-pdf" style="font-size: 1.2rem; margin-right: 0.5rem;"></i>
+                        </span>
+                        PDF
+                    </a>
+                </div>
+                
+                <!-- Acciones adicionales -->
+                <div class="more-actions">
+                    <a href="{% url 'imprimir_solicitud' solicitud.id %}" target="_blank" class="uber-btn btn-secondary btn-small">
+                        <span class="btn-icon">
+                            <i class="ph ph-printer" style="font-size: 1rem; margin-right: 0.3rem;"></i>
+                        </span>
+                        Imprimir
                     </a>
                     
-                    <!-- Descargar PDF -->
-                    <a href="{% url 'descargar_pdf_solicitud' solicitud.id %}" class="btn btn-secondary">
-                        📄 Descargar PDF
-                    </a>
-                    
-                    <!-- Imprimir -->
-                    <a href="{% url 'imprimir_solicitud' solicitud.id %}" target="_blank" class="btn btn-outline" onclick="window.open(this.href, '_blank', 'width=800,height=900'); return false;">
-                        🖨️ Imprimir
-                    </a>
-                    
-                    <!-- Comprobante PDF (solo si está confirmada o pagada) -->
                     {% if solicitud.estado == 'confirmada' or solicitud.estado == 'completada' or solicitud.pagado %}
-                    <a href="{% url 'descargar_pdf_comprobante' solicitud.id %}" class="btn btn-warning">
-                        🧾 Comprobante
+                    <a href="{% url 'descargar_pdf_comprobante' solicitud.id %}" class="uber-btn btn-secondary btn-small">
+                        <span class="btn-icon">
+                            <i class="ph ph-receipt" style="font-size: 1rem; margin-right: 0.3rem;"></i>
+                        </span>
+                        Comprobante
                     </a>
                     {% endif %}
                     
-                    <!-- Reenviar Email -->
-                    <a href="{% url 'reenviar_comprobante' solicitud.id %}" class="btn btn-outline">
-                        📧 Reenviar Email
+                    <a href="{% url 'reenviar_comprobante' solicitud.id %}" class="uber-btn btn-secondary btn-small">
+                        <span class="btn-icon">
+                            <i class="ph ph-envelope" style="font-size: 1rem; margin-right: 0.3rem;"></i>
+                        </span>
+                        Email
                     </a>
                     
-                    <!-- Pagar (solo si está pendiente de pago) -->
                     {% if solicitud.estado == 'pendiente' or solicitud.estado == 'pendiente_pago' %}
-                    <a href="{% url 'procesar_pago' solicitud.id %}" class="btn btn-primary">
-                        💳 Proceder al Pago
+                    <a href="{% url 'procesar_pago' solicitud.id %}" class="uber-btn btn-primary btn-small">
+                        <span class="btn-icon">
+                            <i class="ph ph-credit-card" style="font-size: 1rem; margin-right: 0.3rem;"></i>
+                        </span>
+                        Pagar
                     </a>
                     {% endif %}
                 </div>
@@ -313,16 +707,41 @@
             {% endfor %}
         {% else %}
             <div class="empty-state">
-                <div class="empty-icon">📋</div>
-                <h3>No tienes solicitudes aún</h3>
-                <p>¡Crea tu primera solicitud de servicio!</p>
+                <div class="empty-icon">
+                    <i class="ph ph-truck fluor-icon" style="font-size: 4rem; opacity: 0.3;"></i>
+                </div>
+                <div class="empty-title">No tienes solicitudes</div>
+                <div class="empty-description">¡Solicita tu primera grúa ahora!</div>
             </div>
         {% endif %}
     </div>
-    
-    <!-- Botón flotante para nueva solicitud -->
-    <a href="{% url 'solicitar_servicio' %}" class="btn-floating" title="Nueva Solicitud">
-        ➕
+</div>
+
+<!-- Bottom Navigation estilo Uber -->
+<div class="bottom-nav">
+    <a href="{% url 'dashboard' %}" class="nav-item active">
+        <div class="nav-icon">
+            <i class="ph ph-house"></i>
+        </div>
+        <div class="nav-label">Inicio</div>
+    </a>
+    <a href="{% url 'solicitar_servicio' %}" class="nav-item">
+        <div class="nav-icon">
+            <i class="ph ph-plus-circle"></i>
+        </div>
+        <div class="nav-label">Solicitar</div>
+    </a>
+    <a href="{% url 'dashboard' %}" class="nav-item">
+        <div class="nav-icon">
+            <i class="ph ph-clock-clockwise"></i>
+        </div>
+        <div class="nav-label">Historial</div>
+    </a>
+    <a href="#" class="nav-item">
+        <div class="nav-icon">
+            <i class="ph ph-user-circle"></i>
+        </div>
+        <div class="nav-label">Perfil</div>
     </a>
 </div>
 {% endblock %}
