@@ -22,12 +22,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-tu-clave-secreta-aqui'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-tu-clave-secreta-aqui')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'gruastyle.com', 'www.gruastyle.com', '10.204.157.26', '.railway.app']
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',') + ['gruastyle.com', 'www.gruastyle.com', '10.204.157.26', '.railway.app']
 
 
 # Application definition
@@ -142,20 +142,20 @@ LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/'
 
-# Configuración de Email (Resend)
+# Configuración de Email (Hostinger)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.resend.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'resend'
-EMAIL_HOST_PASSWORD = os.environ.get('RESEND_API_KEY', 'tu-api-key-resend-aqui')
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.hostinger.com')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587))
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
-# Configuración de emails
-DEFAULT_FROM_EMAIL = 'Grúa Style <onboarding@resend.dev>'
-SERVER_EMAIL = 'Grúa Style <server@gruastyle.com>'
-EMAIL_BIENVENIDA = 'Grúa Style <bienvenida@gruastyle.com>'
-EMAIL_NOTIFICACIONES = 'Grúa Style <notificaciones@gruastyle.com>'
-EMAIL_SOPORTE = 'Grúa Style <soporte@gruastyle.com>'
+# Configuración de emails - usando tu dominio corporativo
+DEFAULT_FROM_EMAIL = f'Grúa Style <{os.environ.get("EMAIL_HOST_USER", "contacto@gruastyle.com")}>'
+SERVER_EMAIL = f'Grúa Style <{os.environ.get("EMAIL_HOST_USER", "contacto@gruastyle.com")}>'
+EMAIL_BIENVENIDA = f'Grúa Style <{os.environ.get("EMAIL_HOST_USER", "contacto@gruastyle.com")}>'
+EMAIL_NOTIFICACIONES = f'Grúa Style <{os.environ.get("EMAIL_HOST_USER", "contacto@gruastyle.com")}>'
+EMAIL_SOPORTE = f'Grúa Style <{os.environ.get("EMAIL_HOST_USER", "contacto@gruastyle.com")}>'
 
 # Configuración de administradores
 ADMINS = [
