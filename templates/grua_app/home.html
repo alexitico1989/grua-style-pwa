@@ -63,10 +63,14 @@
         cursor: pointer;
         transition: all 0.3s ease;
         position: relative;
+        overflow: hidden;
     }
     
     .hero-title-3d {
-        display: inline-block;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
         transform: rotateX(0deg) rotateY(0deg);
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         text-shadow: 
@@ -75,6 +79,24 @@
             0 0 80px rgba(0, 213, 99, 0.1),
             0 10px 20px rgba(0, 0, 0, 0.3);
         animation: glow-pulse 3s ease-in-out infinite alternate;
+    }
+    
+    .word-servicio {
+        display: inline-block;
+        animation: slide-from-left 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        transform: translateX(-200vw);
+    }
+    
+    .word-de {
+        display: inline-block;
+        opacity: 0;
+        animation: fade-in-de 0.5s ease-in-out 1.8s forwards;
+    }
+    
+    .word-grua {
+        display: inline-block;
+        animation: slide-from-right 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        transform: translateX(200vw);
     }
     
     .hero-title-3d:hover {
@@ -91,7 +113,8 @@
         color: #00D563;
         display: block;
         transform: translateZ(30px);
-        animation: float-3d 4s ease-in-out infinite;
+        animation: float-3d 4s ease-in-out infinite, appear-24-7 1s ease-out 2.5s both;
+        opacity: 0;
         text-shadow: 
             0 0 25px rgba(0, 213, 99, 0.8),
             0 0 50px rgba(0, 213, 99, 0.6),
@@ -109,7 +132,187 @@
             0 30px 60px rgba(0, 0, 0, 0.6);
     }
     
-    /* Animaciones */
+    /* Rayos eléctricos */
+    .lightning-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
+    }
+    
+    .lightning {
+        position: absolute;
+        width: 2px;
+        background: linear-gradient(45deg, #00D563, #00ff88, #ffffff);
+        box-shadow: 
+            0 0 10px #00D563,
+            0 0 20px #00D563,
+            0 0 40px #00D563;
+        animation: lightning-strike 0.3s ease-out;
+        opacity: 0;
+    }
+    
+    .lightning-1 {
+        height: 80px;
+        top: 20%;
+        left: 30%;
+        transform: rotate(45deg);
+        animation-delay: 2s;
+    }
+    
+    .lightning-2 {
+        height: 60px;
+        top: 60%;
+        left: 20%;
+        transform: rotate(-30deg);
+        animation-delay: 2.1s;
+    }
+    
+    .lightning-3 {
+        height: 70px;
+        top: 30%;
+        right: 25%;
+        transform: rotate(-45deg);
+        animation-delay: 2.05s;
+    }
+    
+    .lightning-4 {
+        height: 50px;
+        top: 70%;
+        right: 30%;
+        transform: rotate(60deg);
+        animation-delay: 2.15s;
+    }
+    
+    .lightning-5 {
+        height: 90px;
+        top: 10%;
+        left: 50%;
+        transform: rotate(0deg);
+        animation-delay: 2.08s;
+    }
+    
+    /* Animaciones de entrada */
+    @keyframes slide-from-left {
+        0% {
+            transform: translateX(-200vw) rotateY(-90deg);
+            opacity: 0;
+        }
+        70% {
+            transform: translateX(20px) rotateY(10deg);
+            opacity: 1;
+        }
+        100% {
+            transform: translateX(0) rotateY(0deg);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes slide-from-right {
+        0% {
+            transform: translateX(200vw) rotateY(90deg);
+            opacity: 0;
+        }
+        70% {
+            transform: translateX(-20px) rotateY(-10deg);
+            opacity: 1;
+        }
+        100% {
+            transform: translateX(0) rotateY(0deg);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes fade-in-de {
+        from {
+            opacity: 0;
+            transform: scale(0.5);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+    
+    @keyframes appear-24-7 {
+        0% {
+            opacity: 0;
+            transform: translateZ(30px) translateY(50px) scale(0.5);
+        }
+        50% {
+            opacity: 0.5;
+            transform: translateZ(35px) translateY(25px) scale(0.8);
+        }
+        100% {
+            opacity: 1;
+            transform: translateZ(30px) translateY(0px) scale(1);
+        }
+    }
+    
+    @keyframes lightning-strike {
+        0% {
+            opacity: 0;
+            transform: scale(0.8) rotateZ(var(--rotation, 0deg));
+            filter: brightness(1);
+        }
+        10% {
+            opacity: 1;
+            transform: scale(1.2) rotateZ(var(--rotation, 0deg));
+            filter: brightness(2);
+        }
+        20% {
+            opacity: 0.8;
+            transform: scale(1) rotateZ(var(--rotation, 0deg));
+            filter: brightness(1.5);
+        }
+        30% {
+            opacity: 1;
+            transform: scale(1.1) rotateZ(var(--rotation, 0deg));
+            filter: brightness(2.5);
+        }
+        100% {
+            opacity: 0;
+            transform: scale(0.9) rotateZ(var(--rotation, 0deg));
+            filter: brightness(0.5);
+        }
+    }
+    
+    /* Resplandor de impacto */
+    .impact-glow {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(circle, rgba(0, 213, 99, 0.3) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: impact-explosion 0.6s ease-out 2s;
+        opacity: 0;
+        pointer-events: none;
+        z-index: -1;
+    }
+    
+    @keyframes impact-explosion {
+        0% {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.5);
+        }
+        30% {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1.5);
+        }
+        100% {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(3);
+        }
+    }
+    
+    /* Animaciones existentes */
     @keyframes glow-pulse {
         0% {
             text-shadow: 
@@ -155,14 +358,22 @@
         animation: particles-move 20s linear infinite;
         pointer-events: none;
         z-index: -1;
+        opacity: 0;
+        animation-delay: 3s;
+        animation-fill-mode: forwards;
     }
     
     @keyframes particles-move {
         0% {
             transform: translate(0, 0) rotate(0deg);
+            opacity: 0;
+        }
+        10% {
+            opacity: 1;
         }
         100% {
             transform: translate(-50px, -50px) rotate(360deg);
+            opacity: 1;
         }
     }
     
@@ -515,8 +726,24 @@
     <div class="container">
         <div class="hero-content">
             <h1 class="hero-title">
-                <span class="hero-title-3d">Servicio de Grúa</span>
+                <span class="hero-title-3d">
+                    <span class="word-servicio">Servicio</span>
+                    <span class="word-de">de</span>
+                    <span class="word-grua">Grúa</span>
+                </span>
                 <span class="hero-highlight">24/7</span>
+                
+                <!-- Rayos eléctricos -->
+                <div class="lightning-container">
+                    <div class="lightning lightning-1"></div>
+                    <div class="lightning lightning-2"></div>
+                    <div class="lightning lightning-3"></div>
+                    <div class="lightning lightning-4"></div>
+                    <div class="lightning lightning-5"></div>
+                </div>
+                
+                <!-- Resplandor de impacto -->
+                <div class="impact-glow"></div>
             </h1>
             <p class="hero-subtitle">
                 Asistencia rápida y confiable para tu vehículo en toda la Región Metropolitana. 
