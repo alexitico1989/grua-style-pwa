@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 import os
 from pathlib import Path
-import dj_database_url
+# import dj_database_url  # COMENTADO TEMPORALMENTE
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -94,9 +94,9 @@ DATABASES = {
     }
 }
 
-# En producción usar PostgreSQL de Railway
-if 'DATABASE_URL' in os.environ:
-    DATABASES['default'] = dj_database_url.parse(os.environ.get('DATABASE_URL'))
+# En producción usar PostgreSQL de Railway - COMENTADO TEMPORALMENTE
+# if 'DATABASE_URL' in os.environ:
+#     DATABASES['default'] = dj_database_url.parse(os.environ.get('DATABASE_URL'))
 
 
 # Password validation
