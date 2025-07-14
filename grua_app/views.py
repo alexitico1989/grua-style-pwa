@@ -180,8 +180,17 @@ def registro(request):
 
 @login_required
 def dashboard(request):
-    solicitudes = SolicitudServicio.objects.filter(
-        cliente=request.user).order_by('-fecha_solicitud')
+    try:
+        from .models import Cliente
+        cliente, created = Cliente.objects.get_or_create(
+            user=request.user,
+            defaults={'telefono': ''}
+        )
+        solicitudes = SolicitudServicio.objects.filter(
+            cliente=cliente).order_by('-fecha_solicitud')
+    except:
+        solicitudes = []
+    
     context = {'solicitudes': solicitudes}
     return render(request, 'grua_app/dashboard.html', context)
 
@@ -189,11 +198,21 @@ def dashboard(request):
 @login_required
 def solicitar_servicio(request):
     """Vista de solicitar servicio con envío automático de comprobante por email"""
+    try:
+        from .models import Cliente
+        cliente, created = Cliente.objects.get_or_create(
+            user=request.user,
+            defaults={'telefono': ''}
+        )
+    except Exception as e:
+        messages.error(request, 'Error al acceder al perfil del cliente.')
+        return redirect('dashboard')
+        
     if request.method == 'POST':
         form = SolicitudServicioForm(request.POST)
         if form.is_valid():
             solicitud = form.save(commit=False)
-            solicitud.cliente = request.user
+            solicitud.cliente = cliente
             solicitud.save()
 
             # 📧 NUEVO: Enviar email de comprobante
@@ -231,8 +250,12 @@ def solicitar_servicio(request):
 
 @login_required
 def confirmacion_solicitud(request, solicitud_id):
-    solicitud = get_object_or_404(
-        SolicitudServicio, id=solicitud_id, cliente=request.user)
+    try:
+        from .models import Cliente
+        cliente = Cliente.objects.get(user=request.user)
+        solicitud = get_object_or_404(SolicitudServicio, id=solicitud_id, cliente=cliente)
+    except:
+        solicitud = get_object_or_404(SolicitudServicio, id=solicitud_id)
 
     # Calcular costo
     tarifa_base = 15000
@@ -261,8 +284,12 @@ def confirmacion_solicitud(request, solicitud_id):
 @login_required
 def descargar_pdf_solicitud(request, solicitud_id):
     """Descarga la solicitud en formato PDF"""
-    solicitud = get_object_or_404(
-        SolicitudServicio, id=solicitud_id, cliente=request.user)
+    try:
+        from .models import Cliente
+        cliente = Cliente.objects.get(user=request.user)
+        solicitud = get_object_or_404(SolicitudServicio, id=solicitud_id, cliente=cliente)
+    except:
+        solicitud = get_object_or_404(SolicitudServicio, id=solicitud_id)
 
     if PDF_UTILS_AVAILABLE:
         pdf_response = generar_pdf_solicitud(solicitud)
@@ -281,8 +308,12 @@ def descargar_pdf_solicitud(request, solicitud_id):
 @login_required
 def descargar_pdf_comprobante(request, solicitud_id):
     """Descarga el comprobante de pago en formato PDF"""
-    solicitud = get_object_or_404(
-        SolicitudServicio, id=solicitud_id, cliente=request.user)
+    try:
+        from .models import Cliente
+        cliente = Cliente.objects.get(user=request.user)
+        solicitud = get_object_or_404(SolicitudServicio, id=solicitud_id, cliente=cliente)
+    except:
+        solicitud = get_object_or_404(SolicitudServicio, id=solicitud_id)
 
     if not solicitud.pagado and solicitud.estado not in ['confirmada', 'completada']:
         messages.warning(
@@ -306,8 +337,12 @@ def descargar_pdf_comprobante(request, solicitud_id):
 @login_required
 def imprimir_solicitud(request, solicitud_id):
     """Vista para imprimir la solicitud (página optimizada para impresión)"""
-    solicitud = get_object_or_404(
-        SolicitudServicio, id=solicitud_id, cliente=request.user)
+    try:
+        from .models import Cliente
+        cliente = Cliente.objects.get(user=request.user)
+        solicitud = get_object_or_404(SolicitudServicio, id=solicitud_id, cliente=cliente)
+    except:
+        solicitud = get_object_or_404(SolicitudServicio, id=solicitud_id)
 
     # Calcular tarifas
     tarifa_base = 15000
@@ -334,14 +369,17 @@ def imprimir_solicitud(request, solicitud_id):
 
 
 @login_required
-@login_required
 def reenviar_comprobante(request, solicitud_id):
     """Reenvía el comprobante por email con debug de variables"""
     import os
     from django.conf import settings
     
-    solicitud = get_object_or_404(
-        SolicitudServicio, id=solicitud_id, cliente=request.user)
+    try:
+        from .models import Cliente
+        cliente = Cliente.objects.get(user=request.user)
+        solicitud = get_object_or_404(SolicitudServicio, id=solicitud_id, cliente=cliente)
+    except:
+        solicitud = get_object_or_404(SolicitudServicio, id=solicitud_id)
 
     print(f"🔍 DEBUG COMPLETO Reenviar comprobante:")
     print(f"   Solicitud ID: {solicitud.id}")
@@ -393,15 +431,17 @@ def reenviar_comprobante(request, solicitud_id):
 
     return redirect('dashboard')
 
-    return redirect('dashboard')
-
 # ===== VISTAS DE PAGO =====
 
 
 @login_required
 def procesar_pago(request, solicitud_id):
-    solicitud = get_object_or_404(
-        SolicitudServicio, id=solicitud_id, cliente=request.user)
+    try:
+        from .models import Cliente
+        cliente = Cliente.objects.get(user=request.user)
+        solicitud = get_object_or_404(SolicitudServicio, id=solicitud_id, cliente=cliente)
+    except:
+        solicitud = get_object_or_404(SolicitudServicio, id=solicitud_id)
 
     if request.method == 'POST':
         metodo_pago = request.POST.get('metodo_pago')
@@ -434,8 +474,12 @@ def procesar_pago(request, solicitud_id):
 
 @login_required
 def procesar_transferencia(request, solicitud_id):
-    solicitud = get_object_or_404(
-        SolicitudServicio, id=solicitud_id, cliente=request.user)
+    try:
+        from .models import Cliente
+        cliente = Cliente.objects.get(user=request.user)
+        solicitud = get_object_or_404(SolicitudServicio, id=solicitud_id, cliente=cliente)
+    except:
+        solicitud = get_object_or_404(SolicitudServicio, id=solicitud_id)
 
     tarifa_base = 15000
     tarifa_por_km = 1200
@@ -468,8 +512,12 @@ def procesar_transferencia(request, solicitud_id):
 
 @login_required
 def procesar_efectivo(request, solicitud_id):
-    solicitud = get_object_or_404(
-        SolicitudServicio, id=solicitud_id, cliente=request.user)
+    try:
+        from .models import Cliente
+        cliente = Cliente.objects.get(user=request.user)
+        solicitud = get_object_or_404(SolicitudServicio, id=solicitud_id, cliente=cliente)
+    except:
+        solicitud = get_object_or_404(SolicitudServicio, id=solicitud_id)
 
     tarifa_base = 15000
     tarifa_por_km = 1200
@@ -502,8 +550,12 @@ def procesar_efectivo(request, solicitud_id):
 
 @login_required
 def confirmacion_transferencia(request, solicitud_id):
-    solicitud = get_object_or_404(
-        SolicitudServicio, id=solicitud_id, cliente=request.user)
+    try:
+        from .models import Cliente
+        cliente = Cliente.objects.get(user=request.user)
+        solicitud = get_object_or_404(SolicitudServicio, id=solicitud_id, cliente=cliente)
+    except:
+        solicitud = get_object_or_404(SolicitudServicio, id=solicitud_id)
 
     datos_bancarios = {
         'banco': 'Banco de Chile',
@@ -524,8 +576,13 @@ def confirmacion_transferencia(request, solicitud_id):
 
 @login_required
 def confirmacion_efectivo(request, solicitud_id):
-    solicitud = get_object_or_404(
-        SolicitudServicio, id=solicitud_id, cliente=request.user)
+    try:
+        from .models import Cliente
+        cliente = Cliente.objects.get(user=request.user)
+        solicitud = get_object_or_404(SolicitudServicio, id=solicitud_id, cliente=cliente)
+    except:
+        solicitud = get_object_or_404(SolicitudServicio, id=solicitud_id)
+    
     context = {'solicitud': solicitud}
     return render(request, 'grua_app/confirmacion_efectivo.html', context)
 
@@ -534,8 +591,12 @@ def confirmacion_efectivo(request, solicitud_id):
 def iniciar_pago_webpay(request, solicitud_id):
     """Inicia pago con Transbank WebPay (versión con mejor manejo de errores)"""
     try:
-        solicitud = get_object_or_404(
-            SolicitudServicio, id=solicitud_id, cliente=request.user)
+        try:
+            from .models import Cliente
+            cliente = Cliente.objects.get(user=request.user)
+            solicitud = get_object_or_404(SolicitudServicio, id=solicitud_id, cliente=cliente)
+        except:
+            solicitud = get_object_or_404(SolicitudServicio, id=solicitud_id)
 
         # Verificar si Transbank está disponible
         if not WEBPAY_OPTIONS_AVAILABLE:
@@ -668,8 +729,13 @@ def webpay_return(request):
 
 @login_required
 def pago_exitoso(request, solicitud_id):
-    solicitud = get_object_or_404(
-        SolicitudServicio, id=solicitud_id, cliente=request.user)
+    try:
+        from .models import Cliente
+        cliente = Cliente.objects.get(user=request.user)
+        solicitud = get_object_or_404(SolicitudServicio, id=solicitud_id, cliente=cliente)
+    except:
+        solicitud = get_object_or_404(SolicitudServicio, id=solicitud_id)
+    
     context = {'solicitud': solicitud}
     return render(request, 'grua_app/pago_exitoso.html', context)
 
