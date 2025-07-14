@@ -1,665 +1,784 @@
-{% load static %}
 {% extends 'grua_app/base.html' %}
 
-{% block title %}Grúa Style - Servicio de Grúas 24/7 en Santiago{% endblock %}
+{% block title %}Grúa Style - Servicio 24/7{% endblock %}
 
-{% block content %}
-<div class="home-container">
-    <!-- Layout dividido en dos columnas -->
-    <div class="split-layout">
-        <!-- Columna izquierda - Contenido principal -->
-        <div class="left-content">
-            <!-- Hero Content -->
-            <div class="hero-content">
-                <div class="title-container">
-                    <h1 class="hero-title">
-                        <span class="service-text">Servicio</span>
-                        <span class="de-text">de</span>
-                        <span class="grua-text">Grúa</span>
-                    </h1>
-                    <div class="subtitle-container">
-                        <span class="time-text">24/7</span>
-                    </div>
-                </div>
-                
-                <p class="hero-description">
-                    Asistencia rápida y confiable para tu vehículo en toda la Región 
-                    Metropolitana. Calcula tu tarifa al instante.
-                </p>
-                
-                <!-- Botones de acción -->
-                <div class="action-buttons">
-                    <a href="{% url 'solicitar_servicio' %}" class="btn-primary-action">
-                        🚚 Solicitar Grúa Ahora
-                    </a>
-                    <a href="{% url 'dashboard' %}" class="btn-secondary-action">
-                        📊 Mi Dashboard
-                    </a>
-                </div>
-                
-                <!-- Stats -->
-                <div class="stats-section">
-                    <div class="stat-item">
-                        <div class="stat-number">24/7</div>
-                        <div class="stat-label">Disponible</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number">&lt;30min</div>
-                        <div class="stat-label">Respuesta</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number">RM</div>
-                        <div class="stat-label">Cobertura</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number">100%</div>
-                        <div class="stat-label">Confiable</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Columna derecha - Galería de imágenes -->
-        <div class="right-gallery">
-            <div class="image-gallery">
-                <div class="gallery-container">
-                    <!-- Imagen 1 -->
-                    <div class="gallery-image active" data-image="1">
-                        <img src="{% static 'images/gruas/1000720465.jpg' %}" alt="Grúa Style - Servicio profesional 1">
-                        <div class="image-overlay">
-                            <h3>Grúas Modernas</h3>
-                            <p>Equipos de última generación para tu seguridad</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Imagen 2 -->
-                    <div class="gallery-image" data-image="2">
-                        <img src="{% static 'images/gruas/1000720476.jpg' %}" alt="Grúa Style - Servicio profesional 2">
-                        <div class="image-overlay">
-                            <h3>Servicio 24/7</h3>
-                            <p>Disponible cuando nos necesites, día y noche</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Imagen 3 -->
-                    <div class="gallery-image" data-image="3">
-                        <img src="{% static 'images/gruas/1000720478.jpg' %}" alt="Grúa Style - Servicio profesional 3">
-                        <div class="image-overlay">
-                            <h3>Operadores Expertos</h3>
-                            <p>Personal certificado y altamente capacitado</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Imagen 4 -->
-                    <div class="gallery-image" data-image="4">
-                        <img src="{% static 'images/gruas/1000720480.jpg' %}" alt="Grúa Style - Servicio profesional 4">
-                        <div class="image-overlay">
-                            <h3>Cobertura Completa</h3>
-                            <p>Toda la Región Metropolitana a tu alcance</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Imagen 5 -->
-                    <div class="gallery-image" data-image="5">
-                        <img src="{% static 'images/gruas/1000720484.jpg' %}" alt="Grúa Style - Servicio profesional 5">
-                        <div class="image-overlay">
-                            <h3>Tecnología Avanzada</h3>
-                            <p>GPS tracking y comunicación en tiempo real</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Imagen 6 -->
-                    <div class="gallery-image" data-image="6">
-                        <img src="{% static 'images/gruas/1000720488.jpg' %}" alt="Grúa Style - Servicio profesional 6">
-                        <div class="image-overlay">
-                            <h3>Respuesta Rápida</h3>
-                            <p>Tiempo promedio de llegada menor a 30 minutos</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Imagen 7 -->
-                    <div class="gallery-image" data-image="7">
-                        <img src="{% static 'images/gruas/1000720490.jpg' %}" alt="Grúa Style - Servicio profesional 7">
-                        <div class="image-overlay">
-                            <h3>Seguridad Garantizada</h3>
-                            <p>Seguros completos y protección total</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Imagen 8 -->
-                    <div class="gallery-image" data-image="8">
-                        <img src="{% static 'images/gruas/1000720496.jpg' %}" alt="Grúa Style - Servicio profesional 8">
-                        <div class="image-overlay">
-                            <h3>Atención Personalizada</h3>
-                            <p>Cada cliente es importante para nosotros</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Imagen 9 -->
-                    <div class="gallery-image" data-image="9">
-                        <img src="{% static 'images/gruas/1000720522.jpg' %}" alt="Grúa Style - Servicio profesional 9">
-                        <div class="image-overlay">
-                            <h3>Experiencia Comprobada</h3>
-                            <p>Años de experiencia en el sector automotriz</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Imagen 10 -->
-                    <div class="gallery-image" data-image="10">
-                        <img src="{% static 'images/gruas/1000720523.jpg' %}" alt="Grúa Style - Servicio profesional 10">
-                        <div class="image-overlay">
-                            <h3>Grúa Style</h3>
-                            <p>Tu mejor opción en servicios de grúa</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Indicadores de navegación -->
-                <div class="gallery-indicators">
-                    <button class="indicator active" data-slide="1"></button>
-                    <button class="indicator" data-slide="2"></button>
-                    <button class="indicator" data-slide="3"></button>
-                    <button class="indicator" data-slide="4"></button>
-                    <button class="indicator" data-slide="5"></button>
-                    <button class="indicator" data-slide="6"></button>
-                    <button class="indicator" data-slide="7"></button>
-                    <button class="indicator" data-slide="8"></button>
-                    <button class="indicator" data-slide="9"></button>
-                    <button class="indicator" data-slide="10"></button>
-                </div>
-                
-                <!-- Controles de navegación -->
-                <button class="gallery-control prev" onclick="changeSlide(-1)">‹</button>
-                <button class="gallery-control next" onclick="changeSlide(1)">›</button>
-            </div>
-        </div>
-    </div>
-</div>
-
+{% block extra_css %}
 <style>
-    /* Layout principal dividido */
-    .home-container {
-        min-height: 100vh;
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         background: #000;
         color: #fff;
-        overflow: hidden;
+        line-height: 1.4;
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
     }
-    
-    .split-layout {
-        display: flex;
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    /* Hero Section tipo Uber */
+    .hero-section {
+        background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
         min-height: 100vh;
-        max-width: 100vw;
-    }
-    
-    /* Columna izquierda - Contenido */
-    .left-content {
-        flex: 1;
-        min-width: 50%;
-        padding: 4rem 3rem;
         display: flex;
         align-items: center;
-        background: linear-gradient(135deg, #000 0%, #1a1a1a 50%, #000 100%);
         position: relative;
+        overflow: hidden;
     }
-    
-    .left-content::before {
+
+    .hero-section::before {
         content: '';
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
-        background: 
-            radial-gradient(circle at 20% 20%, rgba(0, 213, 99, 0.1) 0%, transparent 50%),
-            radial-gradient(circle at 80% 80%, rgba(0, 213, 99, 0.1) 0%, transparent 50%);
-        pointer-events: none;
+        background: radial-gradient(circle at 30% 50%, rgba(0, 213, 99, 0.1) 0%, transparent 50%);
     }
-    
+
     .hero-content {
-        max-width: 600px;
+        position: relative;
         z-index: 2;
-        position: relative;
+        text-align: center;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 80px 0;
     }
-    
-    /* Título con efectos especiales */
-    .title-container {
-        margin-bottom: 2rem;
-        position: relative;
-    }
-    
+
     .hero-title {
-        font-size: 3.5rem;
-        font-weight: 800;
-        line-height: 1.1;
-        margin-bottom: 1rem;
-        text-align: left;
-    }
-    
-    .service-text, .grua-text {
-        display: inline-block;
-        background: linear-gradient(135deg, #fff, #ccc);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
-        animation: glow-pulse 3s ease-in-out infinite alternate;
-    }
-    
-    .de-text {
-        display: inline-block;
-        color: #666;
-        font-size: 2.5rem;
-        margin: 0 0.5rem;
-    }
-    
-    .subtitle-container {
-        text-align: left;
-        margin-bottom: 2rem;
-    }
-    
-    .time-text {
-        font-size: 2.5rem;
+        font-size: clamp(2.5rem, 5vw, 4rem);
         font-weight: 700;
+        margin-bottom: 24px;
+        line-height: 1.1;
+        perspective: 1000px;
+        transform-style: preserve-3d;
+        position: relative;
+        overflow: visible;
+    }
+
+    .hero-title-3d {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+        text-shadow: 
+            0 0 20px rgba(0, 213, 99, 0.6),
+            0 0 40px rgba(0, 213, 99, 0.4),
+            0 0 80px rgba(0, 213, 99, 0.2),
+            0 0 120px rgba(0, 213, 99, 0.1);
+        animation: glow-pulse 4s ease-in-out infinite alternate;
+        will-change: text-shadow;
+    }
+
+    .word-servicio {
+        display: inline-block;
+        animation: slide-from-left 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        transform: translateX(-200vw);
+    }
+
+    .word-de {
+        display: inline-block;
+        opacity: 0;
+        animation: fade-in-de 0.5s ease-in-out 1.8s forwards;
+    }
+
+    .word-grua {
+        display: inline-block;
+        animation: slide-from-right 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        transform: translateX(200vw);
+    }
+
+    .hero-highlight {
         color: #00D563;
+        display: block;
+        animation: appear-24-7 1s ease-out 2.5s both;
+        opacity: 0;
         text-shadow: 
             0 0 20px rgba(0, 213, 99, 0.8),
             0 0 40px rgba(0, 213, 99, 0.6),
-            0 0 60px rgba(0, 213, 99, 0.4);
-        animation: float-3d 4s ease-in-out infinite;
+            0 0 80px rgba(0, 213, 99, 0.4),
+            0 0 120px rgba(0, 213, 99, 0.2);
+        will-change: opacity, transform;
     }
-    
-    @keyframes glow-pulse {
+
+    /* Rayos eléctricos */
+    .lightning-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    .lightning {
+        position: absolute;
+        width: 2px;
+        background: linear-gradient(45deg, #00D563, #00ff88, #ffffff);
+        box-shadow: 
+            0 0 10px #00D563,
+            0 0 20px #00D563,
+            0 0 40px #00D563;
+        animation: lightning-strike 0.3s ease-out;
+        opacity: 0;
+    }
+
+    .lightning-1 {
+        height: 80px;
+        top: 20%;
+        left: 30%;
+        transform: rotate(45deg);
+        animation-delay: 2s;
+    }
+
+    .lightning-2 {
+        height: 60px;
+        top: 60%;
+        left: 20%;
+        transform: rotate(-30deg);
+        animation-delay: 2.1s;
+    }
+
+    .lightning-3 {
+        height: 70px;
+        top: 30%;
+        right: 25%;
+        transform: rotate(-45deg);
+        animation-delay: 2.05s;
+    }
+
+    .lightning-4 {
+        height: 50px;
+        top: 70%;
+        right: 30%;
+        transform: rotate(60deg);
+        animation-delay: 2.15s;
+    }
+
+    .lightning-5 {
+        height: 90px;
+        top: 10%;
+        left: 50%;
+        transform: rotate(0deg);
+        animation-delay: 2.08s;
+    }
+
+    /* Resplandor de impacto optimizado */
+    .impact-glow {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, 
+            rgba(0, 213, 99, 0.3) 0%, 
+            rgba(0, 213, 99, 0.15) 30%, 
+            rgba(0, 213, 99, 0.05) 60%, 
+            transparent 100%);
+        border-radius: 50%;
+        animation: impact-explosion 1s ease-out 2s;
+        opacity: 0;
+        pointer-events: none;
+        z-index: -1;
+        filter: blur(8px);
+        will-change: opacity, transform;
+    }
+
+    /* Cursor trail global - estela de humo */
+    .cursor-trail {
+        position: fixed;
+        width: 25px;
+        height: 25px;
+        background: radial-gradient(circle, 
+            rgba(0, 213, 99, 0.9) 0%, 
+            rgba(0, 213, 99, 0.7) 20%, 
+            rgba(0, 213, 99, 0.5) 40%, 
+            rgba(0, 213, 99, 0.3) 60%, 
+            rgba(0, 213, 99, 0.1) 80%, 
+            transparent 100%);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        mix-blend-mode: screen;
+        filter: blur(2px);
+        opacity: 0;
+        animation: cursor-fade 2s ease-out forwards;
+    }
+
+    /* Cursor principal */
+    .custom-cursor {
+        position: fixed;
+        width: 15px;
+        height: 15px;
+        background: radial-gradient(circle, 
+            rgba(0, 213, 99, 1) 0%, 
+            rgba(0, 213, 99, 0.8) 40%, 
+            rgba(0, 213, 99, 0.3) 70%, 
+            transparent 100%);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 10000;
+        mix-blend-mode: screen;
+        filter: blur(0.5px);
+        box-shadow: 
+            0 0 10px rgba(0, 213, 99, 0.8),
+            0 0 20px rgba(0, 213, 99, 0.6),
+            0 0 30px rgba(0, 213, 99, 0.4);
+        transition: transform 0.1s ease-out;
+    }
+
+    /* Animaciones de entrada */
+    @keyframes slide-from-left {
         0% {
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            transform: translateX(-200vw) rotateY(-90deg);
+            opacity: 0;
+        }
+        70% {
+            transform: translateX(20px) rotateY(10deg);
+            opacity: 1;
         }
         100% {
-            text-shadow: 0 0 40px rgba(255, 255, 255, 0.8);
+            transform: translateX(0) rotateY(0deg);
+            opacity: 1;
         }
     }
-    
-    @keyframes float-3d {
-        0%, 100% {
-            transform: translateY(0px) rotateZ(0deg);
+
+    @keyframes slide-from-right {
+        0% {
+            transform: translateX(200vw) rotateY(90deg);
+            opacity: 0;
+        }
+        70% {
+            transform: translateX(-20px) rotateY(-10deg);
+            opacity: 1;
+        }
+        100% {
+            transform: translateX(0) rotateY(0deg);
+            opacity: 1;
+        }
+    }
+
+    @keyframes fade-in-de {
+        from {
+            opacity: 0;
+            transform: scale(0.5);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    @keyframes appear-24-7 {
+        0% {
+            opacity: 0;
+            transform: translateY(50px) scale(0.5);
         }
         50% {
-            transform: translateY(-10px) rotateZ(1deg);
+            opacity: 0.5;
+            transform: translateY(25px) scale(0.8);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0px) scale(1);
         }
     }
-    
-    /* Descripción */
-    .hero-description {
+
+    @keyframes lightning-strike {
+        0% {
+            opacity: 0;
+            transform: scale(0.8) rotateZ(var(--rotation, 0deg));
+            filter: brightness(1);
+        }
+        10% {
+            opacity: 1;
+            transform: scale(1.2) rotateZ(var(--rotation, 0deg));
+            filter: brightness(2);
+        }
+        20% {
+            opacity: 0.8;
+            transform: scale(1) rotateZ(var(--rotation, 0deg));
+            filter: brightness(1.5);
+        }
+        30% {
+            opacity: 1;
+            transform: scale(1.1) rotateZ(var(--rotation, 0deg));
+            filter: brightness(2.5);
+        }
+        100% {
+            opacity: 0;
+            transform: scale(0.9) rotateZ(var(--rotation, 0deg));
+            filter: brightness(0.5);
+        }
+    }
+
+    @keyframes impact-explosion {
+        0% {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.3);
+        }
+        50% {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1.2);
+        }
+        100% {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(2.5);
+        }
+    }
+
+    /* Animaciones optimizadas */
+    @keyframes glow-pulse {
+        0% {
+            text-shadow: 
+                0 0 20px rgba(0, 213, 99, 0.6),
+                0 0 40px rgba(0, 213, 99, 0.4),
+                0 0 80px rgba(0, 213, 99, 0.2),
+                0 0 120px rgba(0, 213, 99, 0.1);
+        }
+        100% {
+            text-shadow: 
+                0 0 25px rgba(0, 213, 99, 0.8),
+                0 0 50px rgba(0, 213, 99, 0.6),
+                0 0 100px rgba(0, 213, 99, 0.4),
+                0 0 150px rgba(0, 213, 99, 0.2);
+        }
+    }
+
+    .hero-subtitle {
         font-size: 1.25rem;
         color: #ccc;
-        line-height: 1.6;
-        margin-bottom: 3rem;
-        text-align: left;
+        margin-bottom: 40px;
+        line-height: 1.5;
+        font-weight: 400;
     }
-    
-    /* Botones de acción */
-    .action-buttons {
+
+    .cta-buttons {
         display: flex;
-        gap: 1rem;
-        margin-bottom: 3rem;
+        gap: 16px;
+        justify-content: center;
         flex-wrap: wrap;
+        margin-bottom: 60px;
     }
-    
-    .btn-primary-action {
-        padding: 1.25rem 2rem;
-        background: linear-gradient(135deg, #00D563, #00B853);
+
+    .btn-uber {
+        padding: 16px 32px;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 180px;
+    }
+
+    .btn-primary {
+        background: #00D563;
+        color: #000;
+    }
+
+    .btn-primary:hover {
+        background: #00B853;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(0, 213, 99, 0.3);
         color: #000;
         text-decoration: none;
-        border-radius: 12px;
-        font-weight: 700;
-        font-size: 1.1rem;
-        transition: all 0.3s ease;
-        box-shadow: 0 8px 25px rgba(0, 213, 99, 0.4);
     }
-    
-    .btn-primary-action:hover {
-        background: linear-gradient(135deg, #00E570, #00C760);
-        color: #000;
-        transform: translateY(-3px);
-        box-shadow: 0 12px 35px rgba(0, 213, 99, 0.6);
-    }
-    
-    .btn-secondary-action {
-        padding: 1.25rem 2rem;
+
+    .btn-secondary {
         background: rgba(255, 255, 255, 0.1);
         color: #fff;
-        text-decoration: none;
-        border-radius: 12px;
-        font-weight: 600;
         border: 1px solid rgba(255, 255, 255, 0.2);
-        transition: all 0.3s ease;
     }
-    
-    .btn-secondary-action:hover {
+
+    .btn-secondary:hover {
         background: rgba(255, 255, 255, 0.2);
         color: #fff;
-        transform: translateY(-3px);
+        text-decoration: none;
+        transform: translateY(-2px);
     }
-    
-    /* Stats section */
-    .stats-section {
-        display: flex;
-        gap: 2rem;
-        flex-wrap: wrap;
+
+    .btn-icon {
+        margin-right: 8px;
+        font-size: 1.1rem;
     }
-    
+
+    /* Stats tipo Uber */
+    .hero-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 32px;
+        text-align: center;
+    }
+
     .stat-item {
-        text-align: left;
+        opacity: 0.8;
     }
-    
+
     .stat-number {
         font-size: 1.5rem;
         font-weight: 700;
         color: #00D563;
-        margin-bottom: 0.25rem;
+        display: block;
     }
-    
+
     .stat-label {
         font-size: 0.9rem;
         color: #999;
+        margin-top: 4px;
     }
-    
-    /* Columna derecha - Galería */
-    .right-gallery {
-        flex: 1;
-        min-width: 50%;
-        position: relative;
+
+    /* Features Section */
+    .features-section {
+        background: #000;
+        padding: 120px 0;
+    }
+
+    .section-header {
+        text-align: center;
+        max-width: 600px;
+        margin: 0 auto 80px auto;
+    }
+
+    .section-title {
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 700;
+        margin-bottom: 20px;
+        line-height: 1.2;
+    }
+
+    .section-subtitle {
+        font-size: 1.125rem;
+        color: #999;
+        line-height: 1.6;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 32px;
+    }
+
+    .feature-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 32px 24px;
+        text-align: center;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+
+    .feature-card:hover {
+        transform: translateY(-8px);
+        border-color: rgba(0, 213, 99, 0.3);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .feature-icon {
+        width: 64px;
+        height: 64px;
+        background: linear-gradient(135deg, #00D563, #00B853);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 24px auto;
+    }
+
+    .feature-icon i {
+        font-size: 1.5rem;
+        color: #000;
+    }
+
+    .feature-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 16px;
+        color: #fff;
+    }
+
+    .feature-description {
+        color: #ccc;
+        line-height: 1.6;
+    }
+
+    /* Pricing Section */
+    .pricing-section {
         background: #0a0a0a;
+        padding: 120px 0;
     }
-    
-    .image-gallery {
-        height: 100vh;
+
+    .pricing-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        padding: 40px;
+        max-width: 800px;
+        margin: 0 auto;
+        backdrop-filter: blur(10px);
+    }
+
+    .pricing-header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding-bottom: 24px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .pricing-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 32px;
+        margin-bottom: 32px;
+    }
+
+    .price-item {
+        text-align: center;
+        padding: 24px;
+        background: rgba(0, 213, 99, 0.1);
+        border-radius: 16px;
+        border: 1px solid rgba(0, 213, 99, 0.2);
+    }
+
+    .price-icon {
+        font-size: 2.5rem;
+        color: #00D563;
+        margin-bottom: 16px;
+    }
+
+    .price-label {
+        font-size: 1rem;
+        color: #ccc;
+        margin-bottom: 8px;
+    }
+
+    .price-value {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #00D563;
+        margin-bottom: 8px;
+    }
+
+    .price-description {
+        font-size: 0.875rem;
+        color: #999;
+    }
+
+    .pricing-example {
+        background: rgba(0, 213, 99, 0.1);
+        border: 1px solid rgba(0, 213, 99, 0.2);
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        margin-top: 32px;
+    }
+
+    .pricing-example strong {
+        color: #00D563;
+    }
+
+    /* CTA Section */
+    .cta-section {
+        background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+        padding: 120px 0;
         position: relative;
-        overflow: hidden;
     }
-    
-    .gallery-container {
-        position: relative;
-        width: 100%;
-        height: 100%;
-    }
-    
-    .gallery-image {
+
+    .cta-section::before {
+        content: '';
         position: absolute;
         top: 0;
         left: 0;
-        width: 100%;
-        height: 100%;
-        opacity: 0;
-        transition: all 1s ease-in-out;
-        transform: scale(1.1);
-    }
-    
-    .gallery-image.active {
-        opacity: 1;
-        transform: scale(1);
-    }
-    
-    .gallery-image img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: center;
-    }
-    
-    .image-overlay {
-        position: absolute;
-        bottom: 0;
-        left: 0;
         right: 0;
-        background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
-        padding: 3rem 2rem 2rem 2rem;
-        color: #fff;
+        bottom: 0;
+        background: radial-gradient(circle at 70% 50%, rgba(0, 213, 99, 0.1) 0%, transparent 50%);
     }
-    
-    .image-overlay h3 {
+
+    .cta-content {
+        text-align: center;
+        max-width: 600px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 2;
+    }
+
+    .cta-title {
+        font-size: clamp(2rem, 4vw, 2.5rem);
+        font-weight: 700;
+        margin-bottom: 20px;
+        line-height: 1.2;
+    }
+
+    .cta-subtitle {
+        font-size: 1.125rem;
+        color: #ccc;
+        margin-bottom: 40px;
+        line-height: 1.6;
+    }
+
+    .cta-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 32px;
+        margin-top: 60px;
+    }
+
+    .cta-stat {
+        text-align: center;
+    }
+
+    .cta-stat-value {
         font-size: 1.5rem;
         font-weight: 700;
-        margin-bottom: 0.5rem;
         color: #00D563;
+        display: block;
     }
-    
-    .image-overlay p {
-        font-size: 1rem;
-        color: #ccc;
+
+    .cta-stat-label {
+        font-size: 0.875rem;
+        color: #999;
+        margin-top: 4px;
     }
-    
-    /* Indicadores */
-    .gallery-indicators {
-        position: absolute;
-        bottom: 2rem;
-        left: 50%;
-        transform: translateX(-50%);
-        display: flex;
-        gap: 0.75rem;
-        z-index: 10;
-    }
-    
-    .indicator {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.3);
-        border: none;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-    
-    .indicator.active {
-        background: #00D563;
-        transform: scale(1.2);
-    }
-    
-    /* Controles de navegación */
-    .gallery-control {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        background: rgba(0, 0, 0, 0.5);
-        color: #fff;
-        border: none;
-        font-size: 2rem;
-        padding: 1rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        z-index: 10;
-        border-radius: 50%;
-    }
-    
-    .gallery-control:hover {
-        background: rgba(0, 213, 99, 0.8);
-    }
-    
-    .gallery-control.prev {
-        left: 1rem;
-    }
-    
-    .gallery-control.next {
-        right: 1rem;
-    }
-    
+
     /* Responsive */
-    @media (max-width: 1024px) {
-        .split-layout {
+    @media (max-width: 768px) {
+        .hero-content {
+            padding: 60px 0;
+        }
+
+        .cta-buttons {
             flex-direction: column;
+            align-items: center;
         }
-        
-        .left-content {
-            min-height: 60vh;
-            padding: 3rem 2rem;
+
+        .btn-uber {
+            width: 100%;
+            max-width: 280px;
         }
-        
-        .right-gallery {
-            min-height: 40vh;
+
+        .features-grid {
+            grid-template-columns: 1fr;
         }
-        
-        .hero-title {
-            font-size: 2.5rem;
+
+        .pricing-grid {
+            grid-template-columns: 1fr;
         }
-        
-        .action-buttons {
-            flex-direction: column;
+
+        .hero-stats,
+        .cta-stats {
+            grid-template-columns: repeat(2, 1fr);
         }
     }
-    
-    @media (max-width: 768px) {
-        .left-content {
-            padding: 2rem 1rem;
+
+    @media (max-width: 480px) {
+        .container {
+            padding: 0 16px;
         }
-        
-        .hero-title {
-            font-size: 2rem;
-        }
-        
-        .time-text {
-            font-size: 2rem;
-        }
-        
-        .stats-section {
-            gap: 1rem;
+
+        .feature-card,
+        .pricing-card {
+            padding: 24px 20px;
         }
     }
 </style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title" id="heroTitle">
+                <span class="hero-title-3d">
+                    <span class="word-servicio">Servicio</span>
+                    <span class="word-de">de</span>
+                    <span class="word-grua">Grúa</span>
+                </span>
+                <span class="hero-highlight">24/7</span>
+
+                <!-- Rayos eléctricos -->
+                <div class="lightning-container">
+                    <div class="lightning lightning-1"></div>
+                    <div class="lightning lightning-2"></div>
+                    <div class="lightning lightning-3"></div>
+                    <div class="lightning lightning-4"></div>
+                    <div class="lightning lightning-5"></div>
+                </div>
+
+                <!-- Resplandor de impacto -->
+                <div class="impact-glow"></div>
+            </h1>
+            <p class="hero-subtitle">
+                Asistencia rápida y confiable para tu vehículo en toda la Región Metropolitana. 
+                Calcula tu tarifa al instante.
+            </p>
+
+            <div class="cta-buttons">
+                {% if user.is_authenticated %}
+                <a href="{% url 'solicitar_servicio' %}" class="btn-uber btn-primary">
+                    <span class="btn-icon">🚚</span>
+                    Solicitar Grúa Ahora
+                </a>
+                <a href="{% url 'dashboard' %}" class="btn-uber btn-secondary">
+                    <span class="btn-icon">📊</span>
+                    Mi Dashboard
+                </a>
+                {% else %}
+                <a href="{% url 'registro' %}" class="btn-uber btn-primary">
+                    <span class="btn-icon">📱</span>
+                    Descargar App
+                </a>
+                <a href="{% url 'login' %}" class="btn-uber btn-secondary">
+                    <span class="btn-icon">👤</span>
+                    Iniciar Sesión
+                </a>
+                {% endif %}
+            </div>
+
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-number">24/7</span>
+                    <span class="stat-label">Disponible</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">&lt;30min</span>
+                    <span class="stat-label">Respuesta</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">RM</span>
+                    <span class="stat-label">Cobertura</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Confiable</span>
+                </div>
+            </div>
 
 <script>
-    let currentSlide = 1;
-    const totalSlides = 10; // Actualizado para 10 imágenes
-    let autoSlideInterval;
-    
-    // Función para cambiar diapositiva
-    function changeSlide(direction) {
-        // Remover clase active de la imagen actual
-        document.querySelector('.gallery-image.active').classList.remove('active');
-        document.querySelector('.indicator.active').classList.remove('active');
-        
-        // Calcular nueva diapositiva
-        currentSlide += direction;
-        
-        if (currentSlide > totalSlides) {
-            currentSlide = 1;
-        } else if (currentSlide < 1) {
-            currentSlide = totalSlides;
-        }
-        
-        // Activar nueva diapositiva
-        document.querySelector(`[data-image="${currentSlide}"]`).classList.add('active');
-        document.querySelector(`[data-slide="${currentSlide}"]`).classList.add('active');
-    }
-    
-    // Función para ir a diapositiva específica
-    function goToSlide(slideNumber) {
-        document.querySelector('.gallery-image.active').classList.remove('active');
-        document.querySelector('.indicator.active').classList.remove('active');
-        
-        currentSlide = slideNumber;
-        
-        document.querySelector(`[data-image="${currentSlide}"]`).classList.add('active');
-        document.querySelector(`[data-slide="${currentSlide}"]`).classList.add('active');
-    }
-    
-    // Auto-slide cada 5 segundos (más tiempo para 10 imágenes)
-    function startAutoSlide() {
-        autoSlideInterval = setInterval(() => {
-            changeSlide(1);
-        }, 5000);
-    }
-    
-    function stopAutoSlide() {
-        clearInterval(autoSlideInterval);
-    }
-    
-    // Event listeners para indicadores
-    document.querySelectorAll('.indicator').forEach((indicator, index) => {
-        indicator.addEventListener('click', () => {
-            stopAutoSlide();
-            goToSlide(index + 1);
-            setTimeout(startAutoSlide, 10000); // Restart auto-slide after 10 seconds
-        });
-    });
-    
-    // Event listeners para controles
-    document.querySelector('.gallery-control.prev').addEventListener('click', () => {
-        stopAutoSlide();
-        changeSlide(-1);
-        setTimeout(startAutoSlide, 10000);
-    });
-    
-    document.querySelector('.gallery-control.next').addEventListener('click', () => {
-        stopAutoSlide();
-        changeSlide(1);
-        setTimeout(startAutoSlide, 10000);
-    });
-    
-    // Pausar auto-slide al hacer hover
-    document.querySelector('.image-gallery').addEventListener('mouseenter', stopAutoSlide);
-    document.querySelector('.image-gallery').addEventListener('mouseleave', startAutoSlide);
-    
-    // Soporte para teclado
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowLeft') {
-            stopAutoSlide();
-            changeSlide(-1);
-            setTimeout(startAutoSlide, 10000);
-        } else if (e.key === 'ArrowRight') {
-            stopAutoSlide();
-            changeSlide(1);
-            setTimeout(startAutoSlide, 10000);
-        }
-    });
-    
-    // Soporte para touch/swipe en móviles
-    let touchStartX = 0;
-    let touchEndX = 0;
-    
-    document.querySelector('.image-gallery').addEventListener('touchstart', (e) => {
-        touchStartX = e.changedTouches[0].screenX;
-    });
-    
-    document.querySelector('.image-gallery').addEventListener('touchend', (e) => {
-        touchEndX = e.changedTouches[0].screenX;
-        handleSwipe();
-    });
-    
-    function handleSwipe() {
-        if (touchEndX < touchStartX - 50) {
-            // Swipe left - next image
-            stopAutoSlide();
-            changeSlide(1);
-            setTimeout(startAutoSlide, 10000);
-        }
-        if (touchEndX > touchStartX + 50) {
-            // Swipe right - previous image
-            stopAutoSlide();
-            changeSlide(-1);
-            setTimeout(startAutoSlide, 10000);
-        }
-    }
-    
-    // Iniciar auto-slide
-    document.addEventListener('DOMContentLoaded', () => {
-        startAutoSlide();
-        
-        // Precargar todas las imágenes para transiciones más suaves
-        const imagePaths = [
-            '{% static "images/gruas/1000720465.jpg" %}',
-            '{% static "images/gruas/1000720476.jpg" %}',
-            '{% static "images/gruas/1000720478.jpg" %}',
-            '{% static "images/gruas/1000720480.jpg" %}',
-            '{% static "images/gruas/1000720484.jpg" %}',
-            '{% static "images/gruas/1000720488.jpg" %}',
-            '{% static "images/gruas/1000720490.jpg" %}',
-            '{% static "images/gruas/1000720496.jpg" %}',
-            '{% static "images/gruas/1000720522.jpg" %}',
-            '{% static "images/gruas/1000720523.jpg" %}'
-        ];
-        
-        imagePaths.forEach(path => {
-            const img = new Image();
-            img.src = path;
-        });
-    });
+// No hay scripts de cursor - cursor normal del navegador
 </script>
-{% endblock %}
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Confiable</span>
+                </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
