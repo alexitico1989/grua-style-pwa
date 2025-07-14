@@ -91,6 +91,11 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
     path('historial-servicios/', views.dashboard, name='historial_servicios'),
 
+    # ===== NUEVAS PÁGINAS AGREGADAS =====
+    path('servicios/', views.servicios, name='servicios'),
+    path('precios/', views.precios, name='precios'),
+    path('contacto/', views.contacto, name='contacto'),
+
     # Servicios
     path('solicitar-servicio/', views.solicitar_servicio,
          name='solicitar_servicio'),
