@@ -76,6 +76,25 @@ def home(request):
     return render(request, 'grua_app/home.html')
 
 
+# ===== NUEVAS VISTAS PARA LAS PÁGINAS ADICIONALES =====
+
+def servicios(request):
+    """Vista para la página de servicios"""
+    return render(request, 'grua_app/servicios.html')
+
+
+def precios(request):
+    """Vista para la página de precios"""
+    return render(request, 'grua_app/precios.html')
+
+
+def contacto(request):
+    """Vista para la página de contacto"""
+    return render(request, 'grua_app/contacto.html')
+
+
+# ===== RESTO DE VISTAS EXISTENTES (SIN MODIFICAR) =====
+
 def custom_logout(request):
     from django.contrib.auth import logout
     if request.user.is_authenticated:
