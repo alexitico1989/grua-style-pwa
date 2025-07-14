@@ -1,392 +1,953 @@
 {% extends 'grua_app/base.html' %}
 
-{% block title %}Grúa Style - Servicio de Grúas 24/7 en Santiago{% endblock %}
+{% block title %}Grúa Style - Servicio 24/7{% endblock %}
 
-{% block content %}
-<div class="home-container">
-    <!-- Layout dividido en dos columnas -->
-    <div class="split-layout">
-        <!-- Columna izquierda - Contenido principal -->
-        <div class="left-content">
-            <!-- Hero Content -->
-            <div class="hero-content">
-                <div class="title-container">
-                    <h1 class="hero-title">
-                        <span class="service-text">Servicio</span>
-                        <span class="de-text">de</span>
-                        <span class="grua-text">Grúa</span>
-                    </h1>
-                    <div class="subtitle-container">
-                        <span class="time-text">24/7</span>
-                    </div>
-                </div>
-                
-                <p class="hero-description">
-                    Asistencia rápida y confiable para tu vehículo en toda la Región 
-                    Metropolitana. Calcula tu tarifa al instante.
-                </p>
-                
-                <!-- Botones de acción -->
-                <div class="action-buttons">
-                    <a href="{% url 'solicitar_servicio' %}" class="btn-primary-action">
-                        🚚 Solicitar Grúa Ahora
-                    </a>
-                    <a href="{% url 'dashboard' %}" class="btn-secondary-action">
-                        📊 Mi Dashboard
-                    </a>
-                </div>
-                
-                <!-- Stats -->
-                <div class="stats-section">
-                    <div class="stat-item">
-                        <div class="stat-number">24/7</div>
-                        <div class="stat-label">Disponible</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number">&lt;30min</div>
-                        <div class="stat-label">Respuesta</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number">RM</div>
-                        <div class="stat-label">Cobertura</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number">100%</div>
-                        <div class="stat-label">Confiable</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Columna derecha - Placeholder para futuras imágenes -->
-        <div class="right-gallery">
-            <div class="gallery-placeholder">
-                <div class="placeholder-content">
-                    <div class="placeholder-icon">🚚</div>
-                    <h2>Galería de Grúas</h2>
-                    <p>Equipos profesionales disponibles 24/7</p>
-                    <div class="placeholder-features">
-                        <div class="feature-item">✅ Grúas modernas y seguras</div>
-                        <div class="feature-item">⚡ Respuesta en menos de 30 minutos</div>
-                        <div class="feature-item">🛡️ Servicio 100% asegurado</div>
-                        <div class="feature-item">📍 Cobertura en toda la RM</div>
-                    </div>
-                    <div class="coming-soon">
-                        <span>Próximamente: Galería interactiva</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
+{% block extra_css %}
 <style>
-    /* Layout principal dividido */
-    .home-container {
-        min-height: 100vh;
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         background: #000;
         color: #fff;
+        line-height: 1.4;
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+    }
+    
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+    
+    /* Hero Section tipo Uber */
+    .hero-section {
+        background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        position: relative;
         overflow: hidden;
     }
     
-    .split-layout {
-        display: flex;
-        min-height: 100vh;
-        max-width: 100vw;
-    }
-    
-    /* Columna izquierda - Contenido */
-    .left-content {
-        flex: 1;
-        min-width: 50%;
-        padding: 4rem 3rem;
-        display: flex;
-        align-items: center;
-        background: linear-gradient(135deg, #000 0%, #1a1a1a 50%, #000 100%);
-        position: relative;
-    }
-    
-    .left-content::before {
+    .hero-section::before {
         content: '';
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
-        background: 
-            radial-gradient(circle at 20% 20%, rgba(0, 213, 99, 0.1) 0%, transparent 50%),
-            radial-gradient(circle at 80% 80%, rgba(0, 213, 99, 0.1) 0%, transparent 50%);
-        pointer-events: none;
+        background: radial-gradient(circle at 30% 50%, rgba(0, 213, 99, 0.1) 0%, transparent 50%);
     }
     
     .hero-content {
-        max-width: 600px;
+        position: relative;
         z-index: 2;
-        position: relative;
-    }
-    
-    /* Título con efectos especiales */
-    .title-container {
-        margin-bottom: 2rem;
-        position: relative;
+        text-align: center;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 80px 0;
     }
     
     .hero-title {
-        font-size: 3.5rem;
-        font-weight: 800;
-        line-height: 1.1;
-        margin-bottom: 1rem;
-        text-align: left;
-    }
-    
-    .service-text, .grua-text {
-        display: inline-block;
-        background: linear-gradient(135deg, #fff, #ccc);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
-        animation: glow-pulse 3s ease-in-out infinite alternate;
-    }
-    
-    .de-text {
-        display: inline-block;
-        color: #666;
-        font-size: 2.5rem;
-        margin: 0 0.5rem;
-    }
-    
-    .subtitle-container {
-        text-align: left;
-        margin-bottom: 2rem;
-    }
-    
-    .time-text {
-        font-size: 2.5rem;
+        font-size: clamp(2.5rem, 5vw, 4rem);
         font-weight: 700;
+        margin-bottom: 24px;
+        line-height: 1.1;
+        perspective: 1000px;
+        transform-style: preserve-3d;
+        position: relative;
+        overflow: visible;
+    }
+    
+    .hero-title-3d {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+        text-shadow: 
+            0 0 20px rgba(0, 213, 99, 0.6),
+            0 0 40px rgba(0, 213, 99, 0.4),
+            0 0 80px rgba(0, 213, 99, 0.2),
+            0 0 120px rgba(0, 213, 99, 0.1);
+        animation: glow-pulse 4s ease-in-out infinite alternate;
+        will-change: text-shadow;
+    }
+    
+    .word-servicio {
+        display: inline-block;
+        animation: slide-from-left 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        transform: translateX(-200vw);
+    }
+    
+    .word-de {
+        display: inline-block;
+        opacity: 0;
+        animation: fade-in-de 0.5s ease-in-out 1.8s forwards;
+    }
+    
+    .word-grua {
+        display: inline-block;
+        animation: slide-from-right 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        transform: translateX(200vw);
+    }
+    
+    .hero-highlight {
         color: #00D563;
+        display: block;
+        animation: appear-24-7 1s ease-out 2.5s both;
+        opacity: 0;
         text-shadow: 
             0 0 20px rgba(0, 213, 99, 0.8),
             0 0 40px rgba(0, 213, 99, 0.6),
-            0 0 60px rgba(0, 213, 99, 0.4);
-        animation: float-3d 4s ease-in-out infinite;
+            0 0 80px rgba(0, 213, 99, 0.4),
+            0 0 120px rgba(0, 213, 99, 0.2);
+        will-change: opacity, transform;
     }
     
-    @keyframes glow-pulse {
+    /* Rayos eléctricos */
+    .lightning-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
+    }
+    
+    .lightning {
+        position: absolute;
+        width: 2px;
+        background: linear-gradient(45deg, #00D563, #00ff88, #ffffff);
+        box-shadow: 
+            0 0 10px #00D563,
+            0 0 20px #00D563,
+            0 0 40px #00D563;
+        animation: lightning-strike 0.3s ease-out;
+        opacity: 0;
+    }
+    
+    .lightning-1 {
+        height: 80px;
+        top: 20%;
+        left: 30%;
+        transform: rotate(45deg);
+        animation-delay: 2s;
+    }
+    
+    .lightning-2 {
+        height: 60px;
+        top: 60%;
+        left: 20%;
+        transform: rotate(-30deg);
+        animation-delay: 2.1s;
+    }
+    
+    .lightning-3 {
+        height: 70px;
+        top: 30%;
+        right: 25%;
+        transform: rotate(-45deg);
+        animation-delay: 2.05s;
+    }
+    
+    .lightning-4 {
+        height: 50px;
+        top: 70%;
+        right: 30%;
+        transform: rotate(60deg);
+        animation-delay: 2.15s;
+    }
+    
+    .lightning-5 {
+        height: 90px;
+        top: 10%;
+        left: 50%;
+        transform: rotate(0deg);
+        animation-delay: 2.08s;
+    }
+    
+    /* Resplandor de impacto optimizado */
+    .impact-glow {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, 
+            rgba(0, 213, 99, 0.3) 0%, 
+            rgba(0, 213, 99, 0.15) 30%, 
+            rgba(0, 213, 99, 0.05) 60%, 
+            transparent 100%);
+        border-radius: 50%;
+        animation: impact-explosion 1s ease-out 2s;
+        opacity: 0;
+        pointer-events: none;
+        z-index: -1;
+        filter: blur(8px);
+        will-change: opacity, transform;
+    }
+    
+    /* Cursor trail global - estela de humo */
+    .cursor-trail {
+        position: fixed;
+        width: 25px;
+        height: 25px;
+        background: radial-gradient(circle, 
+            rgba(0, 213, 99, 0.9) 0%, 
+            rgba(0, 213, 99, 0.7) 20%, 
+            rgba(0, 213, 99, 0.5) 40%, 
+            rgba(0, 213, 99, 0.3) 60%, 
+            rgba(0, 213, 99, 0.1) 80%, 
+            transparent 100%);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        mix-blend-mode: screen;
+        filter: blur(2px);
+        opacity: 0;
+        animation: cursor-fade 2s ease-out forwards;
+    }
+    
+    /* Cursor principal */
+    .custom-cursor {
+        position: fixed;
+        width: 15px;
+        height: 15px;
+        background: radial-gradient(circle, 
+            rgba(0, 213, 99, 1) 0%, 
+            rgba(0, 213, 99, 0.8) 40%, 
+            rgba(0, 213, 99, 0.3) 70%, 
+            transparent 100%);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 10000;
+        mix-blend-mode: screen;
+        filter: blur(0.5px);
+        box-shadow: 
+            0 0 10px rgba(0, 213, 99, 0.8),
+            0 0 20px rgba(0, 213, 99, 0.6),
+            0 0 30px rgba(0, 213, 99, 0.4);
+        transition: transform 0.1s ease-out;
+    }
+    
+    /* Animaciones de entrada */
+    @keyframes slide-from-left {
         0% {
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            transform: translateX(-200vw) rotateY(-90deg);
+            opacity: 0;
+        }
+        70% {
+            transform: translateX(20px) rotateY(10deg);
+            opacity: 1;
         }
         100% {
-            text-shadow: 0 0 40px rgba(255, 255, 255, 0.8);
+            transform: translateX(0) rotateY(0deg);
+            opacity: 1;
         }
     }
     
-    @keyframes float-3d {
-        0%, 100% {
-            transform: translateY(0px) rotateZ(0deg);
+    @keyframes slide-from-right {
+        0% {
+            transform: translateX(200vw) rotateY(90deg);
+            opacity: 0;
+        }
+        70% {
+            transform: translateX(-20px) rotateY(-10deg);
+            opacity: 1;
+        }
+        100% {
+            transform: translateX(0) rotateY(0deg);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes fade-in-de {
+        from {
+            opacity: 0;
+            transform: scale(0.5);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+    
+    @keyframes appear-24-7 {
+        0% {
+            opacity: 0;
+            transform: translateY(50px) scale(0.5);
         }
         50% {
-            transform: translateY(-10px) rotateZ(1deg);
+            opacity: 0.5;
+            transform: translateY(25px) scale(0.8);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0px) scale(1);
         }
     }
     
-    /* Descripción */
-    .hero-description {
+    @keyframes lightning-strike {
+        0% {
+            opacity: 0;
+            transform: scale(0.8) rotateZ(var(--rotation, 0deg));
+            filter: brightness(1);
+        }
+        10% {
+            opacity: 1;
+            transform: scale(1.2) rotateZ(var(--rotation, 0deg));
+            filter: brightness(2);
+        }
+        20% {
+            opacity: 0.8;
+            transform: scale(1) rotateZ(var(--rotation, 0deg));
+            filter: brightness(1.5);
+        }
+        30% {
+            opacity: 1;
+            transform: scale(1.1) rotateZ(var(--rotation, 0deg));
+            filter: brightness(2.5);
+        }
+        100% {
+            opacity: 0;
+            transform: scale(0.9) rotateZ(var(--rotation, 0deg));
+            filter: brightness(0.5);
+        }
+    }
+    
+    @keyframes impact-explosion {
+        0% {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.3);
+        }
+        50% {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1.2);
+        }
+        100% {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(2.5);
+        }
+    }
+    
+    /* Animaciones optimizadas */
+    @keyframes glow-pulse {
+        0% {
+            text-shadow: 
+                0 0 20px rgba(0, 213, 99, 0.6),
+                0 0 40px rgba(0, 213, 99, 0.4),
+                0 0 80px rgba(0, 213, 99, 0.2),
+                0 0 120px rgba(0, 213, 99, 0.1);
+        }
+        100% {
+            text-shadow: 
+                0 0 25px rgba(0, 213, 99, 0.8),
+                0 0 50px rgba(0, 213, 99, 0.6),
+                0 0 100px rgba(0, 213, 99, 0.4),
+                0 0 150px rgba(0, 213, 99, 0.2);
+        }
+    }
+    
+    .hero-subtitle {
         font-size: 1.25rem;
         color: #ccc;
-        line-height: 1.6;
-        margin-bottom: 3rem;
-        text-align: left;
+        margin-bottom: 40px;
+        line-height: 1.5;
+        font-weight: 400;
     }
     
-    /* Botones de acción */
-    .action-buttons {
+    .cta-buttons {
         display: flex;
-        gap: 1rem;
-        margin-bottom: 3rem;
+        gap: 16px;
+        justify-content: center;
         flex-wrap: wrap;
+        margin-bottom: 60px;
     }
     
-    .btn-primary-action {
-        padding: 1.25rem 2rem;
-        background: linear-gradient(135deg, #00D563, #00B853);
+    .btn-uber {
+        padding: 16px 32px;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 180px;
+    }
+    
+    .btn-primary {
+        background: #00D563;
+        color: #000;
+    }
+    
+    .btn-primary:hover {
+        background: #00B853;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(0, 213, 99, 0.3);
         color: #000;
         text-decoration: none;
-        border-radius: 12px;
-        font-weight: 700;
-        font-size: 1.1rem;
-        transition: all 0.3s ease;
-        box-shadow: 0 8px 25px rgba(0, 213, 99, 0.4);
     }
     
-    .btn-primary-action:hover {
-        background: linear-gradient(135deg, #00E570, #00C760);
-        color: #000;
-        transform: translateY(-3px);
-        box-shadow: 0 12px 35px rgba(0, 213, 99, 0.6);
-    }
-    
-    .btn-secondary-action {
-        padding: 1.25rem 2rem;
+    .btn-secondary {
         background: rgba(255, 255, 255, 0.1);
         color: #fff;
-        text-decoration: none;
-        border-radius: 12px;
-        font-weight: 600;
         border: 1px solid rgba(255, 255, 255, 0.2);
-        transition: all 0.3s ease;
     }
     
-    .btn-secondary-action:hover {
+    .btn-secondary:hover {
         background: rgba(255, 255, 255, 0.2);
         color: #fff;
-        transform: translateY(-3px);
+        text-decoration: none;
+        transform: translateY(-2px);
     }
     
-    /* Stats section */
-    .stats-section {
-        display: flex;
-        gap: 2rem;
-        flex-wrap: wrap;
+    .btn-icon {
+        margin-right: 8px;
+        font-size: 1.1rem;
+    }
+    
+    /* Stats tipo Uber */
+    .hero-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 32px;
+        text-align: center;
     }
     
     .stat-item {
-        text-align: left;
+        opacity: 0.8;
     }
     
     .stat-number {
         font-size: 1.5rem;
         font-weight: 700;
         color: #00D563;
-        margin-bottom: 0.25rem;
+        display: block;
     }
     
     .stat-label {
         font-size: 0.9rem;
         color: #999;
+        margin-top: 4px;
     }
     
-    /* Columna derecha - Placeholder */
-    .right-gallery {
-        flex: 1;
-        min-width: 50%;
-        position: relative;
-        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+    /* Features Section */
+    .features-section {
+        background: #000;
+        padding: 120px 0;
+    }
+    
+    .section-header {
+        text-align: center;
+        max-width: 600px;
+        margin: 0 auto 80px auto;
+    }
+    
+    .section-title {
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 700;
+        margin-bottom: 20px;
+        line-height: 1.2;
+    }
+    
+    .section-subtitle {
+        font-size: 1.125rem;
+        color: #999;
+        line-height: 1.6;
+    }
+    
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 32px;
+    }
+    
+    .feature-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 32px 24px;
+        text-align: center;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-8px);
+        border-color: rgba(0, 213, 99, 0.3);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+    
+    .feature-icon {
+        width: 64px;
+        height: 64px;
+        background: linear-gradient(135deg, #00D563, #00B853);
+        border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
+        margin: 0 auto 24px auto;
     }
     
-    .gallery-placeholder {
+    .feature-icon i {
+        font-size: 1.5rem;
+        color: #000;
+    }
+    
+    .feature-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 16px;
+        color: #fff;
+    }
+    
+    .feature-description {
+        color: #ccc;
+        line-height: 1.6;
+    }
+    
+    /* Pricing Section */
+    .pricing-section {
+        background: #0a0a0a;
+        padding: 120px 0;
+    }
+    
+    .pricing-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        padding: 40px;
+        max-width: 800px;
+        margin: 0 auto;
+        backdrop-filter: blur(10px);
+    }
+    
+    .pricing-header {
         text-align: center;
-        padding: 3rem;
-        max-width: 500px;
+        margin-bottom: 40px;
+        padding-bottom: 24px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
     
-    .placeholder-icon {
-        font-size: 5rem;
-        margin-bottom: 1.5rem;
-        opacity: 0.7;
-        animation: bounce 2s ease-in-out infinite;
+    .pricing-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 32px;
+        margin-bottom: 32px;
     }
     
-    @keyframes bounce {
-        0%, 100% { transform: translateY(0px); }
-        50% { transform: translateY(-20px); }
+    .price-item {
+        text-align: center;
+        padding: 24px;
+        background: rgba(0, 213, 99, 0.1);
+        border-radius: 16px;
+        border: 1px solid rgba(0, 213, 99, 0.2);
     }
     
-    .placeholder-content h2 {
+    .price-icon {
         font-size: 2.5rem;
         color: #00D563;
-        margin-bottom: 1rem;
-        font-weight: 700;
+        margin-bottom: 16px;
     }
     
-    .placeholder-content p {
-        font-size: 1.2rem;
-        color: #ccc;
-        margin-bottom: 3rem;
-        line-height: 1.5;
-    }
-    
-    .placeholder-features {
-        margin-bottom: 3rem;
-    }
-    
-    .feature-item {
-        background: rgba(0, 213, 99, 0.1);
-        padding: 1rem 1.5rem;
-        margin: 0.75rem 0;
-        border-radius: 12px;
-        border-left: 4px solid #00D563;
+    .price-label {
         font-size: 1rem;
-        text-align: left;
-        transition: all 0.3s ease;
+        color: #ccc;
+        margin-bottom: 8px;
     }
     
-    .feature-item:hover {
-        background: rgba(0, 213, 99, 0.2);
-        transform: translateX(10px);
+    .price-value {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #00D563;
+        margin-bottom: 8px;
     }
     
-    .coming-soon {
-        background: linear-gradient(135deg, #333, #444);
-        padding: 1rem 2rem;
-        border-radius: 25px;
-        border: 1px solid #555;
-        font-size: 0.9rem;
-        color: #aaa;
-        font-style: italic;
+    .price-description {
+        font-size: 0.875rem;
+        color: #999;
+    }
+    
+    .pricing-example {
+        background: rgba(0, 213, 99, 0.1);
+        border: 1px solid rgba(0, 213, 99, 0.2);
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        margin-top: 32px;
+    }
+    
+    .pricing-example strong {
+        color: #00D563;
+    }
+    
+    /* CTA Section */
+    .cta-section {
+        background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+        padding: 120px 0;
+        position: relative;
+    }
+    
+    .cta-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 70% 50%, rgba(0, 213, 99, 0.1) 0%, transparent 50%);
+    }
+    
+    .cta-content {
+        text-align: center;
+        max-width: 600px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .cta-title {
+        font-size: clamp(2rem, 4vw, 2.5rem);
+        font-weight: 700;
+        margin-bottom: 20px;
+        line-height: 1.2;
+    }
+    
+    .cta-subtitle {
+        font-size: 1.125rem;
+        color: #ccc;
+        margin-bottom: 40px;
+        line-height: 1.6;
+    }
+    
+    .cta-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 32px;
+        margin-top: 60px;
+    }
+    
+    .cta-stat {
+        text-align: center;
+    }
+    
+    .cta-stat-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #00D563;
+        display: block;
+    }
+    
+    .cta-stat-label {
+        font-size: 0.875rem;
+        color: #999;
+        margin-top: 4px;
     }
     
     /* Responsive */
-    @media (max-width: 1024px) {
-        .split-layout {
+    @media (max-width: 768px) {
+        .hero-content {
+            padding: 60px 0;
+        }
+        
+        .cta-buttons {
             flex-direction: column;
+            align-items: center;
         }
         
-        .left-content {
-            min-height: 60vh;
-            padding: 3rem 2rem;
+        .btn-uber {
+            width: 100%;
+            max-width: 280px;
         }
         
-        .right-gallery {
-            min-height: 40vh;
+        .features-grid {
+            grid-template-columns: 1fr;
         }
         
-        .hero-title {
-            font-size: 2.5rem;
+        .pricing-grid {
+            grid-template-columns: 1fr;
         }
         
-        .action-buttons {
-            flex-direction: column;
+        .hero-stats,
+        .cta-stats {
+            grid-template-columns: repeat(2, 1fr);
         }
     }
     
-    @media (max-width: 768px) {
-        .left-content {
-            padding: 2rem 1rem;
+    @media (max-width: 480px) {
+        .container {
+            padding: 0 16px;
         }
         
-        .hero-title {
-            font-size: 2rem;
-        }
-        
-        .time-text {
-            font-size: 2rem;
-        }
-        
-        .stats-section {
-            gap: 1rem;
-        }
-        
-        .gallery-placeholder {
-            padding: 2rem 1rem;
-        }
-        
-        .placeholder-content h2 {
-            font-size: 2rem;
+        .feature-card,
+        .pricing-card {
+            padding: 24px 20px;
         }
     }
 </style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title" id="heroTitle">
+                <span class="hero-title-3d">
+                    <span class="word-servicio">Servicio</span>
+                    <span class="word-de">de</span>
+                    <span class="word-grua">Grúa</span>
+                </span>
+                <span class="hero-highlight">24/7</span>
+                
+                <!-- Rayos eléctricos -->
+                <div class="lightning-container">
+                    <div class="lightning lightning-1"></div>
+                    <div class="lightning lightning-2"></div>
+                    <div class="lightning lightning-3"></div>
+                    <div class="lightning lightning-4"></div>
+                    <div class="lightning lightning-5"></div>
+                </div>
+                
+                <!-- Resplandor de impacto -->
+                <div class="impact-glow"></div>
+            </h1>
+            <p class="hero-subtitle">
+                Asistencia rápida y confiable para tu vehículo en toda la Región Metropolitana. 
+                Calcula tu tarifa al instante.
+            </p>
+            
+            <div class="cta-buttons">
+                {% if user.is_authenticated %}
+                <a href="{% url 'solicitar_servicio' %}" class="btn-uber btn-primary">
+                    <span class="btn-icon">🚚</span>
+                    Solicitar Grúa Ahora
+                </a>
+                <a href="{% url 'dashboard' %}" class="btn-uber btn-secondary">
+                    <span class="btn-icon">📊</span>
+                    Mi Dashboard
+                </a>
+                {% else %}
+                <a href="{% url 'registro' %}" class="btn-uber btn-primary">
+                    <span class="btn-icon">📱</span>
+                    Descargar App
+                </a>
+                <a href="{% url 'login' %}" class="btn-uber btn-secondary">
+                    <span class="btn-icon">👤</span>
+                    Iniciar Sesión
+                </a>
+                {% endif %}
+            </div>
+            
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-number">24/7</span>
+                    <span class="stat-label">Disponible</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">&lt;30min</span>
+                    <span class="stat-label">Respuesta</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">RM</span>
+                    <span class="stat-label">Cobertura</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Confiable</span>
+                </div>
+            </div>
+
+<script>
+// No hay scripts de cursor - cursor normal del navegador
+</script>
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Confiable</span>
+                </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">¿Por qué elegir Grúa Style?</h2>
+            <p class="section-subtitle">
+                Tecnología moderna y servicio personalizado para la mejor experiencia en servicios de grúa.
+            </p>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h3 class="feature-title">Disponible 24/7</h3>
+                <p class="feature-description">
+                    Servicio de emergencia las 24 horas, los 7 días de la semana. 
+                    Siempre estamos aquí cuando nos necesitas.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-calculator"></i>
+                </div>
+                <h3 class="feature-title">Tarifas Transparentes</h3>
+                <p class="feature-description">
+                    Calcula tu tarifa exacta antes de contratar. Sin sorpresas, 
+                    precios justos basados en distancia real.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+                <h3 class="feature-title">Pago Seguro</h3>
+                <p class="feature-description">
+                    Paga de forma segura con Webpay, transferencia bancaria 
+                    o efectivo. Máxima comodidad y seguridad.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-map-marked-alt"></i>
+                </div>
+                <h3 class="feature-title">Seguimiento GPS</h3>
+                <p class="feature-description">
+                    Selecciona tu ubicación y destino en nuestro mapa interactivo. 
+                    Precisión GPS garantizada.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-history"></i>
+                </div>
+                <h3 class="feature-title">Historial Completo</h3>
+                <p class="feature-description">
+                    Accede al historial de todos tus servicios con detalles 
+                    completos y facturas descargables.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3 class="feature-title">Servicio Profesional</h3>
+                <p class="feature-description">
+                    Grúa especializada para vehículos menores con equipamiento 
+                    profesional y conductores certificados.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Pricing Section -->
+<section class="pricing-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Tarifas Transparentes</h2>
+            <p class="section-subtitle">
+                Conoce nuestras tarifas antes de solicitar el servicio
+            </p>
+        </div>
+        
+        <div class="pricing-card">
+            <div class="pricing-header">
+                <h3>Estructura de Precios</h3>
+            </div>
+            
+            <div class="pricing-grid">
+                <div class="price-item">
+                    <div class="price-icon">🚀</div>
+                    <div class="price-label">Tarifa Base</div>
+                    <div class="price-value">$15.000</div>
+                    <div class="price-description">Costo inicial del servicio</div>
+                </div>
+                
+                <div class="price-item">
+                    <div class="price-icon">📏</div>
+                    <div class="price-label">Por Kilómetro</div>
+                    <div class="price-value">$1.200</div>
+                    <div class="price-description">Cada kilómetro recorrido</div>
+                </div>
+                
+                <div class="price-item">
+                    <div class="price-icon">💎</div>
+                    <div class="price-label">Tarifa Mínima</div>
+                    <div class="price-value">$20.000</div>
+                    <div class="price-description">Costo mínimo garantizado</div>
+                </div>
+            </div>
+            
+            <div class="pricing-example">
+                <strong>Ejemplo:</strong> Un viaje de 8 km = $15.000 + (8 × $1.200) = <strong>$24.600</strong>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-content">
+            <h2 class="cta-title">¿Necesitas una grúa ahora?</h2>
+            <p class="cta-subtitle">
+                Únete a cientos de clientes satisfechos que confían en nuestro servicio profesional
+            </p>
+            
+            <div class="cta-buttons">
+                {% if user.is_authenticated %}
+                <a href="{% url 'solicitar_servicio' %}" class="btn-uber btn-primary">
+                    <span class="btn-icon">🚚</span>
+                    Solicitar Grúa Ahora
+                </a>
+                {% else %}
+                <a href="{% url 'registro' %}" class="btn-uber btn-primary">
+                    <span class="btn-icon">📱</span>
+                    Crear Cuenta Gratis
+                </a>
+                {% endif %}
+            </div>
+            
+            <div class="cta-stats">
+                <div class="cta-stat">
+                    <span class="cta-stat-value">24/7</span>
+                    <span class="cta-stat-label">Disponibilidad</span>
+                </div>
+                <div class="cta-stat">
+                    <span class="cta-stat-value">&lt;30min</span>
+                    <span class="cta-stat-label">Tiempo respuesta</span>
+                </div>
+                <div class="cta-stat">
+                    <span class="cta-stat-value">100%</span>
+                    <span class="cta-stat-label">Satisfacción</span>
+                </div>
+                <div class="cta-stat">
+                    <span class="cta-stat-value">RM</span>
+                    <span class="cta-stat-label">Cobertura total</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}
