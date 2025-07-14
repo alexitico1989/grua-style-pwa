@@ -1,91 +1,9 @@
 {% extends 'grua_app/base.html' %}
 
-{% block title %}Grúa Style - Servicio de Grúas 24/7 en Santiago{% endblock %}
-
-{% block content %}
-<div class="home-container">
-    <!-- Layout dividido en dos columnas -->
-    <div class="split-layout">
-        <!-- Columna izquierda - Contenido principal -->
-        <div class="left-content">
-            <!-- Hero Content -->
-            <div class="hero-content">
-                <div class="title-container">
-                    <h1 class="hero-title">
-                        <span class="service-text">Servicio</span>
-                        <span class="de-text">de</span>
-                        <span class="grua-text">Grúa</span>
-                    </h1>
-                    <div class="subtitle-container">
-                        <span class="time-text">24/7</span>
-                    </div>
-                </div>
-                
-                <p class="hero-description">
-                    Asistencia rápida y confiable para tu vehículo en toda la Región 
-                    Metropolitana. Calcula tu tarifa al instante.
-                </p>
-                
-                <!-- Botones de acción -->
-                <div class="action-buttons">
-                    <a href="{% url 'solicitar_servicio' %}" class="btn-primary-action">
-                        🚚 Solicitar Grúa Ahora
-                    </a>
-                    <a href="{% url 'dashboard' %}" class="btn-secondary-action">
-                        📊 Mi Dashboard
-                    </a>
-                </div>
-                
-                <!-- Stats -->
-                <div class="stats-section">
-                    <div class="stat-item">
-                        <div class="stat-number">24/7</div>
-                        <div class="stat-label">Disponible</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number">&lt;30min</div>
-                        <div class="stat-label">Respuesta</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number">RM</div>
-                        <div class="stat-label">Cobertura</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number">100%</div>
-                        <div class="stat-label">Confiable</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Columna derecha - Placeholder para futuras imágenes -->
-        <div class="right-gallery">
-            <div class="gallery-placeholder">
-                <div class="placeholder-content">
-                    <div class="placeholder-icon">🚚</div>
-                    <h2>Galería de Grúas</h2>
-                    <p>Equipos profesionales disponibles 24/7</p>
-                    <div class="placeholder-features">
-                        <div class="feature-item">✅ Grúas modernas y seguras</div>
-                        <div class="feature-item">⚡ Respuesta en menos de 30 minutos</div>
-                        <div class="feature-item">🛡️ Servicio 100% asegurado</div>
-                        <div class="feature-item">📍 Cobertura en toda la RM</div>
-                    </div>
-                    <div class="coming-soon">
-                        <span>Próximamente: Galería interactiva</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 {% block title %}Grúa Style - Servicio 24/7{% endblock %}
 
 {% block extra_css %}
 <style>
-    /* Layout principal dividido */
-    .home-container {
-        min-height: 100vh;
     * {
         margin: 0;
         padding: 0;
@@ -96,39 +14,27 @@
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         background: #000;
         color: #fff;
-        overflow: hidden;
         line-height: 1.4;
         -webkit-font-smoothing: antialiased;
         overflow-x: hidden;
     }
-
-    .split-layout {
-        display: flex;
-        min-height: 100vh;
-        max-width: 100vw;
+    
     .container {
         max-width: 1200px;
         margin: 0 auto;
         padding: 0 20px;
     }
-
-    /* Columna izquierda - Contenido */
-    .left-content {
-        flex: 1;
-        min-width: 50%;
-        padding: 4rem 3rem;
+    
     /* Hero Section tipo Uber */
     .hero-section {
         background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
         min-height: 100vh;
         display: flex;
         align-items: center;
-        background: linear-gradient(135deg, #000 0%, #1a1a1a 50%, #000 100%);
         position: relative;
         overflow: hidden;
     }
-
-    .left-content::before {
+    
     .hero-section::before {
         content: '';
         position: absolute;
@@ -136,16 +42,10 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: 
-            radial-gradient(circle at 20% 20%, rgba(0, 213, 99, 0.1) 0%, transparent 50%),
-            radial-gradient(circle at 80% 80%, rgba(0, 213, 99, 0.1) 0%, transparent 50%);
-        pointer-events: none;
         background: radial-gradient(circle at 30% 50%, rgba(0, 213, 99, 0.1) 0%, transparent 50%);
     }
-
+    
     .hero-content {
-        max-width: 600px;
-        z-index: 2;
         position: relative;
         z-index: 2;
         text-align: center;
@@ -153,10 +53,7 @@
         margin: 0 auto;
         padding: 80px 0;
     }
-
-    /* Título con efectos especiales */
-    .title-container {
-        margin-bottom: 2rem;
+    
     .hero-title {
         font-size: clamp(2.5rem, 5vw, 4rem);
         font-weight: 700;
@@ -167,13 +64,7 @@
         position: relative;
         overflow: visible;
     }
-
-    .hero-title {
-        font-size: 3.5rem;
-        font-weight: 800;
-        line-height: 1.1;
-        margin-bottom: 1rem;
-        text-align: left;
+    
     .hero-title-3d {
         display: flex;
         justify-content: center;
@@ -187,42 +78,25 @@
         animation: glow-pulse 4s ease-in-out infinite alternate;
         will-change: text-shadow;
     }
-
-    .service-text, .grua-text {
+    
     .word-servicio {
         display: inline-block;
-        background: linear-gradient(135deg, #fff, #ccc);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
-        animation: glow-pulse 3s ease-in-out infinite alternate;
         animation: slide-from-left 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
         transform: translateX(-200vw);
     }
-
-    .de-text {
+    
     .word-de {
         display: inline-block;
-        color: #666;
-        font-size: 2.5rem;
-        margin: 0 0.5rem;
         opacity: 0;
         animation: fade-in-de 0.5s ease-in-out 1.8s forwards;
     }
-
-    .subtitle-container {
-        text-align: left;
-        margin-bottom: 2rem;
+    
     .word-grua {
         display: inline-block;
         animation: slide-from-right 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
         transform: translateX(200vw);
     }
-
-    .time-text {
-        font-size: 2.5rem;
-        font-weight: 700;
+    
     .hero-highlight {
         color: #00D563;
         display: block;
@@ -231,14 +105,11 @@
         text-shadow: 
             0 0 20px rgba(0, 213, 99, 0.8),
             0 0 40px rgba(0, 213, 99, 0.6),
-            0 0 60px rgba(0, 213, 99, 0.4);
-        animation: float-3d 4s ease-in-out infinite;
             0 0 80px rgba(0, 213, 99, 0.4),
             0 0 120px rgba(0, 213, 99, 0.2);
         will-change: opacity, transform;
     }
-
-    @keyframes glow-pulse {
+    
     /* Rayos eléctricos */
     .lightning-container {
         position: absolute;
@@ -412,7 +283,6 @@
     
     @keyframes appear-24-7 {
         0% {
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
             opacity: 0;
             transform: translateY(50px) scale(0.5);
         }
@@ -448,23 +318,18 @@
             filter: brightness(2.5);
         }
         100% {
-            text-shadow: 0 0 40px rgba(255, 255, 255, 0.8);
             opacity: 0;
             transform: scale(0.9) rotateZ(var(--rotation, 0deg));
             filter: brightness(0.5);
         }
     }
-
-    @keyframes float-3d {
-        0%, 100% {
-            transform: translateY(0px) rotateZ(0deg);
+    
     @keyframes impact-explosion {
         0% {
             opacity: 0;
             transform: translate(-50%, -50%) scale(0.3);
         }
         50% {
-            transform: translateY(-10px) rotateZ(1deg);
             opacity: 1;
             transform: translate(-50%, -50%) scale(1.2);
         }
@@ -491,49 +356,32 @@
                 0 0 150px rgba(0, 213, 99, 0.2);
         }
     }
-
-    /* Descripción */
-    .hero-description {
+    
     .hero-subtitle {
         font-size: 1.25rem;
         color: #ccc;
-        line-height: 1.6;
-        margin-bottom: 3rem;
-        text-align: left;
         margin-bottom: 40px;
         line-height: 1.5;
         font-weight: 400;
     }
-
-    /* Botones de acción */
-    .action-buttons {
+    
     .cta-buttons {
         display: flex;
-        gap: 1rem;
-        margin-bottom: 3rem;
         gap: 16px;
         justify-content: center;
         flex-wrap: wrap;
         margin-bottom: 60px;
     }
-
-    .btn-primary-action {
-        padding: 1.25rem 2rem;
-        background: linear-gradient(135deg, #00D563, #00B853);
-        color: #000;
-        text-decoration: none;
+    
     .btn-uber {
         padding: 16px 32px;
         border-radius: 12px;
-        font-weight: 700;
-        font-size: 1.1rem;
         font-size: 1rem;
         font-weight: 600;
         text-decoration: none;
         border: none;
         cursor: pointer;
         transition: all 0.3s ease;
-        box-shadow: 0 8px 25px rgba(0, 213, 99, 0.4);
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -544,45 +392,28 @@
         background: #00D563;
         color: #000;
     }
-
-    .btn-primary-action:hover {
-        background: linear-gradient(135deg, #00E570, #00C760);
+    
     .btn-primary:hover {
         background: #00B853;
         transform: translateY(-2px);
         box-shadow: 0 8px 30px rgba(0, 213, 99, 0.3);
         color: #000;
-        transform: translateY(-3px);
-        box-shadow: 0 12px 35px rgba(0, 213, 99, 0.6);
         text-decoration: none;
     }
-
-    .btn-secondary-action {
-        padding: 1.25rem 2rem;
+    
     .btn-secondary {
         background: rgba(255, 255, 255, 0.1);
         color: #fff;
-        text-decoration: none;
-        border-radius: 12px;
-        font-weight: 600;
         border: 1px solid rgba(255, 255, 255, 0.2);
-        transition: all 0.3s ease;
     }
-
-    .btn-secondary-action:hover {
+    
     .btn-secondary:hover {
         background: rgba(255, 255, 255, 0.2);
         color: #fff;
-        transform: translateY(-3px);
         text-decoration: none;
         transform: translateY(-2px);
     }
-
-    /* Stats section */
-    .stats-section {
-        display: flex;
-        gap: 2rem;
-        flex-wrap: wrap;
+    
     .btn-icon {
         margin-right: 8px;
         font-size: 1.1rem;
@@ -595,32 +426,24 @@
         gap: 32px;
         text-align: center;
     }
-
+    
     .stat-item {
-        text-align: left;
         opacity: 0.8;
     }
-
+    
     .stat-number {
         font-size: 1.5rem;
         font-weight: 700;
         color: #00D563;
-        margin-bottom: 0.25rem;
         display: block;
     }
-
+    
     .stat-label {
         font-size: 0.9rem;
         color: #999;
         margin-top: 4px;
     }
-
-    /* Columna derecha - Placeholder */
-    .right-gallery {
-        flex: 1;
-        min-width: 50%;
-        position: relative;
-        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+    
     /* Features Section */
     .features-section {
         background: #000;
@@ -711,32 +534,21 @@
         margin: 0 auto;
         backdrop-filter: blur(10px);
     }
-
-    .gallery-placeholder {
+    
     .pricing-header {
         text-align: center;
-        padding: 3rem;
-        max-width: 500px;
         margin-bottom: 40px;
         padding-bottom: 24px;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
-
-    .placeholder-icon {
-        font-size: 5rem;
-        margin-bottom: 1.5rem;
-        opacity: 0.7;
-        animation: bounce 2s ease-in-out infinite;
+    
     .pricing-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         gap: 32px;
         margin-bottom: 32px;
     }
-
-    @keyframes bounce {
-        0%, 100% { transform: translateY(0px); }
-        50% { transform: translateY(-20px); }
+    
     .price-item {
         text-align: center;
         padding: 24px;
@@ -744,23 +556,16 @@
         border-radius: 16px;
         border: 1px solid rgba(0, 213, 99, 0.2);
     }
-
-    .placeholder-content h2 {
+    
     .price-icon {
         font-size: 2.5rem;
         color: #00D563;
-        margin-bottom: 1rem;
-        font-weight: 700;
         margin-bottom: 16px;
     }
-
-    .placeholder-content p {
-        font-size: 1.2rem;
+    
     .price-label {
         font-size: 1rem;
         color: #ccc;
-        margin-bottom: 3rem;
-        line-height: 1.5;
         margin-bottom: 8px;
     }
     
@@ -770,45 +575,25 @@
         color: #00D563;
         margin-bottom: 8px;
     }
-
-    .placeholder-features {
-        margin-bottom: 3rem;
+    
     .price-description {
         font-size: 0.875rem;
         color: #999;
     }
-
-    .feature-item {
+    
     .pricing-example {
         background: rgba(0, 213, 99, 0.1);
-        padding: 1rem 1.5rem;
-        margin: 0.75rem 0;
         border: 1px solid rgba(0, 213, 99, 0.2);
         border-radius: 12px;
-        border-left: 4px solid #00D563;
-        font-size: 1rem;
-        text-align: left;
-        transition: all 0.3s ease;
         padding: 20px;
         text-align: center;
         margin-top: 32px;
     }
-
-    .feature-item:hover {
-        background: rgba(0, 213, 99, 0.2);
-        transform: translateX(10px);
+    
     .pricing-example strong {
         color: #00D563;
     }
-
-    .coming-soon {
-        background: linear-gradient(135deg, #333, #444);
-        padding: 1rem 2rem;
-        border-radius: 25px;
-        border: 1px solid #555;
-        font-size: 0.9rem;
-        color: #aaa;
-        font-style: italic;
+    
     /* CTA Section */
     .cta-section {
         background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
@@ -871,10 +656,8 @@
         color: #999;
         margin-top: 4px;
     }
-
+    
     /* Responsive */
-    @media (max-width: 1024px) {
-        .split-layout {
     @media (max-width: 768px) {
         .hero-content {
             padding: 60px 0;
@@ -884,61 +667,31 @@
             flex-direction: column;
             align-items: center;
         }
-
-        .left-content {
-            min-height: 60vh;
-            padding: 3rem 2rem;
+        
         .btn-uber {
             width: 100%;
             max-width: 280px;
         }
-
-        .right-gallery {
-            min-height: 40vh;
+        
         .features-grid {
             grid-template-columns: 1fr;
         }
-
-        .hero-title {
-            font-size: 2.5rem;
+        
         .pricing-grid {
             grid-template-columns: 1fr;
         }
-
-        .action-buttons {
-            flex-direction: column;
+        
         .hero-stats,
         .cta-stats {
             grid-template-columns: repeat(2, 1fr);
         }
     }
-
-    @media (max-width: 768px) {
-        .left-content {
-            padding: 2rem 1rem;
-        }
-        
-        .hero-title {
-            font-size: 2rem;
-        }
-        
-        .time-text {
-            font-size: 2rem;
-        }
-        
-        .stats-section {
-            gap: 1rem;
-        }
-        
-        .gallery-placeholder {
-            padding: 2rem 1rem;
+    
     @media (max-width: 480px) {
         .container {
             padding: 0 16px;
         }
-
-        .placeholder-content h2 {
-            font-size: 2rem;
+        
         .feature-card,
         .pricing-card {
             padding: 24px 20px;
