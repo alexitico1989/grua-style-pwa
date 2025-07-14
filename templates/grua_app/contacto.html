@@ -1,1 +1,614 @@
+{% extends 'grua_app/base.html' %}
+{% load static %}
 
+{% block title %}Grúa Style - Contacto{% endblock %}
+
+{% block extra_css %}
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        background: #000;
+        color: #fff;
+        line-height: 1.4;
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+    }
+    
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+    
+    /* Hero Section */
+    .hero-section {
+        background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+        min-height: 60vh;
+        display: flex;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+        padding: 120px 0 80px 0;
+    }
+    
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 30% 50%, rgba(0, 213, 99, 0.1) 0%, transparent 50%);
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .hero-title {
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        font-weight: 700;
+        margin-bottom: 24px;
+        line-height: 1.1;
+        text-shadow: 
+            0 0 20px rgba(0, 213, 99, 0.6),
+            0 0 40px rgba(0, 213, 99, 0.4),
+            0 0 80px rgba(0, 213, 99, 0.2);
+        animation: glow-pulse 4s ease-in-out infinite alternate;
+    }
+    
+    @keyframes glow-pulse {
+        0% {
+            text-shadow: 
+                0 0 20px rgba(0, 213, 99, 0.6),
+                0 0 40px rgba(0, 213, 99, 0.4),
+                0 0 80px rgba(0, 213, 99, 0.2);
+        }
+        100% {
+            text-shadow: 
+                0 0 25px rgba(0, 213, 99, 0.8),
+                0 0 50px rgba(0, 213, 99, 0.6),
+                0 0 100px rgba(0, 213, 99, 0.4);
+        }
+    }
+    
+    .hero-subtitle {
+        font-size: 1.25rem;
+        color: #ccc;
+        margin-bottom: 40px;
+        line-height: 1.6;
+    }
+    
+    /* WhatsApp CTA Section */
+    .whatsapp-cta {
+        background: #000;
+        padding: 80px 0;
+        text-align: center;
+    }
+    
+    .whatsapp-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        padding: 50px 40px;
+        max-width: 600px;
+        margin: 0 auto;
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .whatsapp-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at center, rgba(37, 211, 102, 0.1) 0%, transparent 70%);
+        pointer-events: none;
+    }
+    
+    .whatsapp-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #25D366, #128C7E);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 30px auto;
+        box-shadow: 0 10px 30px rgba(37, 211, 102, 0.3);
+        animation: whatsapp-pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes whatsapp-pulse {
+        0%, 100% {
+            transform: scale(1);
+            box-shadow: 0 10px 30px rgba(37, 211, 102, 0.3);
+        }
+        50% {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(37, 211, 102, 0.5);
+        }
+    }
+    
+    .whatsapp-icon i {
+        font-size: 2.5rem;
+        color: #fff;
+    }
+    
+    .whatsapp-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #25D366;
+        margin-bottom: 20px;
+    }
+    
+    .whatsapp-subtitle {
+        font-size: 1.2rem;
+        color: #ccc;
+        margin-bottom: 30px;
+        line-height: 1.6;
+    }
+    
+    .whatsapp-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px 40px;
+        background: linear-gradient(135deg, #25D366, #128C7E);
+        color: #fff;
+        text-decoration: none;
+        border-radius: 50px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 30px rgba(37, 211, 102, 0.3);
+        border: none;
+        cursor: pointer;
+        min-width: 250px;
+    }
+    
+    .whatsapp-btn:hover {
+        background: linear-gradient(135deg, #128C7E, #25D366);
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(37, 211, 102, 0.5);
+        color: #fff;
+        text-decoration: none;
+    }
+    
+    .whatsapp-btn i {
+        margin-right: 12px;
+        font-size: 1.3rem;
+    }
+    
+    .whatsapp-info {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        color: #999;
+        font-size: 0.9rem;
+    }
+    
+    /* Contact Info Section */
+    .contact-info {
+        background: #0a0a0a;
+        padding: 80px 0;
+    }
+    
+    .section-header {
+        text-align: center;
+        max-width: 600px;
+        margin: 0 auto 60px auto;
+    }
+    
+    .section-title {
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 700;
+        margin-bottom: 20px;
+        line-height: 1.2;
+    }
+    
+    .section-subtitle {
+        font-size: 1.125rem;
+        color: #999;
+        line-height: 1.6;
+    }
+    
+    .contact-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 40px;
+    }
+    
+    .contact-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 30px;
+        text-align: center;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+    
+    .contact-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(0, 213, 99, 0.3);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    }
+    
+    .contact-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #00D563, #00B853);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px auto;
+    }
+    
+    .contact-icon i {
+        font-size: 1.5rem;
+        color: #000;
+    }
+    
+    .contact-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: #fff;
+    }
+    
+    .contact-detail {
+        color: #ccc;
+        margin-bottom: 10px;
+        line-height: 1.6;
+    }
+    
+    .contact-link {
+        color: #00D563;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    
+    .contact-link:hover {
+        color: #00B853;
+        text-decoration: underline;
+    }
+    
+    /* Emergency Section */
+    .emergency-section {
+        background: #000;
+        padding: 80px 0;
+    }
+    
+    .emergency-card {
+        background: linear-gradient(135deg, rgba(220, 38, 38, 0.1), rgba(239, 68, 68, 0.1));
+        border: 2px solid rgba(220, 38, 38, 0.3);
+        border-radius: 20px;
+        padding: 40px;
+        max-width: 700px;
+        margin: 0 auto;
+        text-align: center;
+        backdrop-filter: blur(10px);
+    }
+    
+    .emergency-icon {
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, #DC2626, #EF4444);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px auto;
+        animation: emergency-pulse 1.5s ease-in-out infinite;
+    }
+    
+    @keyframes emergency-pulse {
+        0%, 100% {
+            transform: scale(1);
+            box-shadow: 0 0 20px rgba(220, 38, 38, 0.5);
+        }
+        50% {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(220, 38, 38, 0.8);
+        }
+    }
+    
+    .emergency-icon i {
+        font-size: 2rem;
+        color: #fff;
+    }
+    
+    .emergency-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #EF4444;
+        margin-bottom: 15px;
+    }
+    
+    .emergency-text {
+        color: #ccc;
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 25px;
+    }
+    
+    .emergency-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #EF4444;
+        margin-bottom: 20px;
+        text-shadow: 0 0 10px rgba(220, 38, 38, 0.5);
+    }
+    
+    /* CTA Section */
+    .cta-section {
+        background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+        padding: 80px 0;
+        position: relative;
+    }
+    
+    .cta-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 70% 50%, rgba(0, 213, 99, 0.1) 0%, transparent 50%);
+    }
+    
+    .cta-content {
+        text-align: center;
+        max-width: 600px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .cta-title {
+        font-size: clamp(2rem, 4vw, 2.5rem);
+        font-weight: 700;
+        margin-bottom: 20px;
+        line-height: 1.2;
+    }
+    
+    .cta-subtitle {
+        font-size: 1.125rem;
+        color: #ccc;
+        margin-bottom: 40px;
+        line-height: 1.6;
+    }
+    
+    .cta-buttons {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .btn-uber {
+        padding: 16px 32px;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 180px;
+    }
+    
+    .btn-primary {
+        background: #00D563;
+        color: #000;
+    }
+    
+    .btn-primary:hover {
+        background: #00B853;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(0, 213, 99, 0.3);
+        color: #000;
+        text-decoration: none;
+    }
+    
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: #fff;
+        text-decoration: none;
+        transform: translateY(-2px);
+    }
+    
+    .btn-icon {
+        margin-right: 8px;
+        font-size: 1.1rem;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .contact-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .cta-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .btn-uber {
+            width: 100%;
+            max-width: 280px;
+        }
+        
+        .whatsapp-card,
+        .emergency-card {
+            padding: 30px 20px;
+        }
+        
+        .whatsapp-btn {
+            min-width: 200px;
+            padding: 16px 32px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .container {
+            padding: 0 16px;
+        }
+        
+        .contact-card {
+            padding: 20px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">Contacto</h1>
+            <p class="hero-subtitle">
+                Estamos disponibles las 24 horas para atenderte. Contáctanos por el 
+                medio que prefieras y recibe atención inmediata.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- WhatsApp CTA Section -->
+<section class="whatsapp-cta">
+    <div class="container">
+        <div class="whatsapp-card">
+            <div class="whatsapp-icon">
+                <i class="fab fa-whatsapp"></i>
+            </div>
+            <h2 class="whatsapp-title">¡Contáctanos por WhatsApp!</h2>
+            <p class="whatsapp-subtitle">
+                La forma más rápida de solicitar tu grúa. Respuesta inmediata 
+                y atención personalizada las 24 horas.
+            </p>
+            <a href="https://wa.me/56956066375?text=Hola,%20necesito%20solicitar%20un%20servicio%20de%20grúa" 
+               target="_blank" 
+               class="whatsapp-btn">
+                <i class="fab fa-whatsapp"></i>
+                Escribir por WhatsApp
+            </a>
+            <div class="whatsapp-info">
+                <strong>+56 9 5606 6375</strong><br>
+                Disponible 24/7 • Respuesta inmediata
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Information -->
+<section class="contact-info">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Información de Contacto</h2>
+            <p class="section-subtitle">
+                Múltiples formas de contactarnos para tu comodidad
+            </p>
+        </div>
+        
+        <div class="contact-grid">
+            <div class="contact-card">
+                <div class="contact-icon">
+                    <i class="fas fa-phone"></i>
+                </div>
+                <h3 class="contact-title">Teléfono</h3>
+                <div class="contact-detail">
+                    <a href="tel:+56956066375" class="contact-link">+56 9 5606 6375</a>
+                </div>
+                <div class="contact-detail">Línea directa 24/7</div>
+                <div class="contact-detail">Llamadas y SMS</div>
+            </div>
+            
+            <div class="contact-card">
+                <div class="contact-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <h3 class="contact-title">Email</h3>
+                <div class="contact-detail">
+                    <a href="mailto:contacto@gruastyle.cl" class="contact-link">contacto@gruastyle.cl</a>
+                </div>
+                <div class="contact-detail">Respuesta en 30 minutos</div>
+                <div class="contact-detail">Soporte técnico</div>
+            </div>
+            
+            <div class="contact-card">
+                <div class="contact-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <h3 class="contact-title">Oficina</h3>
+                <div class="contact-detail">Arturo Prat 262</div>
+                <div class="contact-detail">Lampa, Santiago</div>
+                <div class="contact-detail">Lunes a Domingo 24 horas</div>
+            </div>
+            
+            <div class="contact-card">
+                <div class="contact-icon">
+                    <i class="fab fa-instagram"></i>
+                </div>
+                <h3 class="contact-title">Redes Sociales</h3>
+                <div class="contact-detail">
+                    <a href="https://instagram.com/gruastyle" target="_blank" class="contact-link">@gruastyle</a>
+                </div>
+                <div class="contact-detail">Síguenos en Instagram</div>
+                <div class="contact-detail">Noticias y actualizaciones</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-content">
+            <h2 class="cta-title">¿Listo para solicitar tu grúa?</h2>
+            <p class="cta-subtitle">
+                Contacta con nosotros ahora y recibe atención inmediata
+            </p>
+            
+            <div class="cta-buttons">
+                <a href="{% url 'solicitar_servicio' %}" class="btn-uber btn-primary">
+                    <span class="btn-icon">🚚</span>
+                    Solicitar Grúa Ahora
+                </a>
+                <a href="https://wa.me/56956066375?text=Hola,%20necesito%20información%20sobre%20sus%20servicios" 
+                   target="_blank" 
+                   class="btn-uber btn-secondary">
+                    <span class="btn-icon">💬</span>
+                    WhatsApp
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
