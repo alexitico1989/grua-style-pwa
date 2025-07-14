@@ -45,13 +45,21 @@
         background: radial-gradient(circle at 30% 50%, rgba(0, 213, 99, 0.1) 0%, transparent 50%);
     }
     
-    .hero-content {
+    /* Hero Content Layout */
+    .hero-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        align-items: center;
+        min-height: 100vh;
+        padding: 80px 0;
         position: relative;
         z-index: 2;
-        text-align: center;
+    }
+    
+    .hero-content {
+        text-align: left;
         max-width: 600px;
-        margin: 0 auto;
-        padding: 80px 0;
     }
     
     .hero-title {
@@ -67,9 +75,9 @@
     
     .hero-title-3d {
         display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 1rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
         text-shadow: 
             0 0 20px rgba(0, 213, 99, 0.6),
             0 0 40px rgba(0, 213, 99, 0.4),
@@ -77,6 +85,12 @@
             0 0 120px rgba(0, 213, 99, 0.1);
         animation: glow-pulse 4s ease-in-out infinite alternate;
         will-change: text-shadow;
+    }
+    
+    .hero-title-line {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
     }
     
     .word-servicio {
@@ -108,6 +122,42 @@
             0 0 80px rgba(0, 213, 99, 0.4),
             0 0 120px rgba(0, 213, 99, 0.2);
         will-change: opacity, transform;
+    }
+    
+    /* Galería de Imágenes */
+    .hero-images {
+        position: relative;
+        height: 500px;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+    
+    .image-slider {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+    
+    .slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 1.5s ease-in-out;
+    }
+    
+    .slide.active {
+        opacity: 1;
+    }
+    
+    .slide img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
     }
     
     /* Rayos eléctricos */
@@ -194,49 +244,6 @@
         z-index: -1;
         filter: blur(8px);
         will-change: opacity, transform;
-    }
-    
-    /* Cursor trail global - estela de humo */
-    .cursor-trail {
-        position: fixed;
-        width: 25px;
-        height: 25px;
-        background: radial-gradient(circle, 
-            rgba(0, 213, 99, 0.9) 0%, 
-            rgba(0, 213, 99, 0.7) 20%, 
-            rgba(0, 213, 99, 0.5) 40%, 
-            rgba(0, 213, 99, 0.3) 60%, 
-            rgba(0, 213, 99, 0.1) 80%, 
-            transparent 100%);
-        border-radius: 50%;
-        pointer-events: none;
-        z-index: 9999;
-        mix-blend-mode: screen;
-        filter: blur(2px);
-        opacity: 0;
-        animation: cursor-fade 2s ease-out forwards;
-    }
-    
-    /* Cursor principal */
-    .custom-cursor {
-        position: fixed;
-        width: 15px;
-        height: 15px;
-        background: radial-gradient(circle, 
-            rgba(0, 213, 99, 1) 0%, 
-            rgba(0, 213, 99, 0.8) 40%, 
-            rgba(0, 213, 99, 0.3) 70%, 
-            transparent 100%);
-        border-radius: 50%;
-        pointer-events: none;
-        z-index: 10000;
-        mix-blend-mode: screen;
-        filter: blur(0.5px);
-        box-shadow: 
-            0 0 10px rgba(0, 213, 99, 0.8),
-            0 0 20px rgba(0, 213, 99, 0.6),
-            0 0 30px rgba(0, 213, 99, 0.4);
-        transition: transform 0.1s ease-out;
     }
     
     /* Animaciones de entrada */
@@ -368,7 +375,7 @@
     .cta-buttons {
         display: flex;
         gap: 16px;
-        justify-content: center;
+        justify-content: flex-start;
         flex-wrap: wrap;
         margin-bottom: 60px;
     }
@@ -424,7 +431,7 @@
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
         gap: 32px;
-        text-align: center;
+        text-align: left;
     }
     
     .stat-item {
@@ -658,8 +665,32 @@
     }
     
     /* Responsive */
-    @media (max-width: 768px) {
+    @media (max-width: 968px) {
+        .hero-container {
+            grid-template-columns: 1fr;
+            gap: 40px;
+            text-align: center;
+        }
+        
         .hero-content {
+            text-align: center;
+        }
+        
+        .cta-buttons {
+            justify-content: center;
+        }
+        
+        .hero-stats {
+            text-align: center;
+        }
+        
+        .hero-images {
+            height: 300px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .hero-container {
             padding: 60px 0;
         }
         
@@ -704,79 +735,94 @@
 <!-- Hero Section -->
 <section class="hero-section">
     <div class="container">
-        <div class="hero-content">
-            <h1 class="hero-title" id="heroTitle">
-                <span class="hero-title-3d">
-                    <span class="word-servicio">Servicio</span>
-                    <span class="word-de">de</span>
-                    <span class="word-grua">Grúa</span>
-                </span>
-                <span class="hero-highlight">24/7</span>
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title" id="heroTitle">
+                    <span class="hero-title-3d">
+                        <div class="hero-title-line">
+                            <span class="word-servicio">Servicio</span>
+                            <span class="word-de">de</span>
+                            <span class="word-grua">Grúa</span>
+                        </div>
+                        <span class="hero-highlight">24/7</span>
+                    </span>
+                    
+                    <!-- Rayos eléctricos -->
+                    <div class="lightning-container">
+                        <div class="lightning lightning-1"></div>
+                        <div class="lightning lightning-2"></div>
+                        <div class="lightning lightning-3"></div>
+                        <div class="lightning lightning-4"></div>
+                        <div class="lightning lightning-5"></div>
+                    </div>
+                    
+                    <!-- Resplandor de impacto -->
+                    <div class="impact-glow"></div>
+                </h1>
+                <p class="hero-subtitle">
+                    Asistencia rápida y confiable para tu vehículo en toda la Región Metropolitana. 
+                    Calcula tu tarifa al instante.
+                </p>
                 
-                <!-- Rayos eléctricos -->
-                <div class="lightning-container">
-                    <div class="lightning lightning-1"></div>
-                    <div class="lightning lightning-2"></div>
-                    <div class="lightning lightning-3"></div>
-                    <div class="lightning lightning-4"></div>
-                    <div class="lightning lightning-5"></div>
+                <div class="cta-buttons">
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'solicitar_servicio' %}" class="btn-uber btn-primary">
+                        <span class="btn-icon">🚚</span>
+                        Solicitar Grúa Ahora
+                    </a>
+                    <a href="{% url 'dashboard' %}" class="btn-uber btn-secondary">
+                        <span class="btn-icon">📊</span>
+                        Mi Dashboard
+                    </a>
+                    {% else %}
+                    <a href="{% url 'registro' %}" class="btn-uber btn-primary">
+                        <span class="btn-icon">📱</span>
+                        Descargar App
+                    </a>
+                    <a href="{% url 'login' %}" class="btn-uber btn-secondary">
+                        <span class="btn-icon">👤</span>
+                        Iniciar Sesión
+                    </a>
+                    {% endif %}
                 </div>
                 
-                <!-- Resplandor de impacto -->
-                <div class="impact-glow"></div>
-            </h1>
-            <p class="hero-subtitle">
-                Asistencia rápida y confiable para tu vehículo en toda la Región Metropolitana. 
-                Calcula tu tarifa al instante.
-            </p>
-            
-            <div class="cta-buttons">
-                {% if user.is_authenticated %}
-                <a href="{% url 'solicitar_servicio' %}" class="btn-uber btn-primary">
-                    <span class="btn-icon">🚚</span>
-                    Solicitar Grúa Ahora
-                </a>
-                <a href="{% url 'dashboard' %}" class="btn-uber btn-secondary">
-                    <span class="btn-icon">📊</span>
-                    Mi Dashboard
-                </a>
-                {% else %}
-                <a href="{% url 'registro' %}" class="btn-uber btn-primary">
-                    <span class="btn-icon">📱</span>
-                    Descargar App
-                </a>
-                <a href="{% url 'login' %}" class="btn-uber btn-secondary">
-                    <span class="btn-icon">👤</span>
-                    Iniciar Sesión
-                </a>
-                {% endif %}
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">24/7</span>
+                        <span class="stat-label">Disponible</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">&lt;30min</span>
+                        <span class="stat-label">Respuesta</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">RM</span>
+                        <span class="stat-label">Cobertura</span>
+                    </div>
+                </div>
             </div>
             
-            <div class="hero-stats">
-                <div class="stat-item">
-                    <span class="stat-number">24/7</span>
-                    <span class="stat-label">Disponible</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">&lt;30min</span>
-                    <span class="stat-label">Respuesta</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">RM</span>
-                    <span class="stat-label">Cobertura</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">100%</span>
-                    <span class="stat-label">Confiable</span>
+            <!-- Galería de Imágenes -->
+            <div class="hero-images">
+                <div class="image-slider">
+                    <div class="slide active">
+                        <img src="{% static 'images/gruas/1000720465.jpg' %}" alt="Grúa Style Servicio 1">
+                    </div>
+                    <div class="slide">
+                        <img src="{% static 'images/gruas/1000720476.jpg' %}" alt="Grúa Style Servicio 2">
+                    </div>
+                    <div class="slide">
+                        <img src="{% static 'images/gruas/1000720478.jpg' %}" alt="Grúa Style Servicio 3">
+                    </div>
+                    <div class="slide">
+                        <img src="{% static 'images/gruas/1000720480.jpg' %}" alt="Grúa Style Servicio 4">
+                    </div>
+                    <div class="slide">
+                        <img src="{% static 'images/gruas/1000720484.jpg
+' %}" alt="Grúa Style Servicio 5">
+                    </div>
                 </div>
             </div>
-
-<script>
-// No hay scripts de cursor - cursor normal del navegador
-</script>
-                    <span class="stat-number">100%</span>
-                    <span class="stat-label">Confiable</span>
-                </div>
         </div>
     </div>
 </section>
@@ -950,4 +996,22 @@
         </div>
     </div>
 </section>
+
+<script>
+// Slider automático de imágenes
+document.addEventListener('DOMContentLoaded', function() {
+    const slides = document.querySelectorAll('.slide');
+    let currentSlide = 0;
+    
+    function nextSlide() {
+        slides[currentSlide].classList.remove('active');
+        currentSlide = (currentSlide + 1) % slides.length;
+        slides[currentSlide].classList.add('active');
+    }
+    
+    // Cambiar imagen cada 4 segundos
+    setInterval(nextSlide, 4000);
+});
+</script>
+
 {% endblock %}
