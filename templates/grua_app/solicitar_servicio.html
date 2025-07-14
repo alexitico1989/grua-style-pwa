@@ -191,9 +191,28 @@
     
     #map {
         height: 450px;
+        width: 100%;
         border-radius: 12px;
         border: 2px solid rgba(255, 255, 255, 0.2);
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        background: #1a1a1a;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    /* Asegurar que los tiles de Leaflet se muestren correctamente */
+    .leaflet-container {
+        height: 100%;
+        width: 100%;
+        background: #1a1a1a !important;
+    }
+    
+    .leaflet-tile-pane {
+        opacity: 1 !important;
+    }
+    
+    .leaflet-tile {
+        opacity: 1 !important;
     }
     
     /* Instructions */
@@ -592,35 +611,103 @@ document.addEventListener('DOMContentLoaded', function() {
     // Inicializar mapa
     function initMap() {
         try {
-            // Centrar en Santiago, Chile
+            console.log('🗺️ Iniciando mapa...');
+            
+            // Asegurar que el contenedor del mapa esté visible
+            const mapContainer = document.getElementById('map');
+            if (!mapContainer) {
+                console.error('❌ Contenedor del mapa no encontrado');
+                return;
+            }
+            
+            // Verificar dimensiones del contenedor
+            console.log('📐 Dimensiones del contenedor:', mapContainer.offsetWidth, 'x', mapContainer.offsetHeight);
+            
+            // Centrar en Santiago, Chile con configuración básica
             map = L.map('map', {
                 center: [-33.4489, -70.6693],
                 zoom: 12,
+                preferCanvas: false,
+                attributionControl: true,
                 zoomControl: true,
                 scrollWheelZoom: true,
                 doubleClickZoom: true,
-                dragging: true
+                dragging: true,
+                touchZoom: true,
+                boxZoom: true,
+                keyboard: true
             });
             
-            console.log('🗺️ Mapa creado, agregando tiles...');
+            console.log('🗺️ Objeto mapa creado, agregando tiles...');
             
-            // Agregar tiles de OpenStreetMap con mejor configuración
-            const tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                maxZoom: 19,
-                subdomains: ['a', 'b', 'c']
-            });
+            // Usar múltiples proveedores de tiles como fallback
+            const tileProviders = [
+                {
+                    name: 'OpenStreetMap',
+                    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    options: {
+                        attribution: '© OpenStreetMap contributors',
+                        maxZoom: 19,
+                        subdomains: ['a', 'b', 'c']
+                    }
+                },
+                {
+                    name: 'CartoDB',
+                    url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+                    options: {
+                        attribution: '© OpenStreetMap © CartoDB',
+                        maxZoom: 19,
+                        subdomains: 'abcd'
+                    }
+                }
+            ];
             
-            tileLayer.addTo(map);
+            let tileLayerAdded = false;
             
-            // Verificar que el tile layer se cargó
-            tileLayer.on('load', function() {
-                console.log('✅ Tiles cargados correctamente');
-            });
+            // Intentar cargar el primer proveedor
+            function tryLoadTiles(providerIndex = 0) {
+                if (providerIndex >= tileProviders.length) {
+                    console.error('❌ No se pudo cargar ningún proveedor de tiles');
+                    mapContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; background: rgba(255,255,255,0.1); border-radius: 12px; color: #ccc; flex-direction: column; gap: 10px;"><div>⚠️ Error cargando el mapa</div><div style="font-size: 0.8rem;">Verifica tu conexión a internet</div></div>';
+                    return;
+                }
+                
+                const provider = tileProviders[providerIndex];
+                console.log('🌍 Intentando cargar tiles de:', provider.name);
+                
+                const tileLayer = L.tileLayer(provider.url, provider.options);
+                
+                tileLayer.on('loading', function() {
+                    console.log('⏳ Cargando tiles de', provider.name);
+                });
+                
+                tileLayer.on('load', function() {
+                    console.log('✅ Tiles cargados correctamente desde', provider.name);
+                    tileLayerAdded = true;
+                });
+                
+                tileLayer.on('tileerror', function(e) {
+                    console.warn('⚠️ Error cargando tile desde', provider.name, '- Intentando siguiente proveedor');
+                    if (!tileLayerAdded) {
+                        map.removeLayer(tileLayer);
+                        tryLoadTiles(providerIndex + 1);
+                    }
+                });
+                
+                tileLayer.addTo(map);
+                
+                // Timeout para intentar siguiente proveedor si no carga en 5 segundos
+                setTimeout(() => {
+                    if (!tileLayerAdded) {
+                        console.warn('⏰ Timeout cargando', provider.name, '- Intentando siguiente proveedor');
+                        map.removeLayer(tileLayer);
+                        tryLoadTiles(providerIndex + 1);
+                    }
+                }, 5000);
+            }
             
-            tileLayer.on('tileerror', function(e) {
-                console.warn('⚠️ Error cargando tile:', e);
-            });
+            // Iniciar carga de tiles
+            tryLoadTiles();
             
             // Evento de clic en el mapa
             map.on('click', function(e) {
@@ -628,19 +715,58 @@ document.addEventListener('DOMContentLoaded', function() {
                 manejarClickMapa(e.latlng);
             });
             
-            // Evento cuando el mapa esté listo
+            // Eventos de depuración
+            map.on('moveend', function() {
+                console.log('🗺️ Mapa movido a:', map.getCenter(), 'Zoom:', map.getZoom());
+            });
+            
+            map.on('zoomend', function() {
+                console.log('🔍 Zoom cambiado a:', map.getZoom());
+            });
+            
+            // Cuando el mapa esté completamente listo
             map.whenReady(function() {
                 console.log('✅ Mapa completamente inicializado');
                 
-                // Invalidar tamaño para asegurar renderizado correcto
+                // Forzar redimensionamiento
                 setTimeout(function() {
-                    map.invalidateSize();
-                }, 100);
+                    console.log('🔄 Invalidando tamaño del mapa...');
+                    map.invalidateSize(true);
+                    
+                    // Verificar que el mapa se ve correctamente
+                    const mapPane = map.getPane('mapPane');
+                    if (mapPane) {
+                        console.log('✅ Panel del mapa encontrado');
+                    } else {
+                        console.error('❌ Panel del mapa no encontrado');
+                    }
+                }, 500);
             });
             
+            // Agregar un marcador de prueba temporal
+            setTimeout(() => {
+                if (map) {
+                    const testMarker = L.marker([-33.4489, -70.6693])
+                        .addTo(map)
+                        .bindPopup('📍 Santiago, Chile - Mapa funcionando correctamente')
+                        .openPopup();
+                    
+                    console.log('✅ Marcador de prueba agregado');
+                    
+                    // Remover marcador de prueba después de 3 segundos
+                    setTimeout(() => {
+                        map.removeLayer(testMarker);
+                        console.log('🗑️ Marcador de prueba removido');
+                    }, 3000);
+                }
+            }, 2000);
+            
         } catch (error) {
-            console.error('❌ Error inicializando mapa:', error);
-            document.getElementById('map').innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; background: rgba(255,255,255,0.1); border-radius: 12px; color: #ccc; flex-direction: column; gap: 10px;"><div>⚠️ Error inicializando el mapa</div><div style="font-size: 0.8rem;">Recarga la página o verifica tu conexión</div></div>';
+            console.error('❌ Error crítico inicializando mapa:', error);
+            const mapContainer = document.getElementById('map');
+            if (mapContainer) {
+                mapContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; background: rgba(255,0,0,0.1); border-radius: 12px; color: #ff6b6b; flex-direction: column; gap: 10px;"><div>❌ Error crítico del mapa</div><div style="font-size: 0.8rem;">Recarga la página</div></div>';
+            }
         }
     }
     
@@ -1155,11 +1281,42 @@ document.addEventListener('DOMContentLoaded', function() {
     // Inicializar todo
     console.log('🚀 Iniciando aplicación...');
     
-    // Dar tiempo a que el CSS se cargue antes de inicializar el mapa
-    setTimeout(() => {
+    // Verificar que Leaflet esté disponible antes de continuar
+    if (typeof L === 'undefined') {
+        console.error('❌ Leaflet no disponible, intentando recargar...');
+        setTimeout(() => {
+            window.location.reload();
+        }, 2000);
+        return;
+    }
+    
+    console.log('✅ Leaflet disponible, versión:', L.version);
+    
+    // Esperar a que el DOM y CSS estén completamente cargados
+    const initWithDelay = () => {
+        const mapContainer = document.getElementById('map');
+        if (!mapContainer) {
+            console.error('❌ Contenedor del mapa no encontrado');
+            return;
+        }
+        
+        // Verificar que el contenedor tiene dimensiones
+        const rect = mapContainer.getBoundingClientRect();
+        console.log('📏 Dimensiones del mapa:', rect.width, 'x', rect.height);
+        
+        if (rect.width === 0 || rect.height === 0) {
+            console.warn('⚠️ Contenedor sin dimensiones, reintentando en 1 segundo...');
+            setTimeout(initWithDelay, 1000);
+            return;
+        }
+        
+        // Inicializar mapa y verificar estado inicial
         initMap();
         verificarFormularioCompleto();
-    }, 500);
+    };
+    
+    // Dar tiempo adicional para que CSS se aplique
+    setTimeout(initWithDelay, 1000);
 });
 </script>
 
