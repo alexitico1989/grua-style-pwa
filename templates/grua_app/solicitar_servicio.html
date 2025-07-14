@@ -540,7 +540,7 @@
                     </div>
                     <div class="precio-detalle precio-total">
                         <span>Total a Pagar:</span>
-                        <span id="precioTotal">$35.000</span>
+                        <span id="precioTotal">$30.000</span>
                     </div>
                 </div>
                 
@@ -607,6 +607,1444 @@ document.addEventListener('DOMContentLoaded', function() {
     const TARIFA_BASE = 30000;
     const TARIFA_POR_KM = 1500;
     const TARIFA_MINIMA = 35000;
+    
+    // Función para formatear precios en pesos chilenos
+    function formatearPrecio(numero) {
+        try {
+            return '
+    
+    // Inicializar mapa
+    function initMap() {
+        try {
+            console.log('🗺️ Iniciando mapa...');
+            
+            // Asegurar que el contenedor del mapa esté visible
+            const mapContainer = document.getElementById('map');
+            if (!mapContainer) {
+                console.error('❌ Contenedor del mapa no encontrado');
+                return;
+            }
+            
+            // Verificar dimensiones del contenedor
+            console.log('📐 Dimensiones del contenedor:', mapContainer.offsetWidth, 'x', mapContainer.offsetHeight);
+            
+            // Centrar en Santiago, Chile con configuración básica
+            map = L.map('map', {
+                center: [-33.4489, -70.6693],
+                zoom: 12,
+                preferCanvas: false,
+                attributionControl: true,
+                zoomControl: true,
+                scrollWheelZoom: true,
+                doubleClickZoom: true,
+                dragging: true,
+                touchZoom: true,
+                boxZoom: true,
+                keyboard: true
+            });
+            
+            console.log('🗺️ Objeto mapa creado, agregando tiles...');
+            
+            // Usar múltiples proveedores de tiles como fallback
+            const tileProviders = [
+                {
+                    name: 'OpenStreetMap',
+                    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    options: {
+                        attribution: '© OpenStreetMap contributors',
+                        maxZoom: 19,
+                        subdomains: ['a', 'b', 'c']
+                    }
+                },
+                {
+                    name: 'CartoDB',
+                    url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+                    options: {
+                        attribution: '© OpenStreetMap © CartoDB',
+                        maxZoom: 19,
+                        subdomains: 'abcd'
+                    }
+                }
+            ];
+            
+            let tileLayerAdded = false;
+            
+            // Intentar cargar el primer proveedor
+            function tryLoadTiles(providerIndex = 0) {
+                if (providerIndex >= tileProviders.length) {
+                    console.error('❌ No se pudo cargar ningún proveedor de tiles');
+                    mapContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; background: rgba(255,255,255,0.1); border-radius: 12px; color: #ccc; flex-direction: column; gap: 10px;"><div>⚠️ Error cargando el mapa</div><div style="font-size: 0.8rem;">Verifica tu conexión a internet</div></div>';
+                    return;
+                }
+                
+                const provider = tileProviders[providerIndex];
+                console.log('🌍 Intentando cargar tiles de:', provider.name);
+                
+                const tileLayer = L.tileLayer(provider.url, provider.options);
+                
+                tileLayer.on('loading', function() {
+                    console.log('⏳ Cargando tiles de', provider.name);
+                });
+                
+                tileLayer.on('load', function() {
+                    console.log('✅ Tiles cargados correctamente desde', provider.name);
+                    tileLayerAdded = true;
+                });
+                
+                tileLayer.on('tileerror', function(e) {
+                    console.warn('⚠️ Error cargando tile desde', provider.name, '- Intentando siguiente proveedor');
+                    if (!tileLayerAdded) {
+                        map.removeLayer(tileLayer);
+                        tryLoadTiles(providerIndex + 1);
+                    }
+                });
+                
+                tileLayer.addTo(map);
+                
+                // Timeout para intentar siguiente proveedor si no carga en 5 segundos
+                setTimeout(() => {
+                    if (!tileLayerAdded) {
+                        console.warn('⏰ Timeout cargando', provider.name, '- Intentando siguiente proveedor');
+                        map.removeLayer(tileLayer);
+                        tryLoadTiles(providerIndex + 1);
+                    }
+                }, 5000);
+            }
+            
+            // Iniciar carga de tiles
+            tryLoadTiles();
+            
+            // Evento de clic en el mapa
+            map.on('click', function(e) {
+                console.log('🖱️ Clic en mapa:', e.latlng);
+                manejarClickMapa(e.latlng);
+            });
+            
+            // Eventos de depuración
+            map.on('moveend', function() {
+                console.log('🗺️ Mapa movido a:', map.getCenter(), 'Zoom:', map.getZoom());
+            });
+            
+            map.on('zoomend', function() {
+                console.log('🔍 Zoom cambiado a:', map.getZoom());
+            });
+            
+            // Cuando el mapa esté completamente listo
+            map.whenReady(function() {
+                console.log('✅ Mapa completamente inicializado');
+                
+                // Forzar redimensionamiento
+                setTimeout(function() {
+                    console.log('🔄 Invalidando tamaño del mapa...');
+                    map.invalidateSize(true);
+                    
+                    // Verificar que el mapa se ve correctamente
+                    const mapPane = map.getPane('mapPane');
+                    if (mapPane) {
+                        console.log('✅ Panel del mapa encontrado');
+                    } else {
+                        console.error('❌ Panel del mapa no encontrado');
+                    }
+                }, 500);
+            });
+            
+            // Agregar un marcador de prueba temporal
+            setTimeout(() => {
+                if (map) {
+                    const testMarker = L.marker([-33.4489, -70.6693])
+                        .addTo(map)
+                        .bindPopup('📍 Santiago, Chile - Mapa funcionando correctamente')
+                        .openPopup();
+                    
+                    console.log('✅ Marcador de prueba agregado');
+                    
+                    // Remover marcador de prueba después de 3 segundos
+                    setTimeout(() => {
+                        map.removeLayer(testMarker);
+                        console.log('🗑️ Marcador de prueba removido');
+                    }, 3000);
+                }
+            }, 2000);
+            
+        } catch (error) {
+            console.error('❌ Error crítico inicializando mapa:', error);
+            const mapContainer = document.getElementById('map');
+            if (mapContainer) {
+                mapContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; background: rgba(255,0,0,0.1); border-radius: 12px; color: #ff6b6b; flex-direction: column; gap: 10px;"><div>❌ Error crítico del mapa</div><div style="font-size: 0.8rem;">Recarga la página</div></div>';
+            }
+        }
+    }
+    
+    // Manejar clic en el mapa
+    function manejarClickMapa(latlng) {
+        console.log('📍 Procesando clic:', latlng);
+        
+        if (!puntoOrigen) {
+            // Primer clic - establecer origen
+            establecerOrigen(latlng);
+        } else if (!puntoDestino) {
+            // Segundo clic - establecer destino
+            establecerDestino(latlng);
+        } else {
+            // Tercer clic - reiniciar
+            reiniciarPuntos();
+            establecerOrigen(latlng);
+        }
+    }
+    
+    // Establecer punto de origen
+    function establecerOrigen(latlng) {
+        console.log('🟢 Estableciendo origen:', latlng);
+        puntoOrigen = latlng;
+        
+        // Remover marker anterior si existe
+        if (markerOrigen) {
+            map.removeLayer(markerOrigen);
+        }
+        
+        try {
+            // Crear nuevo marker verde usando ícono básico
+            markerOrigen = L.marker([latlng.lat, latlng.lng]).addTo(map);
+            markerOrigen.bindPopup('🟢 Punto de Origen').openPopup();
+            
+            // Obtener dirección
+            obtenerDireccion(latlng, 'origen');
+            
+            console.log('✅ Origen establecido correctamente');
+        } catch (error) {
+            console.error('❌ Error estableciendo origen:', error);
+        }
+    }
+    
+    // Establecer punto de destino
+    function establecerDestino(latlng) {
+        console.log('🔴 Estableciendo destino:', latlng);
+        puntoDestino = latlng;
+        
+        // Remover marker anterior si existe
+        if (markerDestino) {
+            map.removeLayer(markerDestino);
+        }
+        
+        try {
+            // Crear nuevo marker rojo usando ícono básico
+            markerDestino = L.marker([latlng.lat, latlng.lng]).addTo(map);
+            markerDestino.bindPopup('🔴 Punto de Destino').openPopup();
+            
+            // Obtener dirección
+            obtenerDireccion(latlng, 'destino');
+            
+            // Calcular ruta
+            calcularRuta();
+            
+            console.log('✅ Destino establecido correctamente');
+        } catch (error) {
+            console.error('❌ Error estableciendo destino:', error);
+        }
+    }
+    
+    // Obtener dirección usando geocodificación inversa
+    function obtenerDireccion(latlng, tipo) {
+        console.log('🔍 Obteniendo dirección para:', tipo, latlng);
+        
+        const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latlng.lat}&lon=${latlng.lng}&zoom=18&addressdetails=1`;
+        
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('✅ Dirección obtenida:', data);
+                const direccion = data.display_name || `${latlng.lat.toFixed(6)}, ${latlng.lng.toFixed(6)}`;
+                
+                if (tipo === 'origen') {
+                    const inputOrigen = document.getElementById('id_direccion_origen');
+                    if (inputOrigen) {
+                        inputOrigen.value = direccion;
+                    }
+                    const spanOrigen = document.getElementById('direccionOrigen');
+                    if (spanOrigen) {
+                        spanOrigen.textContent = direccion;
+                    }
+                    const puntoOrigenDiv = document.getElementById('puntoOrigen');
+                    if (puntoOrigenDiv) {
+                        puntoOrigenDiv.style.display = 'block';
+                    }
+                } else {
+                    const inputDestino = document.getElementById('id_direccion_destino');
+                    if (inputDestino) {
+                        inputDestino.value = direccion;
+                    }
+                    const spanDestino = document.getElementById('direccionDestino');
+                    if (spanDestino) {
+                        spanDestino.textContent = direccion;
+                    }
+                    const puntoDestinoDiv = document.getElementById('puntoDestino');
+                    if (puntoDestinoDiv) {
+                        puntoDestinoDiv.style.display = 'block';
+                    }
+                }
+                
+                const puntosDiv = document.getElementById('puntosSeleccionados');
+                if (puntosDiv) {
+                    puntosDiv.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.warn('⚠️ Error obteniendo dirección, usando coordenadas:', error);
+                const coordenadas = `${latlng.lat.toFixed(6)}, ${latlng.lng.toFixed(6)}`;
+                
+                if (tipo === 'origen') {
+                    const inputOrigen = document.getElementById('id_direccion_origen');
+                    if (inputOrigen) inputOrigen.value = coordenadas;
+                    const spanOrigen = document.getElementById('direccionOrigen');
+                    if (spanOrigen) spanOrigen.textContent = coordenadas;
+                    const puntoOrigenDiv = document.getElementById('puntoOrigen');
+                    if (puntoOrigenDiv) puntoOrigenDiv.style.display = 'block';
+                } else {
+                    const inputDestino = document.getElementById('id_direccion_destino');
+                    if (inputDestino) inputDestino.value = coordenadas;
+                    const spanDestino = document.getElementById('direccionDestino');
+                    if (spanDestino) spanDestino.textContent = coordenadas;
+                    const puntoDestinoDiv = document.getElementById('puntoDestino');
+                    if (puntoDestinoDiv) puntoDestinoDiv.style.display = 'block';
+                }
+                
+                const puntosDiv = document.getElementById('puntosSeleccionados');
+                if (puntosDiv) puntosDiv.style.display = 'block';
+            });
+    }
+    
+    // Calcular ruta entre origen y destino
+    function calcularRuta() {
+        if (!puntoOrigen || !puntoDestino) return;
+        
+        console.log('🛣️ Calculando ruta por calles...');
+        
+        // Intentar calcular ruta real por calles
+        calcularRutaReal();
+    }
+    
+    // Calcular ruta real usando OpenRoute Service
+    function calcularRutaReal() {
+        if (!puntoOrigen || !puntoDestino || !map) return;
+        
+        const coordenadas = `${puntoOrigen.lng},${puntoOrigen.lat};${puntoDestino.lng},${puntoDestino.lat}`;
+        const url = `https://router.project-osrm.org/route/v1/driving/${coordenadas}?overview=full&geometries=geojson`;
+        
+        console.log('🚗 Consultando ruta real:', url);
+        
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.routes && data.routes.length > 0) {
+                    const ruta = data.routes[0];
+                    const distanciaKm = (ruta.distance / 1000).toFixed(2);
+                    const duracionMinutos = Math.round(ruta.duration / 60);
+                    
+                    console.log('✅ Ruta real obtenida:', distanciaKm, 'km,', duracionMinutos, 'min');
+                    
+                    // Dibujar ruta real
+                    dibujarRutaReal(ruta.geometry, distanciaKm, duracionMinutos);
+                } else {
+                    console.warn('⚠️ No se encontró ruta, usando línea recta');
+                    calcularDistanciaDirecta();
+                }
+            })
+            .catch(error => {
+                console.warn('⚠️ Error obteniendo ruta real, usando línea recta:', error);
+                calcularDistanciaDirecta();
+            });
+    }
+    
+    // Dibujar la ruta real obtenida
+    function dibujarRutaReal(geometry, distanciaKm, duracionMinutos) {
+        try {
+            // Remover ruta anterior
+            if (rutaLayer) {
+                map.removeLayer(rutaLayer);
+            }
+            
+            // Crear nueva ruta con los puntos de la geometría
+            const coordenadas = geometry.coordinates.map(coord => [coord[1], coord[0]]);
+            
+            rutaLayer = L.polyline(coordenadas, {
+                color: '#00D563',
+                weight: 5,
+                opacity: 0.8,
+                dashArray: '10, 5'
+            }).addTo(map);
+            
+            // Ajustar vista para mostrar toda la ruta
+            map.fitBounds(rutaLayer.getBounds(), { padding: [30, 30] });
+            
+            // Actualizar información
+            actualizarInfoRuta(distanciaKm, duracionMinutos);
+            
+            console.log('✅ Ruta real dibujada correctamente');
+            
+        } catch (error) {
+            console.error('❌ Error dibujando ruta real:', error);
+            calcularDistanciaDirecta();
+        }
+    }
+    
+    // Calcular distancia en línea recta (fallback)
+    function calcularDistanciaDirecta() {
+        if (!puntoOrigen || !puntoDestino || !map) return;
+        
+        try {
+            const distancia = map.distance(puntoOrigen, puntoDestino) / 1000; // km
+            const distanciaRedondeada = distancia.toFixed(2);
+            
+            console.log('📏 Distancia en línea recta:', distanciaRedondeada, 'km');
+            
+            // Dibujar línea recta
+            if (rutaLayer) {
+                map.removeLayer(rutaLayer);
+            }
+            
+            rutaLayer = L.polyline([puntoOrigen, puntoDestino], {
+                color: '#FFB800',
+                weight: 4,
+                opacity: 0.7,
+                dashArray: '15, 10'
+            }).addTo(map);
+            
+            // Ajustar vista
+            map.fitBounds(rutaLayer.getBounds(), { padding: [20, 20] });
+            
+            actualizarInfoRuta(distanciaRedondeada);
+            
+            console.log('✅ Línea recta dibujada (fallback)');
+        } catch (error) {
+            console.error('❌ Error calculando distancia:', error);
+        }
+    }
+    
+    // Actualizar información de la ruta
+    function actualizarInfoRuta(distanciaKm, duracionMinutos = null) {
+        console.log('📊 Actualizando info de ruta:', distanciaKm, 'km');
+        
+        // Actualizar campo del formulario
+        const inputDistancia = document.getElementById('id_distancia_km');
+        if (inputDistancia) {
+            inputDistancia.value = distanciaKm;
+        }
+        
+        // Mostrar información de distancia
+        const spanDistancia = document.getElementById('distanciaRuta');
+        if (spanDistancia) {
+            spanDistancia.textContent = distanciaKm;
+        }
+        
+        // Mostrar duración si está disponible
+        const duracionDiv = document.getElementById('duracionRuta');
+        if (duracionDiv && duracionMinutos) {
+            duracionDiv.textContent = `${duracionMinutos} min`;
+            duracionDiv.style.display = 'inline';
+        }
+        
+        const infoRutaDiv = document.getElementById('infoRuta');
+        if (infoRutaDiv) {
+            infoRutaDiv.style.display = 'block';
+        }
+        
+        // Calcular precio
+        calcularPrecio(parseFloat(distanciaKm));
+        
+        // Verificar si se puede habilitar el botón
+        verificarFormularioCompleto();
+    }
+    
+    // Calcular precio del servicio
+    function calcularPrecio(distanciaKm) {
+        const costoDistancia = distanciaKm * TARIFA_POR_KM;
+        const total = Math.max(TARIFA_BASE + costoDistancia, TARIFA_MINIMA);
+        
+        console.log('💰 Calculando precio - Distancia:', distanciaKm, 'Total:', total);
+        
+        // Mostrar calculadora
+        const calculadoraDiv = document.getElementById('calculadoraPrecio');
+        if (calculadoraDiv) {
+            calculadoraDiv.style.display = 'block';
+        }
+        
+        // Actualizar valores
+        const distanciaTexto = document.getElementById('distanciaTexto');
+        if (distanciaTexto) {
+            distanciaTexto.textContent = distanciaKm;
+        }
+        
+        const costoDistanciaSpan = document.getElementById('costoDistancia');
+        if (costoDistanciaSpan) {
+            costoDistanciaSpan.textContent = ' + costoDistancia.toLocaleString('es-CL');
+        }
+        
+        const precioTotalSpan = document.getElementById('precioTotal');
+        if (precioTotalSpan) {
+            precioTotalSpan.textContent = ' + total.toLocaleString('es-CL');
+        }
+        
+        // Mostrar línea de costo por km solo si hay distancia
+        const costoPorKmDiv = document.getElementById('costoPorKm');
+        if (costoPorKmDiv) {
+            costoPorKmDiv.style.display = distanciaKm > 0 ? 'flex' : 'none';
+        }
+    }
+    
+    // Verificar si el formulario está completo
+    function verificarFormularioCompleto() {
+        const tipoSelect = document.querySelector('select[name="tipo_vehiculo"]');
+        const marcaInput = document.querySelector('input[name="marca_vehiculo"]');
+        const modeloInput = document.querySelector('input[name="modelo_vehiculo"]');
+        const placaInput = document.querySelector('input[name="placa_vehiculo"]');
+        const fechaInput = document.getElementById('id_fecha_servicio');
+        const descripcionInput = document.getElementById('id_descripcion_problema');
+        
+        const tipoVehiculo = tipoSelect ? tipoSelect.value : '';
+        const marca = marcaInput ? marcaInput.value.trim() : '';
+        const modelo = modeloInput ? modeloInput.value.trim() : '';
+        const placa = placaInput ? placaInput.value.trim() : '';
+        const fechaServicio = fechaInput ? fechaInput.value : '';
+        const descripcion = descripcionInput ? descripcionInput.value.trim() : '';
+        
+        const formularioCompleto = puntoOrigen && puntoDestino && 
+                                  tipoVehiculo && marca && modelo && placa && 
+                                  fechaServicio && descripcion;
+        
+        const btnSolicitar = document.getElementById('btnSolicitar');
+        if (btnSolicitar) {
+            btnSolicitar.disabled = !formularioCompleto;
+        }
+        
+        if (formularioCompleto) {
+            console.log('✅ Formulario completo - botón habilitado');
+        }
+    }
+    
+    // Reiniciar puntos
+    function reiniciarPuntos() {
+        console.log('🔄 Reiniciando puntos...');
+        
+        puntoOrigen = null;
+        puntoDestino = null;
+        
+        if (markerOrigen && map) {
+            map.removeLayer(markerOrigen);
+            markerOrigen = null;
+        }
+        
+        if (markerDestino && map) {
+            map.removeLayer(markerDestino);
+            markerDestino = null;
+        }
+        
+        if (rutaLayer && map) {
+            map.removeLayer(rutaLayer);
+            rutaLayer = null;
+        }
+        
+        // Limpiar formulario
+        const inputOrigen = document.getElementById('id_direccion_origen');
+        if (inputOrigen) inputOrigen.value = '';
+        
+        const inputDestino = document.getElementById('id_direccion_destino');
+        if (inputDestino) inputDestino.value = '';
+        
+        const inputDistancia = document.getElementById('id_distancia_km');
+        if (inputDistancia) inputDistancia.value = '';
+        
+        // Ocultar información
+        const puntosDiv = document.getElementById('puntosSeleccionados');
+        if (puntosDiv) puntosDiv.style.display = 'none';
+        
+        const calculadoraDiv = document.getElementById('calculadoraPrecio');
+        if (calculadoraDiv) calculadoraDiv.style.display = 'none';
+        
+        // Verificar estado del botón
+        verificarFormularioCompleto();
+    }
+    
+    // Event Listeners
+    const form = document.getElementById('servicioForm');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const btnSolicitar = document.getElementById('btnSolicitar');
+            
+            if (!puntoOrigen || !puntoDestino) {
+                e.preventDefault();
+                alert('Por favor, selecciona ambos puntos en el mapa');
+                return false;
+            }
+            
+            // Validaciones adicionales
+            const tipoSelect = document.querySelector('select[name="tipo_vehiculo"]');
+            const marcaInput = document.querySelector('input[name="marca_vehiculo"]');
+            const modeloInput = document.querySelector('input[name="modelo_vehiculo"]');
+            const placaInput = document.querySelector('input[name="placa_vehiculo"]');
+            const fechaInput = document.getElementById('id_fecha_servicio');
+            const descripcionInput = document.getElementById('id_descripcion_problema');
+            
+            if (!tipoSelect || !tipoSelect.value) {
+                e.preventDefault();
+                alert('Por favor, selecciona el tipo de vehículo');
+                return false;
+            }
+            
+            if (!marcaInput || !marcaInput.value.trim()) {
+                e.preventDefault();
+                alert('Por favor, ingresa la marca del vehículo');
+                return false;
+            }
+            
+            if (!modeloInput || !modeloInput.value.trim()) {
+                e.preventDefault();
+                alert('Por favor, ingresa el modelo del vehículo');
+                return false;
+            }
+            
+            if (!placaInput || !placaInput.value.trim()) {
+                e.preventDefault();
+                alert('Por favor, ingresa la placa/patente del vehículo');
+                return false;
+            }
+            
+            if (!fechaInput || !fechaInput.value) {
+                e.preventDefault();
+                alert('Por favor, selecciona una fecha y hora para el servicio');
+                return false;
+            }
+            
+            if (!descripcionInput || !descripcionInput.value.trim()) {
+                e.preventDefault();
+                alert('Por favor, describe el problema de tu vehículo');
+                return false;
+            }
+            
+            // Agregar estado de loading
+            if (btnSolicitar) {
+                btnSolicitar.classList.add('loading');
+                btnSolicitar.textContent = 'Creando solicitud...';
+                btnSolicitar.disabled = true;
+            }
+            
+            console.log('✅ Formulario válido, enviando...');
+        });
+    }
+    
+    // Escuchar cambios en campos
+    const campos = [
+        'select[name="tipo_vehiculo"]',
+        'input[name="marca_vehiculo"]',
+        'input[name="modelo_vehiculo"]',
+        'input[name="placa_vehiculo"]',
+        '#id_fecha_servicio',
+        '#id_descripcion_problema'
+    ];
+    
+    campos.forEach(selector => {
+        const element = document.querySelector(selector);
+        if (element) {
+            const eventType = element.tagName === 'SELECT' ? 'change' : 'input';
+            element.addEventListener(eventType, verificarFormularioCompleto);
+        }
+    });
+    
+    // Formatear placa
+    const placaInput = document.querySelector('input[name="placa_vehiculo"]');
+    if (placaInput) {
+        placaInput.addEventListener('input', function(e) {
+            e.target.value = e.target.value.toUpperCase();
+        });
+    }
+    
+    // Efectos de focus
+    document.querySelectorAll('.form-control').forEach(input => {
+        input.addEventListener('focus', function() {
+            if (this.parentElement) {
+                this.parentElement.style.transform = 'scale(1.02)';
+                this.parentElement.style.transition = 'transform 0.2s ease';
+            }
+        });
+        
+        input.addEventListener('blur', function() {
+            if (this.parentElement) {
+                this.parentElement.style.transform = 'scale(1)';
+            }
+        });
+    });
+    
+    // Inicializar todo
+    console.log('🚀 Iniciando aplicación...');
+    
+    // Verificar que Leaflet esté disponible antes de continuar
+    if (typeof L === 'undefined') {
+        console.error('❌ Leaflet no disponible, intentando recargar...');
+        setTimeout(() => {
+            window.location.reload();
+        }, 2000);
+        return;
+    }
+    
+    console.log('✅ Leaflet disponible, versión:', L.version);
+    
+    // Esperar a que el DOM y CSS estén completamente cargados
+    const initWithDelay = () => {
+        const mapContainer = document.getElementById('map');
+        if (!mapContainer) {
+            console.error('❌ Contenedor del mapa no encontrado');
+            return;
+        }
+        
+        // Verificar que el contenedor tiene dimensiones
+        const rect = mapContainer.getBoundingClientRect();
+        console.log('📏 Dimensiones del mapa:', rect.width, 'x', rect.height);
+        
+        if (rect.width === 0 || rect.height === 0) {
+            console.warn('⚠️ Contenedor sin dimensiones, reintentando en 1 segundo...');
+            setTimeout(initWithDelay, 1000);
+            return;
+        }
+        
+        // Inicializar mapa y verificar estado inicial
+        initMap();
+        verificarFormularioCompleto();
+    };
+    
+    // Dar tiempo adicional para que CSS se aplique
+    setTimeout(initWithDelay, 1000);
+});
+</script>
+
+{% endblock %} + Math.round(numero).toLocaleString('es');
+        } catch (error) {
+            // Fallback si toLocaleString falla
+            return '
+    
+    // Inicializar mapa
+    function initMap() {
+        try {
+            console.log('🗺️ Iniciando mapa...');
+            
+            // Asegurar que el contenedor del mapa esté visible
+            const mapContainer = document.getElementById('map');
+            if (!mapContainer) {
+                console.error('❌ Contenedor del mapa no encontrado');
+                return;
+            }
+            
+            // Verificar dimensiones del contenedor
+            console.log('📐 Dimensiones del contenedor:', mapContainer.offsetWidth, 'x', mapContainer.offsetHeight);
+            
+            // Centrar en Santiago, Chile con configuración básica
+            map = L.map('map', {
+                center: [-33.4489, -70.6693],
+                zoom: 12,
+                preferCanvas: false,
+                attributionControl: true,
+                zoomControl: true,
+                scrollWheelZoom: true,
+                doubleClickZoom: true,
+                dragging: true,
+                touchZoom: true,
+                boxZoom: true,
+                keyboard: true
+            });
+            
+            console.log('🗺️ Objeto mapa creado, agregando tiles...');
+            
+            // Usar múltiples proveedores de tiles como fallback
+            const tileProviders = [
+                {
+                    name: 'OpenStreetMap',
+                    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    options: {
+                        attribution: '© OpenStreetMap contributors',
+                        maxZoom: 19,
+                        subdomains: ['a', 'b', 'c']
+                    }
+                },
+                {
+                    name: 'CartoDB',
+                    url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+                    options: {
+                        attribution: '© OpenStreetMap © CartoDB',
+                        maxZoom: 19,
+                        subdomains: 'abcd'
+                    }
+                }
+            ];
+            
+            let tileLayerAdded = false;
+            
+            // Intentar cargar el primer proveedor
+            function tryLoadTiles(providerIndex = 0) {
+                if (providerIndex >= tileProviders.length) {
+                    console.error('❌ No se pudo cargar ningún proveedor de tiles');
+                    mapContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; background: rgba(255,255,255,0.1); border-radius: 12px; color: #ccc; flex-direction: column; gap: 10px;"><div>⚠️ Error cargando el mapa</div><div style="font-size: 0.8rem;">Verifica tu conexión a internet</div></div>';
+                    return;
+                }
+                
+                const provider = tileProviders[providerIndex];
+                console.log('🌍 Intentando cargar tiles de:', provider.name);
+                
+                const tileLayer = L.tileLayer(provider.url, provider.options);
+                
+                tileLayer.on('loading', function() {
+                    console.log('⏳ Cargando tiles de', provider.name);
+                });
+                
+                tileLayer.on('load', function() {
+                    console.log('✅ Tiles cargados correctamente desde', provider.name);
+                    tileLayerAdded = true;
+                });
+                
+                tileLayer.on('tileerror', function(e) {
+                    console.warn('⚠️ Error cargando tile desde', provider.name, '- Intentando siguiente proveedor');
+                    if (!tileLayerAdded) {
+                        map.removeLayer(tileLayer);
+                        tryLoadTiles(providerIndex + 1);
+                    }
+                });
+                
+                tileLayer.addTo(map);
+                
+                // Timeout para intentar siguiente proveedor si no carga en 5 segundos
+                setTimeout(() => {
+                    if (!tileLayerAdded) {
+                        console.warn('⏰ Timeout cargando', provider.name, '- Intentando siguiente proveedor');
+                        map.removeLayer(tileLayer);
+                        tryLoadTiles(providerIndex + 1);
+                    }
+                }, 5000);
+            }
+            
+            // Iniciar carga de tiles
+            tryLoadTiles();
+            
+            // Evento de clic en el mapa
+            map.on('click', function(e) {
+                console.log('🖱️ Clic en mapa:', e.latlng);
+                manejarClickMapa(e.latlng);
+            });
+            
+            // Eventos de depuración
+            map.on('moveend', function() {
+                console.log('🗺️ Mapa movido a:', map.getCenter(), 'Zoom:', map.getZoom());
+            });
+            
+            map.on('zoomend', function() {
+                console.log('🔍 Zoom cambiado a:', map.getZoom());
+            });
+            
+            // Cuando el mapa esté completamente listo
+            map.whenReady(function() {
+                console.log('✅ Mapa completamente inicializado');
+                
+                // Forzar redimensionamiento
+                setTimeout(function() {
+                    console.log('🔄 Invalidando tamaño del mapa...');
+                    map.invalidateSize(true);
+                    
+                    // Verificar que el mapa se ve correctamente
+                    const mapPane = map.getPane('mapPane');
+                    if (mapPane) {
+                        console.log('✅ Panel del mapa encontrado');
+                    } else {
+                        console.error('❌ Panel del mapa no encontrado');
+                    }
+                }, 500);
+            });
+            
+            // Agregar un marcador de prueba temporal
+            setTimeout(() => {
+                if (map) {
+                    const testMarker = L.marker([-33.4489, -70.6693])
+                        .addTo(map)
+                        .bindPopup('📍 Santiago, Chile - Mapa funcionando correctamente')
+                        .openPopup();
+                    
+                    console.log('✅ Marcador de prueba agregado');
+                    
+                    // Remover marcador de prueba después de 3 segundos
+                    setTimeout(() => {
+                        map.removeLayer(testMarker);
+                        console.log('🗑️ Marcador de prueba removido');
+                    }, 3000);
+                }
+            }, 2000);
+            
+        } catch (error) {
+            console.error('❌ Error crítico inicializando mapa:', error);
+            const mapContainer = document.getElementById('map');
+            if (mapContainer) {
+                mapContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; background: rgba(255,0,0,0.1); border-radius: 12px; color: #ff6b6b; flex-direction: column; gap: 10px;"><div>❌ Error crítico del mapa</div><div style="font-size: 0.8rem;">Recarga la página</div></div>';
+            }
+        }
+    }
+    
+    // Manejar clic en el mapa
+    function manejarClickMapa(latlng) {
+        console.log('📍 Procesando clic:', latlng);
+        
+        if (!puntoOrigen) {
+            // Primer clic - establecer origen
+            establecerOrigen(latlng);
+        } else if (!puntoDestino) {
+            // Segundo clic - establecer destino
+            establecerDestino(latlng);
+        } else {
+            // Tercer clic - reiniciar
+            reiniciarPuntos();
+            establecerOrigen(latlng);
+        }
+    }
+    
+    // Establecer punto de origen
+    function establecerOrigen(latlng) {
+        console.log('🟢 Estableciendo origen:', latlng);
+        puntoOrigen = latlng;
+        
+        // Remover marker anterior si existe
+        if (markerOrigen) {
+            map.removeLayer(markerOrigen);
+        }
+        
+        try {
+            // Crear nuevo marker verde usando ícono básico
+            markerOrigen = L.marker([latlng.lat, latlng.lng]).addTo(map);
+            markerOrigen.bindPopup('🟢 Punto de Origen').openPopup();
+            
+            // Obtener dirección
+            obtenerDireccion(latlng, 'origen');
+            
+            console.log('✅ Origen establecido correctamente');
+        } catch (error) {
+            console.error('❌ Error estableciendo origen:', error);
+        }
+    }
+    
+    // Establecer punto de destino
+    function establecerDestino(latlng) {
+        console.log('🔴 Estableciendo destino:', latlng);
+        puntoDestino = latlng;
+        
+        // Remover marker anterior si existe
+        if (markerDestino) {
+            map.removeLayer(markerDestino);
+        }
+        
+        try {
+            // Crear nuevo marker rojo usando ícono básico
+            markerDestino = L.marker([latlng.lat, latlng.lng]).addTo(map);
+            markerDestino.bindPopup('🔴 Punto de Destino').openPopup();
+            
+            // Obtener dirección
+            obtenerDireccion(latlng, 'destino');
+            
+            // Calcular ruta
+            calcularRuta();
+            
+            console.log('✅ Destino establecido correctamente');
+        } catch (error) {
+            console.error('❌ Error estableciendo destino:', error);
+        }
+    }
+    
+    // Obtener dirección usando geocodificación inversa
+    function obtenerDireccion(latlng, tipo) {
+        console.log('🔍 Obteniendo dirección para:', tipo, latlng);
+        
+        const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latlng.lat}&lon=${latlng.lng}&zoom=18&addressdetails=1`;
+        
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('✅ Dirección obtenida:', data);
+                const direccion = data.display_name || `${latlng.lat.toFixed(6)}, ${latlng.lng.toFixed(6)}`;
+                
+                if (tipo === 'origen') {
+                    const inputOrigen = document.getElementById('id_direccion_origen');
+                    if (inputOrigen) {
+                        inputOrigen.value = direccion;
+                    }
+                    const spanOrigen = document.getElementById('direccionOrigen');
+                    if (spanOrigen) {
+                        spanOrigen.textContent = direccion;
+                    }
+                    const puntoOrigenDiv = document.getElementById('puntoOrigen');
+                    if (puntoOrigenDiv) {
+                        puntoOrigenDiv.style.display = 'block';
+                    }
+                } else {
+                    const inputDestino = document.getElementById('id_direccion_destino');
+                    if (inputDestino) {
+                        inputDestino.value = direccion;
+                    }
+                    const spanDestino = document.getElementById('direccionDestino');
+                    if (spanDestino) {
+                        spanDestino.textContent = direccion;
+                    }
+                    const puntoDestinoDiv = document.getElementById('puntoDestino');
+                    if (puntoDestinoDiv) {
+                        puntoDestinoDiv.style.display = 'block';
+                    }
+                }
+                
+                const puntosDiv = document.getElementById('puntosSeleccionados');
+                if (puntosDiv) {
+                    puntosDiv.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.warn('⚠️ Error obteniendo dirección, usando coordenadas:', error);
+                const coordenadas = `${latlng.lat.toFixed(6)}, ${latlng.lng.toFixed(6)}`;
+                
+                if (tipo === 'origen') {
+                    const inputOrigen = document.getElementById('id_direccion_origen');
+                    if (inputOrigen) inputOrigen.value = coordenadas;
+                    const spanOrigen = document.getElementById('direccionOrigen');
+                    if (spanOrigen) spanOrigen.textContent = coordenadas;
+                    const puntoOrigenDiv = document.getElementById('puntoOrigen');
+                    if (puntoOrigenDiv) puntoOrigenDiv.style.display = 'block';
+                } else {
+                    const inputDestino = document.getElementById('id_direccion_destino');
+                    if (inputDestino) inputDestino.value = coordenadas;
+                    const spanDestino = document.getElementById('direccionDestino');
+                    if (spanDestino) spanDestino.textContent = coordenadas;
+                    const puntoDestinoDiv = document.getElementById('puntoDestino');
+                    if (puntoDestinoDiv) puntoDestinoDiv.style.display = 'block';
+                }
+                
+                const puntosDiv = document.getElementById('puntosSeleccionados');
+                if (puntosDiv) puntosDiv.style.display = 'block';
+            });
+    }
+    
+    // Calcular ruta entre origen y destino
+    function calcularRuta() {
+        if (!puntoOrigen || !puntoDestino) return;
+        
+        console.log('🛣️ Calculando ruta por calles...');
+        
+        // Intentar calcular ruta real por calles
+        calcularRutaReal();
+    }
+    
+    // Calcular ruta real usando OpenRoute Service
+    function calcularRutaReal() {
+        if (!puntoOrigen || !puntoDestino || !map) return;
+        
+        const coordenadas = `${puntoOrigen.lng},${puntoOrigen.lat};${puntoDestino.lng},${puntoDestino.lat}`;
+        const url = `https://router.project-osrm.org/route/v1/driving/${coordenadas}?overview=full&geometries=geojson`;
+        
+        console.log('🚗 Consultando ruta real:', url);
+        
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.routes && data.routes.length > 0) {
+                    const ruta = data.routes[0];
+                    const distanciaKm = (ruta.distance / 1000).toFixed(2);
+                    const duracionMinutos = Math.round(ruta.duration / 60);
+                    
+                    console.log('✅ Ruta real obtenida:', distanciaKm, 'km,', duracionMinutos, 'min');
+                    
+                    // Dibujar ruta real
+                    dibujarRutaReal(ruta.geometry, distanciaKm, duracionMinutos);
+                } else {
+                    console.warn('⚠️ No se encontró ruta, usando línea recta');
+                    calcularDistanciaDirecta();
+                }
+            })
+            .catch(error => {
+                console.warn('⚠️ Error obteniendo ruta real, usando línea recta:', error);
+                calcularDistanciaDirecta();
+            });
+    }
+    
+    // Dibujar la ruta real obtenida
+    function dibujarRutaReal(geometry, distanciaKm, duracionMinutos) {
+        try {
+            // Remover ruta anterior
+            if (rutaLayer) {
+                map.removeLayer(rutaLayer);
+            }
+            
+            // Crear nueva ruta con los puntos de la geometría
+            const coordenadas = geometry.coordinates.map(coord => [coord[1], coord[0]]);
+            
+            rutaLayer = L.polyline(coordenadas, {
+                color: '#00D563',
+                weight: 5,
+                opacity: 0.8,
+                dashArray: '10, 5'
+            }).addTo(map);
+            
+            // Ajustar vista para mostrar toda la ruta
+            map.fitBounds(rutaLayer.getBounds(), { padding: [30, 30] });
+            
+            // Actualizar información
+            actualizarInfoRuta(distanciaKm, duracionMinutos);
+            
+            console.log('✅ Ruta real dibujada correctamente');
+            
+        } catch (error) {
+            console.error('❌ Error dibujando ruta real:', error);
+            calcularDistanciaDirecta();
+        }
+    }
+    
+    // Calcular distancia en línea recta (fallback)
+    function calcularDistanciaDirecta() {
+        if (!puntoOrigen || !puntoDestino || !map) return;
+        
+        try {
+            const distancia = map.distance(puntoOrigen, puntoDestino) / 1000; // km
+            const distanciaRedondeada = distancia.toFixed(2);
+            
+            console.log('📏 Distancia en línea recta:', distanciaRedondeada, 'km');
+            
+            // Dibujar línea recta
+            if (rutaLayer) {
+                map.removeLayer(rutaLayer);
+            }
+            
+            rutaLayer = L.polyline([puntoOrigen, puntoDestino], {
+                color: '#FFB800',
+                weight: 4,
+                opacity: 0.7,
+                dashArray: '15, 10'
+            }).addTo(map);
+            
+            // Ajustar vista
+            map.fitBounds(rutaLayer.getBounds(), { padding: [20, 20] });
+            
+            actualizarInfoRuta(distanciaRedondeada);
+            
+            console.log('✅ Línea recta dibujada (fallback)');
+        } catch (error) {
+            console.error('❌ Error calculando distancia:', error);
+        }
+    }
+    
+    // Actualizar información de la ruta
+    function actualizarInfoRuta(distanciaKm, duracionMinutos = null) {
+        console.log('📊 Actualizando info de ruta:', distanciaKm, 'km');
+        
+        // Actualizar campo del formulario
+        const inputDistancia = document.getElementById('id_distancia_km');
+        if (inputDistancia) {
+            inputDistancia.value = distanciaKm;
+        }
+        
+        // Mostrar información de distancia
+        const spanDistancia = document.getElementById('distanciaRuta');
+        if (spanDistancia) {
+            spanDistancia.textContent = distanciaKm;
+        }
+        
+        // Mostrar duración si está disponible
+        const duracionDiv = document.getElementById('duracionRuta');
+        if (duracionDiv && duracionMinutos) {
+            duracionDiv.textContent = `${duracionMinutos} min`;
+            duracionDiv.style.display = 'inline';
+        }
+        
+        const infoRutaDiv = document.getElementById('infoRuta');
+        if (infoRutaDiv) {
+            infoRutaDiv.style.display = 'block';
+        }
+        
+        // Calcular precio
+        calcularPrecio(parseFloat(distanciaKm));
+        
+        // Verificar si se puede habilitar el botón
+        verificarFormularioCompleto();
+    }
+    
+    // Calcular precio del servicio
+    function calcularPrecio(distanciaKm) {
+        const costoDistancia = distanciaKm * TARIFA_POR_KM;
+        const total = Math.max(TARIFA_BASE + costoDistancia, TARIFA_MINIMA);
+        
+        console.log('💰 Calculando precio - Distancia:', distanciaKm, 'Total:', total);
+        
+        // Mostrar calculadora
+        const calculadoraDiv = document.getElementById('calculadoraPrecio');
+        if (calculadoraDiv) {
+            calculadoraDiv.style.display = 'block';
+        }
+        
+        // Actualizar valores
+        const distanciaTexto = document.getElementById('distanciaTexto');
+        if (distanciaTexto) {
+            distanciaTexto.textContent = distanciaKm;
+        }
+        
+        const costoDistanciaSpan = document.getElementById('costoDistancia');
+        if (costoDistanciaSpan) {
+            costoDistanciaSpan.textContent = ' + costoDistancia.toLocaleString('es-CL');
+        }
+        
+        const precioTotalSpan = document.getElementById('precioTotal');
+        if (precioTotalSpan) {
+            precioTotalSpan.textContent = ' + total.toLocaleString('es-CL');
+        }
+        
+        // Mostrar línea de costo por km solo si hay distancia
+        const costoPorKmDiv = document.getElementById('costoPorKm');
+        if (costoPorKmDiv) {
+            costoPorKmDiv.style.display = distanciaKm > 0 ? 'flex' : 'none';
+        }
+    }
+    
+    // Verificar si el formulario está completo
+    function verificarFormularioCompleto() {
+        const tipoSelect = document.querySelector('select[name="tipo_vehiculo"]');
+        const marcaInput = document.querySelector('input[name="marca_vehiculo"]');
+        const modeloInput = document.querySelector('input[name="modelo_vehiculo"]');
+        const placaInput = document.querySelector('input[name="placa_vehiculo"]');
+        const fechaInput = document.getElementById('id_fecha_servicio');
+        const descripcionInput = document.getElementById('id_descripcion_problema');
+        
+        const tipoVehiculo = tipoSelect ? tipoSelect.value : '';
+        const marca = marcaInput ? marcaInput.value.trim() : '';
+        const modelo = modeloInput ? modeloInput.value.trim() : '';
+        const placa = placaInput ? placaInput.value.trim() : '';
+        const fechaServicio = fechaInput ? fechaInput.value : '';
+        const descripcion = descripcionInput ? descripcionInput.value.trim() : '';
+        
+        const formularioCompleto = puntoOrigen && puntoDestino && 
+                                  tipoVehiculo && marca && modelo && placa && 
+                                  fechaServicio && descripcion;
+        
+        const btnSolicitar = document.getElementById('btnSolicitar');
+        if (btnSolicitar) {
+            btnSolicitar.disabled = !formularioCompleto;
+        }
+        
+        if (formularioCompleto) {
+            console.log('✅ Formulario completo - botón habilitado');
+        }
+    }
+    
+    // Reiniciar puntos
+    function reiniciarPuntos() {
+        console.log('🔄 Reiniciando puntos...');
+        
+        puntoOrigen = null;
+        puntoDestino = null;
+        
+        if (markerOrigen && map) {
+            map.removeLayer(markerOrigen);
+            markerOrigen = null;
+        }
+        
+        if (markerDestino && map) {
+            map.removeLayer(markerDestino);
+            markerDestino = null;
+        }
+        
+        if (rutaLayer && map) {
+            map.removeLayer(rutaLayer);
+            rutaLayer = null;
+        }
+        
+        // Limpiar formulario
+        const inputOrigen = document.getElementById('id_direccion_origen');
+        if (inputOrigen) inputOrigen.value = '';
+        
+        const inputDestino = document.getElementById('id_direccion_destino');
+        if (inputDestino) inputDestino.value = '';
+        
+        const inputDistancia = document.getElementById('id_distancia_km');
+        if (inputDistancia) inputDistancia.value = '';
+        
+        // Ocultar información
+        const puntosDiv = document.getElementById('puntosSeleccionados');
+        if (puntosDiv) puntosDiv.style.display = 'none';
+        
+        const calculadoraDiv = document.getElementById('calculadoraPrecio');
+        if (calculadoraDiv) calculadoraDiv.style.display = 'none';
+        
+        // Verificar estado del botón
+        verificarFormularioCompleto();
+    }
+    
+    // Event Listeners
+    const form = document.getElementById('servicioForm');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const btnSolicitar = document.getElementById('btnSolicitar');
+            
+            if (!puntoOrigen || !puntoDestino) {
+                e.preventDefault();
+                alert('Por favor, selecciona ambos puntos en el mapa');
+                return false;
+            }
+            
+            // Validaciones adicionales
+            const tipoSelect = document.querySelector('select[name="tipo_vehiculo"]');
+            const marcaInput = document.querySelector('input[name="marca_vehiculo"]');
+            const modeloInput = document.querySelector('input[name="modelo_vehiculo"]');
+            const placaInput = document.querySelector('input[name="placa_vehiculo"]');
+            const fechaInput = document.getElementById('id_fecha_servicio');
+            const descripcionInput = document.getElementById('id_descripcion_problema');
+            
+            if (!tipoSelect || !tipoSelect.value) {
+                e.preventDefault();
+                alert('Por favor, selecciona el tipo de vehículo');
+                return false;
+            }
+            
+            if (!marcaInput || !marcaInput.value.trim()) {
+                e.preventDefault();
+                alert('Por favor, ingresa la marca del vehículo');
+                return false;
+            }
+            
+            if (!modeloInput || !modeloInput.value.trim()) {
+                e.preventDefault();
+                alert('Por favor, ingresa el modelo del vehículo');
+                return false;
+            }
+            
+            if (!placaInput || !placaInput.value.trim()) {
+                e.preventDefault();
+                alert('Por favor, ingresa la placa/patente del vehículo');
+                return false;
+            }
+            
+            if (!fechaInput || !fechaInput.value) {
+                e.preventDefault();
+                alert('Por favor, selecciona una fecha y hora para el servicio');
+                return false;
+            }
+            
+            if (!descripcionInput || !descripcionInput.value.trim()) {
+                e.preventDefault();
+                alert('Por favor, describe el problema de tu vehículo');
+                return false;
+            }
+            
+            // Agregar estado de loading
+            if (btnSolicitar) {
+                btnSolicitar.classList.add('loading');
+                btnSolicitar.textContent = 'Creando solicitud...';
+                btnSolicitar.disabled = true;
+            }
+            
+            console.log('✅ Formulario válido, enviando...');
+        });
+    }
+    
+    // Escuchar cambios en campos
+    const campos = [
+        'select[name="tipo_vehiculo"]',
+        'input[name="marca_vehiculo"]',
+        'input[name="modelo_vehiculo"]',
+        'input[name="placa_vehiculo"]',
+        '#id_fecha_servicio',
+        '#id_descripcion_problema'
+    ];
+    
+    campos.forEach(selector => {
+        const element = document.querySelector(selector);
+        if (element) {
+            const eventType = element.tagName === 'SELECT' ? 'change' : 'input';
+            element.addEventListener(eventType, verificarFormularioCompleto);
+        }
+    });
+    
+    // Formatear placa
+    const placaInput = document.querySelector('input[name="placa_vehiculo"]');
+    if (placaInput) {
+        placaInput.addEventListener('input', function(e) {
+            e.target.value = e.target.value.toUpperCase();
+        });
+    }
+    
+    // Efectos de focus
+    document.querySelectorAll('.form-control').forEach(input => {
+        input.addEventListener('focus', function() {
+            if (this.parentElement) {
+                this.parentElement.style.transform = 'scale(1.02)';
+                this.parentElement.style.transition = 'transform 0.2s ease';
+            }
+        });
+        
+        input.addEventListener('blur', function() {
+            if (this.parentElement) {
+                this.parentElement.style.transform = 'scale(1)';
+            }
+        });
+    });
+    
+    // Inicializar todo
+    console.log('🚀 Iniciando aplicación...');
+    
+    // Verificar que Leaflet esté disponible antes de continuar
+    if (typeof L === 'undefined') {
+        console.error('❌ Leaflet no disponible, intentando recargar...');
+        setTimeout(() => {
+            window.location.reload();
+        }, 2000);
+        return;
+    }
+    
+    console.log('✅ Leaflet disponible, versión:', L.version);
+    
+    // Esperar a que el DOM y CSS estén completamente cargados
+    const initWithDelay = () => {
+        const mapContainer = document.getElementById('map');
+        if (!mapContainer) {
+            console.error('❌ Contenedor del mapa no encontrado');
+            return;
+        }
+        
+        // Verificar que el contenedor tiene dimensiones
+        const rect = mapContainer.getBoundingClientRect();
+        console.log('📏 Dimensiones del mapa:', rect.width, 'x', rect.height);
+        
+        if (rect.width === 0 || rect.height === 0) {
+            console.warn('⚠️ Contenedor sin dimensiones, reintentando en 1 segundo...');
+            setTimeout(initWithDelay, 1000);
+            return;
+        }
+        
+        // Inicializar mapa y verificar estado inicial
+        initMap();
+        verificarFormularioCompleto();
+    };
+    
+    // Dar tiempo adicional para que CSS se aplique
+    setTimeout(initWithDelay, 1000);
+});
+</script>
+
+{% endblock %} + Math.round(numero).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+    }
     
     // Inicializar mapa
     function initMap() {
