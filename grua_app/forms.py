@@ -134,6 +134,51 @@ class CustomUserCreationForm(UserCreationForm):
 
 
 class SolicitudServicioForm(forms.ModelForm):
+    # NUEVOS CAMPOS DEL VEHÍCULO
+    tipo_vehiculo = forms.ChoiceField(
+        choices=[
+            ('', 'Seleccionar tipo'),
+            ('auto', 'Automóvil'),
+            ('suv', 'SUV/Camioneta'),
+            ('pickup', 'Pick-up'),
+            ('moto', 'Motocicleta'),
+            ('furgon', 'Furgón'),
+            ('otro', 'Otro'),
+        ],
+        required=False,
+        widget=forms.Select(attrs={
+            'class': 'form-control',
+        })
+    )
+    
+    marca_vehiculo = forms.CharField(
+        max_length=50,
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Ej: Toyota, Chevrolet, Ford'
+        })
+    )
+    
+    modelo_vehiculo = forms.CharField(
+        max_length=50,
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Ej: Corolla, Spark, Ranger'
+        })
+    )
+    
+    placa_vehiculo = forms.CharField(
+        max_length=20,
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Ej: AB-CD-12 o ABCD-12',
+            'style': 'text-transform: uppercase'
+        })
+    )
+
     class Meta:
         model = SolicitudServicio
         fields = [
@@ -141,7 +186,12 @@ class SolicitudServicioForm(forms.ModelForm):
             'direccion_destino',
             'fecha_servicio',
             'descripcion_problema',
-            'distancia_km'
+            'distancia_km',
+            # NUEVOS CAMPOS AGREGADOS
+            'tipo_vehiculo',
+            'marca_vehiculo', 
+            'modelo_vehiculo',
+            'placa_vehiculo'
         ]
         widgets = {
             'direccion_origen': forms.TextInput(attrs={
