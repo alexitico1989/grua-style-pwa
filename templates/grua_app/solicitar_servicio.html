@@ -567,6 +567,13 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🗺️ Inicializando mapa...');
     
+    // Verificar si Leaflet se cargó correctamente
+    if (typeof L === 'undefined') {
+        console.error('❌ Leaflet no se cargó correctamente');
+        document.getElementById('map').innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; background: rgba(255,255,255,0.1); border-radius: 12px; color: #ccc;">⚠️ Error cargando el mapa. Recarga la página.</div>';
+        return;
+    }
+    
     // Configuración inicial
     let map;
     let puntoOrigen = null;
@@ -582,24 +589,63 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Inicializar mapa
     function initMap() {
-        // Centrar en Santiago, Chile
-        map = L.map('map').setView([-33.4489, -70.6693], 12);
-        
-        // Agregar tiles de OpenStreetMap
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
-        }).addTo(map);
-        
-        // Evento de clic en el mapa
-        map.on('click', function(e) {
-            manejarClickMapa(e.latlng);
-        });
-        
-        console.log('✅ Mapa inicializado');
+        try {
+            // Centrar en Santiago, Chile
+            map = L.map('map', {
+                center: [-33.4489, -70.6693],
+                zoom: 12,
+                zoomControl: true,
+                scrollWheelZoom: true,
+                doubleClickZoom: true,
+                dragging: true
+            });
+            
+            console.log('🗺️ Mapa creado, agregando tiles...');
+            
+            // Agregar tiles de OpenStreetMap con mejor configuración
+            const tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 19,
+                subdomains: ['a', 'b', 'c']
+            });
+            
+            tileLayer.addTo(map);
+            
+            // Verificar que el tile layer se cargó
+            tileLayer.on('load', function() {
+                console.log('✅ Tiles cargados correctamente');
+            });
+            
+            tileLayer.on('tileerror', function(e) {
+                console.warn('⚠️ Error cargando tile:', e);
+            });
+            
+            // Evento de clic en el mapa
+            map.on('click', function(e) {
+                console.log('🖱️ Clic en mapa:', e.latlng);
+                manejarClickMapa(e.latlng);
+            });
+            
+            // Evento cuando el mapa esté listo
+            map.whenReady(function() {
+                console.log('✅ Mapa completamente inicializado');
+                
+                // Invalidar tamaño para asegurar renderizado correcto
+                setTimeout(function() {
+                    map.invalidateSize();
+                }, 100);
+            });
+            
+        } catch (error) {
+            console.error('❌ Error inicializando mapa:', error);
+            document.getElementById('map').innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; background: rgba(255,255,255,0.1); border-radius: 12px; color: #ccc; flex-direction: column; gap: 10px;"><div>⚠️ Error inicializando el mapa</div><div style="font-size: 0.8rem;">Recarga la página o verifica tu conexión</div></div>';
+        }
     }
     
     // Manejar clic en el mapa
     function manejarClickMapa(latlng) {
+        console.log('📍 Procesando clic:', latlng);
+        
         if (!puntoOrigen) {
             // Primer clic - establecer origen
             establecerOrigen(latlng);
@@ -615,6 +661,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Establecer punto de origen
     function establecerOrigen(latlng) {
+        console.log('🟢 Estableciendo origen:', latlng);
         puntoOrigen = latlng;
         
         // Remover marker anterior si existe
@@ -622,28 +669,23 @@ document.addEventListener('DOMContentLoaded', function() {
             map.removeLayer(markerOrigen);
         }
         
-        // Crear nuevo marker verde
-        markerOrigen = L.marker([latlng.lat, latlng.lng], {
-            icon: L.icon({
-                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-                iconSize: [25, 41],
-                iconAnchor: [12, 41],
-                popupAnchor: [1, -34],
-                shadowSize: [41, 41]
-            })
-        }).addTo(map);
-        
-        markerOrigen.bindPopup('🟢 Punto de Origen').openPopup();
-        
-        // Obtener dirección
-        obtenerDireccion(latlng, 'origen');
-        
-        console.log('✅ Origen establecido:', latlng);
+        try {
+            // Crear nuevo marker verde usando ícono básico
+            markerOrigen = L.marker([latlng.lat, latlng.lng]).addTo(map);
+            markerOrigen.bindPopup('🟢 Punto de Origen').openPopup();
+            
+            // Obtener dirección
+            obtenerDireccion(latlng, 'origen');
+            
+            console.log('✅ Origen establecido correctamente');
+        } catch (error) {
+            console.error('❌ Error estableciendo origen:', error);
+        }
     }
     
     // Establecer punto de destino
     function establecerDestino(latlng) {
+        console.log('🔴 Estableciendo destino:', latlng);
         puntoDestino = latlng;
         
         // Remover marker anterior si existe
@@ -651,65 +693,95 @@ document.addEventListener('DOMContentLoaded', function() {
             map.removeLayer(markerDestino);
         }
         
-        // Crear nuevo marker rojo
-        markerDestino = L.marker([latlng.lat, latlng.lng], {
-            icon: L.icon({
-                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-                iconSize: [25, 41],
-                iconAnchor: [12, 41],
-                popupAnchor: [1, -34],
-                shadowSize: [41, 41]
-            })
-        }).addTo(map);
-        
-        markerDestino.bindPopup('🔴 Punto de Destino').openPopup();
-        
-        // Obtener dirección
-        obtenerDireccion(latlng, 'destino');
-        
-        // Calcular ruta
-        calcularRuta();
-        
-        console.log('✅ Destino establecido:', latlng);
+        try {
+            // Crear nuevo marker rojo usando ícono básico
+            markerDestino = L.marker([latlng.lat, latlng.lng]).addTo(map);
+            markerDestino.bindPopup('🔴 Punto de Destino').openPopup();
+            
+            // Obtener dirección
+            obtenerDireccion(latlng, 'destino');
+            
+            // Calcular ruta
+            calcularRuta();
+            
+            console.log('✅ Destino establecido correctamente');
+        } catch (error) {
+            console.error('❌ Error estableciendo destino:', error);
+        }
     }
     
     // Obtener dirección usando geocodificación inversa
     function obtenerDireccion(latlng, tipo) {
+        console.log('🔍 Obteniendo dirección para:', tipo, latlng);
+        
         const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latlng.lat}&lon=${latlng.lng}&zoom=18&addressdetails=1`;
         
         fetch(url)
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
-                const direccion = data.display_name || `${latlng.lat}, ${latlng.lng}`;
+                console.log('✅ Dirección obtenida:', data);
+                const direccion = data.display_name || `${latlng.lat.toFixed(6)}, ${latlng.lng.toFixed(6)}`;
                 
                 if (tipo === 'origen') {
-                    document.getElementById('id_direccion_origen').value = direccion;
-                    document.getElementById('direccionOrigen').textContent = direccion;
-                    document.getElementById('puntoOrigen').style.display = 'block';
+                    const inputOrigen = document.getElementById('id_direccion_origen');
+                    if (inputOrigen) {
+                        inputOrigen.value = direccion;
+                    }
+                    const spanOrigen = document.getElementById('direccionOrigen');
+                    if (spanOrigen) {
+                        spanOrigen.textContent = direccion;
+                    }
+                    const puntoOrigenDiv = document.getElementById('puntoOrigen');
+                    if (puntoOrigenDiv) {
+                        puntoOrigenDiv.style.display = 'block';
+                    }
                 } else {
-                    document.getElementById('id_direccion_destino').value = direccion;
-                    document.getElementById('direccionDestino').textContent = direccion;
-                    document.getElementById('puntoDestino').style.display = 'block';
+                    const inputDestino = document.getElementById('id_direccion_destino');
+                    if (inputDestino) {
+                        inputDestino.value = direccion;
+                    }
+                    const spanDestino = document.getElementById('direccionDestino');
+                    if (spanDestino) {
+                        spanDestino.textContent = direccion;
+                    }
+                    const puntoDestinoDiv = document.getElementById('puntoDestino');
+                    if (puntoDestinoDiv) {
+                        puntoDestinoDiv.style.display = 'block';
+                    }
                 }
                 
-                document.getElementById('puntosSeleccionados').style.display = 'block';
+                const puntosDiv = document.getElementById('puntosSeleccionados');
+                if (puntosDiv) {
+                    puntosDiv.style.display = 'block';
+                }
             })
             .catch(error => {
-                console.error('Error obteniendo dirección:', error);
+                console.warn('⚠️ Error obteniendo dirección, usando coordenadas:', error);
                 const coordenadas = `${latlng.lat.toFixed(6)}, ${latlng.lng.toFixed(6)}`;
                 
                 if (tipo === 'origen') {
-                    document.getElementById('id_direccion_origen').value = coordenadas;
-                    document.getElementById('direccionOrigen').textContent = coordenadas;
-                    document.getElementById('puntoOrigen').style.display = 'block';
+                    const inputOrigen = document.getElementById('id_direccion_origen');
+                    if (inputOrigen) inputOrigen.value = coordenadas;
+                    const spanOrigen = document.getElementById('direccionOrigen');
+                    if (spanOrigen) spanOrigen.textContent = coordenadas;
+                    const puntoOrigenDiv = document.getElementById('puntoOrigen');
+                    if (puntoOrigenDiv) puntoOrigenDiv.style.display = 'block';
                 } else {
-                    document.getElementById('id_direccion_destino').value = coordenadas;
-                    document.getElementById('direccionDestino').textContent = coordenadas;
-                    document.getElementById('puntoDestino').style.display = 'block';
+                    const inputDestino = document.getElementById('id_direccion_destino');
+                    if (inputDestino) inputDestino.value = coordenadas;
+                    const spanDestino = document.getElementById('direccionDestino');
+                    if (spanDestino) spanDestino.textContent = coordenadas;
+                    const puntoDestinoDiv = document.getElementById('puntoDestino');
+                    if (puntoDestinoDiv) puntoDestinoDiv.style.display = 'block';
                 }
                 
-                document.getElementById('puntosSeleccionados').style.display = 'block';
+                const puntosDiv = document.getElementById('puntosSeleccionados');
+                if (puntosDiv) puntosDiv.style.display = 'block';
             });
     }
     
@@ -719,86 +791,62 @@ document.addEventListener('DOMContentLoaded', function() {
         
         console.log('🛣️ Calculando ruta...');
         
-        // Usar OpenRouteService API para calcular ruta
-        const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=5b3ce3597851110001cf6248b25936c5e9624d3e8e19d5d4a2f15b95&start=${puntoOrigen.lng},${puntoOrigen.lat}&end=${puntoDestino.lng},${puntoDestino.lat}`;
-        
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                if (data.features && data.features.length > 0) {
-                    const route = data.features[0];
-                    const coordinates = route.geometry.coordinates;
-                    const distanceKm = (route.properties.segments[0].distance / 1000).toFixed(2);
-                    
-                    // Dibujar ruta en el mapa
-                    dibujarRuta(coordinates);
-                    
-                    // Actualizar información
-                    actualizarInfoRuta(distanceKm);
-                    
-                    console.log('✅ Ruta calculada:', distanceKm + ' km');
-                } else {
-                    // Fallback: línea recta
-                    calcularDistanciaDirecta();
-                }
-            })
-            .catch(error => {
-                console.error('Error calculando ruta:', error);
-                // Fallback: línea recta
-                calcularDistanciaDirecta();
-            });
+        // Usar cálculo directo por defecto (más confiable)
+        calcularDistanciaDirecta();
     }
     
-    // Calcular distancia en línea recta (fallback)
+    // Calcular distancia en línea recta
     function calcularDistanciaDirecta() {
-        const distancia = map.distance(puntoOrigen, puntoDestino) / 1000; // km
-        const distanciaRedondeada = distancia.toFixed(2);
+        if (!puntoOrigen || !puntoDestino || !map) return;
         
-        // Dibujar línea recta
-        if (rutaLayer) {
-            map.removeLayer(rutaLayer);
+        try {
+            const distancia = map.distance(puntoOrigen, puntoDestino) / 1000; // km
+            const distanciaRedondeada = distancia.toFixed(2);
+            
+            console.log('📏 Distancia calculada:', distanciaRedondeada, 'km');
+            
+            // Dibujar línea recta
+            if (rutaLayer) {
+                map.removeLayer(rutaLayer);
+            }
+            
+            rutaLayer = L.polyline([puntoOrigen, puntoDestino], {
+                color: '#00D563',
+                weight: 4,
+                opacity: 0.7
+            }).addTo(map);
+            
+            // Ajustar vista
+            map.fitBounds(rutaLayer.getBounds(), { padding: [20, 20] });
+            
+            actualizarInfoRuta(distanciaRedondeada);
+            
+            console.log('✅ Ruta dibujada correctamente');
+        } catch (error) {
+            console.error('❌ Error calculando distancia:', error);
         }
-        
-        rutaLayer = L.polyline([puntoOrigen, puntoDestino], {
-            color: '#00D563',
-            weight: 4,
-            opacity: 0.7
-        }).addTo(map);
-        
-        actualizarInfoRuta(distanciaRedondeada);
-        
-        console.log('✅ Distancia directa calculada:', distanciaRedondeada + ' km');
-    }
-    
-    // Dibujar ruta en el mapa
-    function dibujarRuta(coordinates) {
-        // Remover ruta anterior
-        if (rutaLayer) {
-            map.removeLayer(rutaLayer);
-        }
-        
-        // Convertir coordenadas para Leaflet
-        const latLngs = coordinates.map(coord => [coord[1], coord[0]]);
-        
-        // Crear polyline
-        rutaLayer = L.polyline(latLngs, {
-            color: '#00D563',
-            weight: 4,
-            opacity: 0.8
-        }).addTo(map);
-        
-        // Ajustar vista del mapa
-        map.fitBounds(rutaLayer.getBounds(), { padding: [20, 20] });
     }
     
     // Actualizar información de la ruta
     function actualizarInfoRuta(distanciaKm) {
+        console.log('📊 Actualizando info de ruta:', distanciaKm, 'km');
+        
         // Actualizar campo del formulario
-        document.getElementById('id_distancia_km').value = distanciaKm;
+        const inputDistancia = document.getElementById('id_distancia_km');
+        if (inputDistancia) {
+            inputDistancia.value = distanciaKm;
+        }
         
         // Mostrar información
-        document.getElementById('distanciaRuta').textContent = distanciaKm;
-        document.getElementById('infoRuta').style.display = 'block';
+        const spanDistancia = document.getElementById('distanciaRuta');
+        if (spanDistancia) {
+            spanDistancia.textContent = distanciaKm;
+        }
+        
+        const infoRutaDiv = document.getElementById('infoRuta');
+        if (infoRutaDiv) {
+            infoRutaDiv.style.display = 'block';
+        }
         
         // Calcular precio
         calcularPrecio(parseFloat(distanciaKm));
@@ -808,6 +856,569 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Calcular precio del servicio
+    function calcularPrecio(distanciaKm) {
+        const costoDistancia = distanciaKm * TARIFA_POR_KM;
+        const total = Math.max(TARIFA_BASE + costoDistancia, TARIFA_MINIMA);
+        
+        console.log('💰 Calculando precio - Distancia:', distanciaKm, 'Total:', total);
+        
+        // Mostrar calculadora
+        const calculadoraDiv = document.getElementById('calculadoraPrecio');
+        if (calculadoraDiv) {
+            calculadoraDiv.style.display = 'block';
+        }
+        
+        // Actualizar valores
+        const distanciaTexto = document.getElementById('distanciaTexto');
+        if (distanciaTexto) {
+            distanciaTexto.textContent = distanciaKm;
+        }
+        
+        const costoDistanciaSpan = document.getElementById('costoDistancia');
+        if (costoDistanciaSpan) {
+            costoDistanciaSpan.textContent = ' servicio
+    function calcularPrecio(distanciaKm) {
+        const costoDistancia = distanciaKm * TARIFA_POR_KM;
+        const total = Math.max(TARIFA_BASE + costoDistancia, TARIFA_MINIMA);
+        
+        // Mostrar calculadora
+        document.getElementById('calculadoraPrecio').style.display = 'block';
+        
+        // Actualizar valores
+        document.getElementById('distanciaTexto').textContent = distanciaKm;
+        document.getElementById('costoDistancia').textContent = ' + costoDistancia.toLocaleString('es-CL');
+        document.getElementById('precioTotal').textContent = ' + total.toLocaleString('es-CL');
+        
+        // Mostrar línea de costo por km solo si hay distancia
+        document.getElementById('costoPorKm').style.display = distanciaKm > 0 ? 'flex' : 'none';
+        
+        console.log('💰 Precio calculado:  + total.toLocaleString('es-CL'));
+    }
+    
+    // Verificar si el formulario está completo
+    function verificarFormularioCompleto() {
+        const tipoVehiculo = document.querySelector('select[name="tipo_vehiculo"]').value;
+        const marca = document.querySelector('input[name="marca_vehiculo"]').value.trim();
+        const modelo = document.querySelector('input[name="modelo_vehiculo"]').value.trim();
+        const placa = document.querySelector('input[name="placa_vehiculo"]').value.trim();
+        const fechaServicio = document.getElementById('id_fecha_servicio').value;
+        const descripcion = document.getElementById('id_descripcion_problema').value.trim();
+        
+        const formularioCompleto = puntoOrigen && puntoDestino && 
+                                  tipoVehiculo && marca && modelo && placa && 
+                                  fechaServicio && descripcion;
+        
+        document.getElementById('btnSolicitar').disabled = !formularioCompleto;
+        
+        if (formularioCompleto) {
+            console.log('✅ Formulario completo - botón habilitado');
+        }
+    }
+    
+    // Reiniciar puntos
+    function reiniciarPuntos() {
+        puntoOrigen = null;
+        puntoDestino = null;
+        
+        if (markerOrigen) {
+            map.removeLayer(markerOrigen);
+            markerOrigen = null;
+        }
+        
+        if (markerDestino) {
+            map.removeLayer(markerDestino);
+            markerDestino = null;
+        }
+        
+        if (rutaLayer) {
+            map.removeLayer(rutaLayer);
+            rutaLayer = null;
+        }
+        
+        // Limpiar formulario
+        document.getElementById('id_direccion_origen').value = '';
+        document.getElementById('id_direccion_destino').value = '';
+        document.getElementById('id_distancia_km').value = '';
+        
+        // Ocultar información
+        document.getElementById('puntosSeleccionados').style.display = 'none';
+        document.getElementById('calculadoraPrecio').style.display = 'none';
+        
+        // Verificar estado del botón
+        verificarFormularioCompleto();
+        
+        console.log('🔄 Puntos reiniciados');
+    }
+    
+    // Validación del formulario
+    document.getElementById('servicioForm').addEventListener('submit', function(e) {
+        const btnSolicitar = document.getElementById('btnSolicitar');
+        
+        if (!puntoOrigen || !puntoDestino) {
+            e.preventDefault();
+            alert('Por favor, selecciona ambos puntos en el mapa');
+            return false;
+        }
+        
+        const tipoVehiculo = document.querySelector('select[name="tipo_vehiculo"]').value;
+        const marca = document.querySelector('input[name="marca_vehiculo"]').value.trim();
+        const modelo = document.querySelector('input[name="modelo_vehiculo"]').value.trim();
+        const placa = document.querySelector('input[name="placa_vehiculo"]').value.trim();
+        const fechaServicio = document.getElementById('id_fecha_servicio').value;
+        const descripcion = document.getElementById('id_descripcion_problema').value.trim();
+        
+        if (!tipoVehiculo) {
+            e.preventDefault();
+            alert('Por favor, selecciona el tipo de vehículo');
+            return false;
+        }
+        
+        if (!marca) {
+            e.preventDefault();
+            alert('Por favor, ingresa la marca del vehículo');
+            return false;
+        }
+        
+        if (!modelo) {
+            e.preventDefault();
+            alert('Por favor, ingresa el modelo del vehículo');
+            return false;
+        }
+        
+        if (!placa) {
+            e.preventDefault();
+            alert('Por favor, ingresa la placa/patente del vehículo');
+            return false;
+        }
+        
+        if (!fechaServicio) {
+            e.preventDefault();
+            alert('Por favor, selecciona una fecha y hora para el servicio');
+            return false;
+        }
+        
+        if (!descripcion) {
+            e.preventDefault();
+            alert('Por favor, describe el problema de tu vehículo');
+            return false;
+        }
+        
+        // Agregar estado de loading
+        btnSolicitar.classList.add('loading');
+        btnSolicitar.textContent = 'Creando solicitud...';
+        btnSolicitar.disabled = true;
+        
+        console.log('✅ Formulario válido, enviando...');
+    });
+    
+    // Escuchar cambios en campos del vehículo
+    document.querySelector('select[name="tipo_vehiculo"]').addEventListener('change', verificarFormularioCompleto);
+    document.querySelector('input[name="marca_vehiculo"]').addEventListener('input', verificarFormularioCompleto);
+    document.querySelector('input[name="modelo_vehiculo"]').addEventListener('input', verificarFormularioCompleto);
+    document.querySelector('input[name="placa_vehiculo"]').addEventListener('input', verificarFormularioCompleto);
+    document.getElementById('id_fecha_servicio').addEventListener('change', verificarFormularioCompleto);
+    document.getElementById('id_descripcion_problema').addEventListener('input', verificarFormularioCompleto);
+    
+    // Formatear placa automáticamente
+    document.querySelector('input[name="placa_vehiculo"]').addEventListener('input', function(e) {
+        e.target.value = e.target.value.toUpperCase();
+    });
+    
+    // Efectos de focus en campos
+    document.querySelectorAll('.form-control').forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.style.transform = 'scale(1.02)';
+            this.parentElement.style.transition = 'transform 0.2s ease';
+        });
+        
+        input.addEventListener('blur', function() {
+            this.parentElement.style.transform = 'scale(1)';
+        });
+    });
+    
+    // Inicializar mapa cuando la página esté lista
+    initMap();
+    
+    // Verificar estado inicial
+    verificarFormularioCompleto();
+});
+</script>
+{% endblock %} + costoDistancia.toLocaleString('es-CL');
+        }
+        
+        const precioTotalSpan = document.getElementById('precioTotal');
+        if (precioTotalSpan) {
+            precioTotalSpan.textContent = ' servicio
+    function calcularPrecio(distanciaKm) {
+        const costoDistancia = distanciaKm * TARIFA_POR_KM;
+        const total = Math.max(TARIFA_BASE + costoDistancia, TARIFA_MINIMA);
+        
+        // Mostrar calculadora
+        document.getElementById('calculadoraPrecio').style.display = 'block';
+        
+        // Actualizar valores
+        document.getElementById('distanciaTexto').textContent = distanciaKm;
+        document.getElementById('costoDistancia').textContent = ' + costoDistancia.toLocaleString('es-CL');
+        document.getElementById('precioTotal').textContent = ' + total.toLocaleString('es-CL');
+        
+        // Mostrar línea de costo por km solo si hay distancia
+        document.getElementById('costoPorKm').style.display = distanciaKm > 0 ? 'flex' : 'none';
+        
+        console.log('💰 Precio calculado:  + total.toLocaleString('es-CL'));
+    }
+    
+    // Verificar si el formulario está completo
+    function verificarFormularioCompleto() {
+        const tipoVehiculo = document.querySelector('select[name="tipo_vehiculo"]').value;
+        const marca = document.querySelector('input[name="marca_vehiculo"]').value.trim();
+        const modelo = document.querySelector('input[name="modelo_vehiculo"]').value.trim();
+        const placa = document.querySelector('input[name="placa_vehiculo"]').value.trim();
+        const fechaServicio = document.getElementById('id_fecha_servicio').value;
+        const descripcion = document.getElementById('id_descripcion_problema').value.trim();
+        
+        const formularioCompleto = puntoOrigen && puntoDestino && 
+                                  tipoVehiculo && marca && modelo && placa && 
+                                  fechaServicio && descripcion;
+        
+        document.getElementById('btnSolicitar').disabled = !formularioCompleto;
+        
+        if (formularioCompleto) {
+            console.log('✅ Formulario completo - botón habilitado');
+        }
+    }
+    
+    // Reiniciar puntos
+    function reiniciarPuntos() {
+        puntoOrigen = null;
+        puntoDestino = null;
+        
+        if (markerOrigen) {
+            map.removeLayer(markerOrigen);
+            markerOrigen = null;
+        }
+        
+        if (markerDestino) {
+            map.removeLayer(markerDestino);
+            markerDestino = null;
+        }
+        
+        if (rutaLayer) {
+            map.removeLayer(rutaLayer);
+            rutaLayer = null;
+        }
+        
+        // Limpiar formulario
+        document.getElementById('id_direccion_origen').value = '';
+        document.getElementById('id_direccion_destino').value = '';
+        document.getElementById('id_distancia_km').value = '';
+        
+        // Ocultar información
+        document.getElementById('puntosSeleccionados').style.display = 'none';
+        document.getElementById('calculadoraPrecio').style.display = 'none';
+        
+        // Verificar estado del botón
+        verificarFormularioCompleto();
+        
+        console.log('🔄 Puntos reiniciados');
+    }
+    
+    // Validación del formulario
+    document.getElementById('servicioForm').addEventListener('submit', function(e) {
+        const btnSolicitar = document.getElementById('btnSolicitar');
+        
+        if (!puntoOrigen || !puntoDestino) {
+            e.preventDefault();
+            alert('Por favor, selecciona ambos puntos en el mapa');
+            return false;
+        }
+        
+        const tipoVehiculo = document.querySelector('select[name="tipo_vehiculo"]').value;
+        const marca = document.querySelector('input[name="marca_vehiculo"]').value.trim();
+        const modelo = document.querySelector('input[name="modelo_vehiculo"]').value.trim();
+        const placa = document.querySelector('input[name="placa_vehiculo"]').value.trim();
+        const fechaServicio = document.getElementById('id_fecha_servicio').value;
+        const descripcion = document.getElementById('id_descripcion_problema').value.trim();
+        
+        if (!tipoVehiculo) {
+            e.preventDefault();
+            alert('Por favor, selecciona el tipo de vehículo');
+            return false;
+        }
+        
+        if (!marca) {
+            e.preventDefault();
+            alert('Por favor, ingresa la marca del vehículo');
+            return false;
+        }
+        
+        if (!modelo) {
+            e.preventDefault();
+            alert('Por favor, ingresa el modelo del vehículo');
+            return false;
+        }
+        
+        if (!placa) {
+            e.preventDefault();
+            alert('Por favor, ingresa la placa/patente del vehículo');
+            return false;
+        }
+        
+        if (!fechaServicio) {
+            e.preventDefault();
+            alert('Por favor, selecciona una fecha y hora para el servicio');
+            return false;
+        }
+        
+        if (!descripcion) {
+            e.preventDefault();
+            alert('Por favor, describe el problema de tu vehículo');
+            return false;
+        }
+        
+        // Agregar estado de loading
+        btnSolicitar.classList.add('loading');
+        btnSolicitar.textContent = 'Creando solicitud...';
+        btnSolicitar.disabled = true;
+        
+        console.log('✅ Formulario válido, enviando...');
+    });
+    
+    // Escuchar cambios en campos del vehículo
+    document.querySelector('select[name="tipo_vehiculo"]').addEventListener('change', verificarFormularioCompleto);
+    document.querySelector('input[name="marca_vehiculo"]').addEventListener('input', verificarFormularioCompleto);
+    document.querySelector('input[name="modelo_vehiculo"]').addEventListener('input', verificarFormularioCompleto);
+    document.querySelector('input[name="placa_vehiculo"]').addEventListener('input', verificarFormularioCompleto);
+    document.getElementById('id_fecha_servicio').addEventListener('change', verificarFormularioCompleto);
+    document.getElementById('id_descripcion_problema').addEventListener('input', verificarFormularioCompleto);
+    
+    // Formatear placa automáticamente
+    document.querySelector('input[name="placa_vehiculo"]').addEventListener('input', function(e) {
+        e.target.value = e.target.value.toUpperCase();
+    });
+    
+    // Efectos de focus en campos
+    document.querySelectorAll('.form-control').forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.style.transform = 'scale(1.02)';
+            this.parentElement.style.transition = 'transform 0.2s ease';
+        });
+        
+        input.addEventListener('blur', function() {
+            this.parentElement.style.transform = 'scale(1)';
+        });
+    });
+    
+    // Inicializar mapa cuando la página esté lista
+    initMap();
+    
+    // Verificar estado inicial
+    verificarFormularioCompleto();
+});
+</script>
+{% endblock %} + total.toLocaleString('es-CL');
+        }
+        
+        // Mostrar línea de costo por km solo si hay distancia
+        const costoPorKmDiv = document.getElementById('costoPorKm');
+        if (costoPorKmDiv) {
+            costoPorKmDiv.style.display = distanciaKm > 0 ? 'flex' : 'none';
+        }
+    }
+    
+    // Verificar si el formulario está completo
+    function verificarFormularioCompleto() {
+        const tipoSelect = document.querySelector('select[name="tipo_vehiculo"]');
+        const marcaInput = document.querySelector('input[name="marca_vehiculo"]');
+        const modeloInput = document.querySelector('input[name="modelo_vehiculo"]');
+        const placaInput = document.querySelector('input[name="placa_vehiculo"]');
+        const fechaInput = document.getElementById('id_fecha_servicio');
+        const descripcionInput = document.getElementById('id_descripcion_problema');
+        
+        const tipoVehiculo = tipoSelect ? tipoSelect.value : '';
+        const marca = marcaInput ? marcaInput.value.trim() : '';
+        const modelo = modeloInput ? modeloInput.value.trim() : '';
+        const placa = placaInput ? placaInput.value.trim() : '';
+        const fechaServicio = fechaInput ? fechaInput.value : '';
+        const descripcion = descripcionInput ? descripcionInput.value.trim() : '';
+        
+        const formularioCompleto = puntoOrigen && puntoDestino && 
+                                  tipoVehiculo && marca && modelo && placa && 
+                                  fechaServicio && descripcion;
+        
+        const btnSolicitar = document.getElementById('btnSolicitar');
+        if (btnSolicitar) {
+            btnSolicitar.disabled = !formularioCompleto;
+        }
+        
+        if (formularioCompleto) {
+            console.log('✅ Formulario completo - botón habilitado');
+        }
+    }
+    
+    // Reiniciar puntos
+    function reiniciarPuntos() {
+        console.log('🔄 Reiniciando puntos...');
+        
+        puntoOrigen = null;
+        puntoDestino = null;
+        
+        if (markerOrigen && map) {
+            map.removeLayer(markerOrigen);
+            markerOrigen = null;
+        }
+        
+        if (markerDestino && map) {
+            map.removeLayer(markerDestino);
+            markerDestino = null;
+        }
+        
+        if (rutaLayer && map) {
+            map.removeLayer(rutaLayer);
+            rutaLayer = null;
+        }
+        
+        // Limpiar formulario
+        const inputOrigen = document.getElementById('id_direccion_origen');
+        if (inputOrigen) inputOrigen.value = '';
+        
+        const inputDestino = document.getElementById('id_direccion_destino');
+        if (inputDestino) inputDestino.value = '';
+        
+        const inputDistancia = document.getElementById('id_distancia_km');
+        if (inputDistancia) inputDistancia.value = '';
+        
+        // Ocultar información
+        const puntosDiv = document.getElementById('puntosSeleccionados');
+        if (puntosDiv) puntosDiv.style.display = 'none';
+        
+        const calculadoraDiv = document.getElementById('calculadoraPrecio');
+        if (calculadoraDiv) calculadoraDiv.style.display = 'none';
+        
+        // Verificar estado del botón
+        verificarFormularioCompleto();
+    }
+    
+    // Event Listeners
+    const form = document.getElementById('servicioForm');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const btnSolicitar = document.getElementById('btnSolicitar');
+            
+            if (!puntoOrigen || !puntoDestino) {
+                e.preventDefault();
+                alert('Por favor, selecciona ambos puntos en el mapa');
+                return false;
+            }
+            
+            // Validaciones adicionales
+            const tipoSelect = document.querySelector('select[name="tipo_vehiculo"]');
+            const marcaInput = document.querySelector('input[name="marca_vehiculo"]');
+            const modeloInput = document.querySelector('input[name="modelo_vehiculo"]');
+            const placaInput = document.querySelector('input[name="placa_vehiculo"]');
+            const fechaInput = document.getElementById('id_fecha_servicio');
+            const descripcionInput = document.getElementById('id_descripcion_problema');
+            
+            if (!tipoSelect || !tipoSelect.value) {
+                e.preventDefault();
+                alert('Por favor, selecciona el tipo de vehículo');
+                return false;
+            }
+            
+            if (!marcaInput || !marcaInput.value.trim()) {
+                e.preventDefault();
+                alert('Por favor, ingresa la marca del vehículo');
+                return false;
+            }
+            
+            if (!modeloInput || !modeloInput.value.trim()) {
+                e.preventDefault();
+                alert('Por favor, ingresa el modelo del vehículo');
+                return false;
+            }
+            
+            if (!placaInput || !placaInput.value.trim()) {
+                e.preventDefault();
+                alert('Por favor, ingresa la placa/patente del vehículo');
+                return false;
+            }
+            
+            if (!fechaInput || !fechaInput.value) {
+                e.preventDefault();
+                alert('Por favor, selecciona una fecha y hora para el servicio');
+                return false;
+            }
+            
+            if (!descripcionInput || !descripcionInput.value.trim()) {
+                e.preventDefault();
+                alert('Por favor, describe el problema de tu vehículo');
+                return false;
+            }
+            
+            // Agregar estado de loading
+            if (btnSolicitar) {
+                btnSolicitar.classList.add('loading');
+                btnSolicitar.textContent = 'Creando solicitud...';
+                btnSolicitar.disabled = true;
+            }
+            
+            console.log('✅ Formulario válido, enviando...');
+        });
+    }
+    
+    // Escuchar cambios en campos
+    const campos = [
+        'select[name="tipo_vehiculo"]',
+        'input[name="marca_vehiculo"]',
+        'input[name="modelo_vehiculo"]',
+        'input[name="placa_vehiculo"]',
+        '#id_fecha_servicio',
+        '#id_descripcion_problema'
+    ];
+    
+    campos.forEach(selector => {
+        const element = document.querySelector(selector);
+        if (element) {
+            const eventType = element.tagName === 'SELECT' ? 'change' : 'input';
+            element.addEventListener(eventType, verificarFormularioCompleto);
+        }
+    });
+    
+    // Formatear placa
+    const placaInput = document.querySelector('input[name="placa_vehiculo"]');
+    if (placaInput) {
+        placaInput.addEventListener('input', function(e) {
+            e.target.value = e.target.value.toUpperCase();
+        });
+    }
+    
+    // Efectos de focus
+    document.querySelectorAll('.form-control').forEach(input => {
+        input.addEventListener('focus', function() {
+            if (this.parentElement) {
+                this.parentElement.style.transform = 'scale(1.02)';
+                this.parentElement.style.transition = 'transform 0.2s ease';
+            }
+        });
+        
+        input.addEventListener('blur', function() {
+            if (this.parentElement) {
+                this.parentElement.style.transform = 'scale(1)';
+            }
+        });
+    });
+    
+    // Inicializar todo
+    console.log('🚀 Iniciando aplicación...');
+    
+    // Dar tiempo a que el CSS se cargue antes de inicializar el mapa
+    setTimeout(() => {
+        initMap();
+        verificarFormularioCompleto();
+    }, 500);
+});
+</script>
+
+{% endblock %} servicio
     function calcularPrecio(distanciaKm) {
         const costoDistancia = distanciaKm * TARIFA_POR_KM;
         const total = Math.max(TARIFA_BASE + costoDistancia, TARIFA_MINIMA);
