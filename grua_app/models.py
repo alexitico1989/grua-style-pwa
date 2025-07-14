@@ -61,6 +61,43 @@ class SolicitudServicio(models.Model):
     webpay_authorization_code = models.CharField(
         max_length=50, null=True, blank=True)
 
+    # NUEVOS CAMPOS DEL VEHÍCULO
+    tipo_vehiculo = models.CharField(
+        max_length=20, 
+        choices=[
+            ('auto', 'Automóvil'),
+            ('suv', 'SUV/Camioneta'),
+            ('pickup', 'Pick-up'),
+            ('moto', 'Motocicleta'),
+            ('furgon', 'Furgón'),
+            ('otro', 'Otro'),
+        ],
+        blank=True,
+        null=True,
+        verbose_name="Tipo de Vehículo"
+    )
+    
+    marca_vehiculo = models.CharField(
+        max_length=50, 
+        blank=True, 
+        null=True,
+        verbose_name="Marca del Vehículo"
+    )
+    
+    modelo_vehiculo = models.CharField(
+        max_length=50, 
+        blank=True, 
+        null=True,
+        verbose_name="Modelo del Vehículo"
+    )
+    
+    placa_vehiculo = models.CharField(
+        max_length=20, 
+        blank=True, 
+        null=True,
+        verbose_name="Placa/Patente"
+    )
+
     def save(self, *args, **kwargs):
         if not self.numero_orden:
             timestamp = timezone.now().strftime('%Y%m%d%H%M%S')
