@@ -406,17 +406,17 @@
                         </a>
                     </li>
                     <li class="nav-item web-only">
-                        <a class="nav-link-3d" href="#servicios">
+                        <a class="nav-link-3d" href="{% url 'servicios' %}">
                             <i class="fas fa-wrench"></i>Servicios
                         </a>
                     </li>
                     <li class="nav-item web-only">
-                        <a class="nav-link-3d" href="#precios">
+                        <a class="nav-link-3d" href="{% url 'precios' %}">
                             <i class="fas fa-tags"></i>Precios
                         </a>
                     </li>
                     <li class="nav-item web-only">
-                        <a class="nav-link-3d" href="#contacto">
+                        <a class="nav-link-3d" href="{% url 'contacto' %}">
                             <i class="fas fa-phone"></i>Contacto
                         </a>
                     </li>
@@ -485,11 +485,11 @@
                 
                 <div class="col-md-3 mb-4">
                     <h5><i class="fas fa-cogs"></i> Servicios</h5>
-                    <a href="#"><i class="fas fa-car"></i> Grúa para Autos</a>
-                    <a href="#"><i class="fas fa-truck"></i> Grúa para Camionetas</a>
-                    <a href="#"><i class="fas fa-motorcycle"></i> Grúa para Motos</a>
-                    <a href="#"><i class="fas fa-tools"></i> Asistencia Mecánica</a>
-                    <a href="#"><i class="fas fa-battery-quarter"></i> Carga de Batería</a>
+                    <a href="{% url 'servicios' %}"><i class="fas fa-car"></i> Grúa para Autos</a>
+                    <a href="{% url 'servicios' %}"><i class="fas fa-truck"></i> Grúa para Camionetas</a>
+                    <a href="{% url 'servicios' %}"><i class="fas fa-motorcycle"></i> Grúa para Motos</a>
+                    <a href="{% url 'servicios' %}"><i class="fas fa-tools"></i> Asistencia Mecánica</a>
+                    <a href="{% url 'servicios' %}"><i class="fas fa-battery-quarter"></i> Carga de Batería</a>
                 </div>
                 
                 <div class="col-md-3 mb-4">
@@ -499,15 +499,15 @@
                     <a href="#"><i class="fas fa-home"></i> Providencia</a>
                     <a href="#"><i class="fas fa-tree"></i> Ñuñoa</a>
                     <a href="#"><i class="fas fa-mountain"></i> La Reina</a>
-                    <a href="#" class="text-success"><i class="fas fa-plus"></i> Ver todas las comunas</a>
+                    <a href="{% url 'servicios' %}" class="text-success"><i class="fas fa-plus"></i> Ver todas las comunas</a>
                 </div>
                 
                 <div class="col-md-3 mb-4">
                     <h5><i class="fas fa-phone"></i> Contacto</h5>
                     <a href="tel:+56912345678"><i class="fas fa-phone"></i> +56 9 1234 5678</a>
                     <a href="mailto:contacto@gruastyle.com"><i class="fas fa-envelope"></i> contacto@gruastyle.com</a>
-                    <a href="#"><i class="fas fa-clock"></i> 24/7 Disponible</a>
-                    <a href="#"><i class="fas fa-headset"></i> Soporte en Línea</a>
+                    <a href="{% url 'contacto' %}"><i class="fas fa-clock"></i> 24/7 Disponible</a>
+                    <a href="{% url 'contacto' %}"><i class="fas fa-headset"></i> Soporte en Línea</a>
                     <a href="#" class="text-warning"><i class="fas fa-star"></i> Calificaciones 5★</a>
                 </div>
             </div>
@@ -520,7 +520,7 @@
                     <div class="col-md-6 text-md-end">
                         <a href="#" class="me-3">Términos y Condiciones</a>
                         <a href="#" class="me-3">Política de Privacidad</a>
-                        <a href="#">Ayuda</a>
+                        <a href="{% url 'contacto' %}">Ayuda</a>
                     </div>
                 </div>
             </div>
