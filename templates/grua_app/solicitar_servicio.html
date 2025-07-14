@@ -1,25 +1,88 @@
 {% extends 'grua_app/base.html' %}
+{% load static %}
 
-{% block title %}Solicitar Servicio - GrúaExpress{% endblock %}
+{% block title %}Solicitar Servicio - Grúa Style{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
-    .servicio-container {
-        max-width: 1200px;
-        margin: 2rem auto;
-        padding: 0 1rem;
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
     }
     
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        background: #000;
+        color: #fff;
+        line-height: 1.4;
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+    }
+    
+    .servicio-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+        min-height: 100vh;
+    }
+    
+    /* Hero Header */
     .servicio-header {
         text-align: center;
-        margin-bottom: 2rem;
-        background: linear-gradient(135deg, #10b981, #059669);
-        color: white;
-        padding: 2rem;
-        border-radius: 1rem;
+        margin-bottom: 3rem;
+        background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+        padding: 3rem 2rem;
+        border-radius: 24px;
+        position: relative;
+        overflow: hidden;
     }
     
+    .servicio-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 30% 50%, rgba(0, 213, 99, 0.1) 0%, transparent 50%);
+    }
+    
+    .servicio-header h1 {
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: #fff;
+        position: relative;
+        z-index: 2;
+        text-shadow: 
+            0 0 20px rgba(0, 213, 99, 0.6),
+            0 0 40px rgba(0, 213, 99, 0.4);
+        animation: glow-pulse 4s ease-in-out infinite alternate;
+    }
+    
+    @keyframes glow-pulse {
+        0% {
+            text-shadow: 
+                0 0 20px rgba(0, 213, 99, 0.6),
+                0 0 40px rgba(0, 213, 99, 0.4);
+        }
+        100% {
+            text-shadow: 
+                0 0 25px rgba(0, 213, 99, 0.8),
+                0 0 50px rgba(0, 213, 99, 0.6);
+        }
+    }
+    
+    .servicio-header p {
+        font-size: 1.2rem;
+        color: #ccc;
+        position: relative;
+        z-index: 2;
+    }
+    
+    /* Main Content Grid */
     .servicio-content {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -27,147 +90,299 @@
         margin-bottom: 2rem;
     }
     
+    /* Form Section */
     .formulario-section {
-        background: white;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
         padding: 2rem;
-        border-radius: 1rem;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
     }
     
-    .mapa-section {
-        background: white;
-        padding: 1rem;
-        border-radius: 1rem;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        color: #00D563;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
     }
     
-    #map {
-        height: 500px;
-        border-radius: 0.5rem;
-        border: 2px solid #e2e8f0;
-    }
-    
+    /* Form Groups */
     .form-group {
         margin-bottom: 1.5rem;
     }
     
-    label {
+    .form-label {
         display: block;
         margin-bottom: 0.5rem;
         font-weight: 600;
-        color: #374151;
+        color: #fff;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
     
     .form-control {
         width: 100%;
-        padding: 0.75rem;
-        border: 2px solid #e2e8f0;
-        border-radius: 0.5rem;
+        padding: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
         font-size: 1rem;
         transition: all 0.3s ease;
         box-sizing: border-box;
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        backdrop-filter: blur(10px);
+    }
+    
+    .form-control::placeholder {
+        color: #999;
     }
     
     .form-control:focus {
         outline: none;
-        border-color: #10b981;
-        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        border-color: #00D563;
+        box-shadow: 0 0 0 3px rgba(0, 213, 99, 0.2);
+        background: rgba(255, 255, 255, 0.15);
     }
     
-    .btn-primary {
-        background: linear-gradient(135deg, #10b981, #059669);
-        color: white;
-        border: none;
-        padding: 0.875rem 2rem;
-        border-radius: 0.5rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        width: 100%;
+    .form-control:hover {
+        border-color: rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.12);
     }
     
-    .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
-    }
-    
-    .btn-primary:disabled {
-        background: #9ca3af;
-        cursor: not-allowed;
-        transform: none;
-        box-shadow: none;
-    }
-    
-    .calculadora-precio {
-        background: #f8fafc;
-        border: 2px solid #e2e8f0;
-        border-radius: 0.5rem;
+    /* Vehicle Section */
+    .vehicle-section {
+        background: rgba(0, 213, 99, 0.1);
+        border: 1px solid rgba(0, 213, 99, 0.2);
+        border-radius: 16px;
         padding: 1.5rem;
-        margin: 1rem 0;
+        margin-bottom: 1.5rem;
+    }
+    
+    .vehicle-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #00D563;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .vehicle-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+    
+    /* Map Section */
+    .mapa-section {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 1.5rem;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    }
+    
+    #map {
+        height: 450px;
+        border-radius: 12px;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Instructions */
+    .instrucciones-mapa {
+        background: rgba(59, 130, 246, 0.1);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+        color: #93C5FD;
+        backdrop-filter: blur(10px);
+    }
+    
+    /* Selected Points */
+    .puntos-seleccionados {
+        background: rgba(0, 213, 99, 0.1);
+        border: 1px solid rgba(0, 213, 99, 0.3);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        backdrop-filter: blur(10px);
+    }
+    
+    .punto-info {
+        margin-bottom: 0.5rem;
+        padding: 0.75rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Price Calculator */
+    .calculadora-precio {
+        background: rgba(0, 213, 99, 0.1);
+        border: 1px solid rgba(0, 213, 99, 0.2);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        backdrop-filter: blur(10px);
+    }
+    
+    .calculadora-titulo {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #00D563;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
     }
     
     .precio-detalle {
         display: flex;
         justify-content: space-between;
         margin-bottom: 0.5rem;
-        padding: 0.25rem 0;
+        padding: 0.5rem 0;
+        color: #ccc;
     }
     
     .precio-total {
-        border-top: 2px solid #10b981;
+        border-top: 2px solid #00D563;
         padding-top: 0.75rem;
         margin-top: 0.75rem;
         font-weight: bold;
-        font-size: 1.2rem;
-        color: #10b981;
+        font-size: 1.3rem;
+        color: #00D563;
     }
     
-    .instrucciones-mapa {
-        background: #dbeafe;
-        border: 1px solid #3b82f6;
-        border-radius: 0.5rem;
-        padding: 1rem;
-        margin-bottom: 1rem;
-        font-size: 0.9rem;
+    /* Buttons */
+    .btn-primary {
+        width: 100%;
+        background: linear-gradient(135deg, #00D563, #00B853);
+        color: #000;
+        border: none;
+        padding: 16px 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 25px rgba(0, 213, 99, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
     }
     
-    .puntos-seleccionados {
-        background: #ecfdf5;
-        border: 1px solid #10b981;
-        border-radius: 0.5rem;
-        padding: 1rem;
-        margin-top: 1rem;
-        font-size: 0.9rem;
+    .btn-primary:hover:not(:disabled) {
+        background: linear-gradient(135deg, #00B853, #00D563);
+        transform: translateY(-2px);
+        box-shadow: 0 12px 35px rgba(0, 213, 99, 0.4);
     }
     
-    .punto-info {
-        margin-bottom: 0.5rem;
-        padding: 0.5rem;
-        background: white;
-        border-radius: 0.25rem;
+    .btn-primary:disabled {
+        background: #666;
+        color: #999;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+        opacity: 0.5;
     }
     
+    /* Messages */
     .alert {
         padding: 1rem;
-        border-radius: 0.5rem;
-        margin-bottom: 1rem;
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+        backdrop-filter: blur(10px);
     }
     
     .alert-success {
-        background: #d1fae5;
-        border: 1px solid #10b981;
-        color: #065f46;
+        background: rgba(34, 197, 94, 0.1);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        color: #86EFAC;
     }
     
     .alert-error {
-        background: #fee2e2;
-        border: 1px solid #ef4444;
-        color: #dc2626;
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        color: #FCA5A5;
+    }
+    
+    /* Helper Text */
+    .helper-text {
+        font-size: 0.8rem;
+        color: #999;
+        margin-top: 0.25rem;
+        font-style: italic;
+    }
+    
+    /* Loading State */
+    .btn-primary.loading::after {
+        content: "";
+        width: 16px;
+        height: 16px;
+        margin-left: 10px;
+        border: 2px solid transparent;
+        border-top: 2px solid #000;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        display: inline-block;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    /* Responsive */
+    @media (max-width: 1024px) {
+        .servicio-content {
+            grid-template-columns: 1fr;
+        }
+        
+        .vehicle-grid {
+            grid-template-columns: 1fr;
+        }
     }
     
     @media (max-width: 768px) {
-        .servicio-content {
-            grid-template-columns: 1fr;
+        .servicio-container {
+            padding: 16px;
+        }
+        
+        .formulario-section,
+        .mapa-section {
+            padding: 1.5rem;
+        }
+        
+        .servicio-header {
+            padding: 2rem 1rem;
+        }
+        
+        #map {
+            height: 350px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .formulario-section,
+        .mapa-section {
+            padding: 1rem;
+        }
+        
+        .form-control,
+        .btn-primary {
+            padding: 14px;
         }
     }
 </style>
@@ -177,7 +392,7 @@
 <div class="servicio-container">
     <div class="servicio-header">
         <h1>🚗 Solicitar Servicio de Grúa</h1>
-        <p>Selecciona los puntos en el mapa y completa el formulario</p>
+        <p>Selecciona los puntos en el mapa y completa la información de tu vehículo</p>
     </div>
     
     {% if messages %}
@@ -191,43 +406,114 @@
     <div class="servicio-content">
         <!-- Formulario -->
         <div class="formulario-section">
-            <h3>📋 Detalles del Servicio</h3>
+            <h3 class="section-title">
+                📋 Detalles del Servicio
+            </h3>
             
             <form method="post" id="servicioForm">
                 {% csrf_token %}
                 
+                <!-- Información del Vehículo -->
+                <div class="vehicle-section">
+                    <h4 class="vehicle-title">
+                        🚙 Información del Vehículo
+                    </h4>
+                    <div class="vehicle-grid">
+                        <div class="form-group">
+                            <label class="form-label">Tipo de Vehículo</label>
+                            <select name="tipo_vehiculo" class="form-control" required>
+                                <option value="">Seleccionar tipo</option>
+                                <option value="auto">Automóvil</option>
+                                <option value="suv">SUV/Camioneta</option>
+                                <option value="pickup">Pick-up</option>
+                                <option value="moto">Motocicleta</option>
+                                <option value="furgon">Furgón</option>
+                                <option value="otro">Otro</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Marca</label>
+                            <input type="text" 
+                                   name="marca_vehiculo" 
+                                   class="form-control" 
+                                   placeholder="Ej: Toyota, Chevrolet, Ford"
+                                   required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Modelo</label>
+                            <input type="text" 
+                                   name="modelo_vehiculo" 
+                                   class="form-control" 
+                                   placeholder="Ej: Corolla, Spark, Ranger"
+                                   required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Placa / Patente</label>
+                            <input type="text" 
+                                   name="placa_vehiculo" 
+                                   class="form-control" 
+                                   placeholder="Ej: AB-CD-12 o ABCD-12"
+                                   style="text-transform: uppercase"
+                                   required>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Ubicaciones -->
                 <div class="form-group">
-                    <label for="{{ form.direccion_origen.id_for_label }}">📍 Dirección de Origen:</label>
+                    <label for="{{ form.direccion_origen.id_for_label }}" class="form-label">
+                        📍 Dirección de Origen
+                    </label>
                     {{ form.direccion_origen }}
+                    <div class="helper-text">Donde se encuentra tu vehículo actualmente</div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="{{ form.direccion_destino.id_for_label }}">🎯 Dirección de Destino:</label>
+                    <label for="{{ form.direccion_destino.id_for_label }}" class="form-label">
+                        🎯 Dirección de Destino
+                    </label>
                     {{ form.direccion_destino }}
+                    <div class="helper-text">Donde necesitas que lleven tu vehículo</div>
                 </div>
                 
+                <!-- Fecha y Hora -->
                 <div class="form-group">
-                    <label for="{{ form.fecha_servicio.id_for_label }}">📅 Fecha y Hora del Servicio:</label>
+                    <label for="{{ form.fecha_servicio.id_for_label }}" class="form-label">
+                        📅 Fecha y Hora del Servicio
+                    </label>
                     {{ form.fecha_servicio }}
+                    <div class="helper-text">Cuándo necesitas el servicio</div>
                 </div>
                 
+                <!-- Problema -->
                 <div class="form-group">
-                    <label for="{{ form.descripcion_problema.id_for_label }}">🔧 Descripción del Problema:</label>
+                    <label for="{{ form.descripcion_problema.id_for_label }}" class="form-label">
+                        🔧 Descripción del Problema
+                    </label>
                     {{ form.descripcion_problema }}
+                    <div class="helper-text">Describe qué le pasó a tu vehículo</div>
                 </div>
                 
+                <!-- Distancia -->
                 <div class="form-group">
-                    <label for="{{ form.distancia_km.id_for_label }}">📏 Distancia (km):</label>
+                    <label for="{{ form.distancia_km.id_for_label }}" class="form-label">
+                        📏 Distancia (km)
+                    </label>
                     {{ form.distancia_km }}
-                    <small style="color: #6b7280;">Se calculará automáticamente al seleccionar puntos en el mapa</small>
+                    <div class="helper-text">Se calculará automáticamente al seleccionar puntos en el mapa</div>
                 </div>
                 
                 <!-- Calculadora de Precio -->
                 <div class="calculadora-precio" id="calculadoraPrecio" style="display: none;">
-                    <h4>💰 Cálculo de Precio</h4>
+                    <h4 class="calculadora-titulo">
+                        💰 Cálculo de Precio
+                    </h4>
                     <div class="precio-detalle">
                         <span>Tarifa Base:</span>
-                        <span>$15.000</span>
+                        <span>$30.000</span>
                     </div>
                     <div class="precio-detalle" id="costoPorKm" style="display: none;">
                         <span>Costo por Distancia (<span id="distanciaTexto">0</span> km):</span>
@@ -235,7 +521,7 @@
                     </div>
                     <div class="precio-detalle precio-total">
                         <span>Total a Pagar:</span>
-                        <span id="precioTotal">$20.000</span>
+                        <span id="precioTotal">$35.000</span>
                     </div>
                 </div>
                 
@@ -247,7 +533,9 @@
         
         <!-- Mapa -->
         <div class="mapa-section">
-            <h3>🗺️ Seleccionar Ubicaciones</h3>
+            <h3 class="section-title">
+                🗺️ Seleccionar Ubicaciones
+            </h3>
             
             <div class="instrucciones-mapa">
                 <strong>📍 Instrucciones:</strong><br>
@@ -259,7 +547,7 @@
             <div id="map"></div>
             
             <div class="puntos-seleccionados" id="puntosSeleccionados" style="display: none;">
-                <h4>📌 Puntos Seleccionados:</h4>
+                <h4 style="color: #00D563; margin-bottom: 1rem;">📌 Puntos Seleccionados:</h4>
                 <div id="puntoOrigen" class="punto-info" style="display: none;">
                     <strong>🟢 Origen:</strong> <span id="direccionOrigen"></span>
                 </div>
@@ -287,10 +575,10 @@ document.addEventListener('DOMContentLoaded', function() {
     let markerDestino = null;
     let rutaLayer = null;
     
-    // Tarifas
-    const TARIFA_BASE = 15000;
-    const TARIFA_POR_KM = 1200;
-    const TARIFA_MINIMA = 20000;
+    // Tarifas actualizadas
+    const TARIFA_BASE = 30000;
+    const TARIFA_POR_KM = 1500;
+    const TARIFA_MINIMA = 35000;
     
     // Inicializar mapa
     function initMap() {
@@ -472,7 +760,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         rutaLayer = L.polyline([puntoOrigen, puntoDestino], {
-            color: '#3b82f6',
+            color: '#00D563',
             weight: 4,
             opacity: 0.7
         }).addTo(map);
@@ -494,7 +782,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Crear polyline
         rutaLayer = L.polyline(latLngs, {
-            color: '#10b981',
+            color: '#00D563',
             weight: 4,
             opacity: 0.8
         }).addTo(map);
@@ -515,8 +803,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Calcular precio
         calcularPrecio(parseFloat(distanciaKm));
         
-        // Habilitar botón de envío
-        document.getElementById('btnSolicitar').disabled = false;
+        // Verificar si se puede habilitar el botón
+        verificarFormularioCompleto();
     }
     
     // Calcular precio del servicio
@@ -529,13 +817,33 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Actualizar valores
         document.getElementById('distanciaTexto').textContent = distanciaKm;
-        document.getElementById('costoDistancia').textContent = '$' + costoDistancia.toLocaleString();
-        document.getElementById('precioTotal').textContent = '$' + total.toLocaleString();
+        document.getElementById('costoDistancia').textContent = ' + costoDistancia.toLocaleString('es-CL');
+        document.getElementById('precioTotal').textContent = ' + total.toLocaleString('es-CL');
         
         // Mostrar línea de costo por km solo si hay distancia
         document.getElementById('costoPorKm').style.display = distanciaKm > 0 ? 'flex' : 'none';
         
-        console.log('💰 Precio calculado: $' + total.toLocaleString());
+        console.log('💰 Precio calculado:  + total.toLocaleString('es-CL'));
+    }
+    
+    // Verificar si el formulario está completo
+    function verificarFormularioCompleto() {
+        const tipoVehiculo = document.querySelector('select[name="tipo_vehiculo"]').value;
+        const marca = document.querySelector('input[name="marca_vehiculo"]').value.trim();
+        const modelo = document.querySelector('input[name="modelo_vehiculo"]').value.trim();
+        const placa = document.querySelector('input[name="placa_vehiculo"]').value.trim();
+        const fechaServicio = document.getElementById('id_fecha_servicio').value;
+        const descripcion = document.getElementById('id_descripcion_problema').value.trim();
+        
+        const formularioCompleto = puntoOrigen && puntoDestino && 
+                                  tipoVehiculo && marca && modelo && placa && 
+                                  fechaServicio && descripcion;
+        
+        document.getElementById('btnSolicitar').disabled = !formularioCompleto;
+        
+        if (formularioCompleto) {
+            console.log('✅ Formulario completo - botón habilitado');
+        }
     }
     
     // Reiniciar puntos
@@ -567,22 +875,52 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('puntosSeleccionados').style.display = 'none';
         document.getElementById('calculadoraPrecio').style.display = 'none';
         
-        // Deshabilitar botón
-        document.getElementById('btnSolicitar').disabled = true;
+        // Verificar estado del botón
+        verificarFormularioCompleto();
         
         console.log('🔄 Puntos reiniciados');
     }
     
     // Validación del formulario
     document.getElementById('servicioForm').addEventListener('submit', function(e) {
+        const btnSolicitar = document.getElementById('btnSolicitar');
+        
         if (!puntoOrigen || !puntoDestino) {
             e.preventDefault();
             alert('Por favor, selecciona ambos puntos en el mapa');
             return false;
         }
         
+        const tipoVehiculo = document.querySelector('select[name="tipo_vehiculo"]').value;
+        const marca = document.querySelector('input[name="marca_vehiculo"]').value.trim();
+        const modelo = document.querySelector('input[name="modelo_vehiculo"]').value.trim();
+        const placa = document.querySelector('input[name="placa_vehiculo"]').value.trim();
         const fechaServicio = document.getElementById('id_fecha_servicio').value;
-        const descripcion = document.getElementById('id_descripcion_problema').value;
+        const descripcion = document.getElementById('id_descripcion_problema').value.trim();
+        
+        if (!tipoVehiculo) {
+            e.preventDefault();
+            alert('Por favor, selecciona el tipo de vehículo');
+            return false;
+        }
+        
+        if (!marca) {
+            e.preventDefault();
+            alert('Por favor, ingresa la marca del vehículo');
+            return false;
+        }
+        
+        if (!modelo) {
+            e.preventDefault();
+            alert('Por favor, ingresa el modelo del vehículo');
+            return false;
+        }
+        
+        if (!placa) {
+            e.preventDefault();
+            alert('Por favor, ingresa la placa/patente del vehículo');
+            return false;
+        }
         
         if (!fechaServicio) {
             e.preventDefault();
@@ -590,17 +928,50 @@ document.addEventListener('DOMContentLoaded', function() {
             return false;
         }
         
-        if (!descripcion.trim()) {
+        if (!descripcion) {
             e.preventDefault();
             alert('Por favor, describe el problema de tu vehículo');
             return false;
         }
         
+        // Agregar estado de loading
+        btnSolicitar.classList.add('loading');
+        btnSolicitar.textContent = 'Creando solicitud...';
+        btnSolicitar.disabled = true;
+        
         console.log('✅ Formulario válido, enviando...');
+    });
+    
+    // Escuchar cambios en campos del vehículo
+    document.querySelector('select[name="tipo_vehiculo"]').addEventListener('change', verificarFormularioCompleto);
+    document.querySelector('input[name="marca_vehiculo"]').addEventListener('input', verificarFormularioCompleto);
+    document.querySelector('input[name="modelo_vehiculo"]').addEventListener('input', verificarFormularioCompleto);
+    document.querySelector('input[name="placa_vehiculo"]').addEventListener('input', verificarFormularioCompleto);
+    document.getElementById('id_fecha_servicio').addEventListener('change', verificarFormularioCompleto);
+    document.getElementById('id_descripcion_problema').addEventListener('input', verificarFormularioCompleto);
+    
+    // Formatear placa automáticamente
+    document.querySelector('input[name="placa_vehiculo"]').addEventListener('input', function(e) {
+        e.target.value = e.target.value.toUpperCase();
+    });
+    
+    // Efectos de focus en campos
+    document.querySelectorAll('.form-control').forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.style.transform = 'scale(1.02)';
+            this.parentElement.style.transition = 'transform 0.2s ease';
+        });
+        
+        input.addEventListener('blur', function() {
+            this.parentElement.style.transform = 'scale(1)';
+        });
     });
     
     // Inicializar mapa cuando la página esté lista
     initMap();
+    
+    // Verificar estado inicial
+    verificarFormularioCompleto();
 });
 </script>
 {% endblock %}
