@@ -70,7 +70,7 @@ class CodigoVerificacion(models.Model):
     tipo = models.CharField(max_length=20, choices=TIPO_CHOICES)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     usado = models.BooleanField(default=False)
-    def str**(self):
+    def __str__(self):
         return f"{self.user.username} - {self.codigo} ({self.tipo})"
     class Meta:
         ordering = ['-fecha_creacion']
