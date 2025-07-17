@@ -87,15 +87,12 @@
             0 0 120px rgba(0, 213, 99, 0.1);
         animation: glow-pulse 4s ease-in-out infinite alternate;
         will-change: text-shadow;
-        position: relative;
     }
     
     .hero-title-line {
         display: flex;
         align-items: center;
         gap: 1rem;
-        position: relative;
-        width: 100%;
     }
     
     .word-servicio {
@@ -118,6 +115,7 @@
     
     .hero-highlight {
         color: #00D563;
+        display: block;
         animation: appear-24-7 1s ease-out 2.5s both;
         opacity: 0;
         text-shadow: 
@@ -126,13 +124,6 @@
             0 0 80px rgba(0, 213, 99, 0.4),
             0 0 120px rgba(0, 213, 99, 0.2);
         will-change: opacity, transform;
-        /* Posicionar el 24/7 exactamente en el CENTRO de "Servicio de Grúa" */
-        position: absolute;
-        top: 100%;
-        left: 50%;
-        transform: translateX(-50%);
-        text-align: center;
-        width: fit-content;
     }
     
     .hero-subtitle {
@@ -858,7 +849,6 @@
     }
     
     /* Responsive */
-    /* Responsive adjustments para el posicionamiento del 24/7 */
     @media (max-width: 968px) {
         .hero-container {
             grid-template-columns: 1fr;
@@ -867,13 +857,6 @@
         }
         
         .hero-content {
-            text-align: center;
-        }
-        
-        .hero-highlight {
-            /* En responsive mantiene el centrado perfecto */
-            left: 50%;
-            transform: translateX(-50%);
             text-align: center;
         }
         
