@@ -30,6 +30,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # ← AGREGADO PARA SERVIR ESTÁTICOS
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -44,7 +45,7 @@ ROOT_URLCONF = 'grua_platform.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # ← ESTO ES LO QUE FALTABA
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -94,9 +95,17 @@ TIME_ZONE = 'America/Santiago'
 USE_I18N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
+# ✅ CONFIGURACIÓN COMPLETA DE ARCHIVOS ESTÁTICOS
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# ✅ ESTO ES LO QUE FALTABA - DIRECTORIOS DE ARCHIVOS ESTÁTICOS
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',  # ← APUNTA A TU CARPETA static/
+]
+
+# ✅ CONFIGURACIÓN PARA WHITENOISE (SERVIR ESTÁTICOS EN PRODUCCIÓN)
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files
 MEDIA_URL = '/media/'
@@ -106,7 +115,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ✅ CONFIGURACIÓN DE LOGIN CORREGIDA
-LOGIN_URL = '/login/'  # Cambiado de '/accounts/login/' a '/login/'
+LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/'
 
