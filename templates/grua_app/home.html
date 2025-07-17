@@ -93,6 +93,8 @@
         display: flex;
         align-items: center;
         gap: 1rem;
+        position: relative;
+        width: 100%;
     }
     
     .word-servicio {
@@ -124,6 +126,14 @@
             0 0 80px rgba(0, 213, 99, 0.4),
             0 0 120px rgba(0, 213, 99, 0.2);
         will-change: opacity, transform;
+        /* Centrar el 24/7 con respecto a "Servicio de Grúa" */
+        text-align: center;
+        margin-left: auto;
+        margin-right: auto;
+        width: fit-content;
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
     }
     
     .hero-subtitle {
@@ -799,15 +809,15 @@
     @keyframes appear-24-7 {
         0% {
             opacity: 0;
-            transform: translateY(50px) scale(0.5);
+            transform: translateX(-50%) translateY(50px) scale(0.5);
         }
         50% {
             opacity: 0.5;
-            transform: translateY(25px) scale(0.8);
+            transform: translateX(-50%) translateY(25px) scale(0.8);
         }
         100% {
             opacity: 1;
-            transform: translateY(0px) scale(1);
+            transform: translateX(-50%) translateY(0px) scale(1);
         }
     }
     
