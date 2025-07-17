@@ -87,6 +87,7 @@
             0 0 120px rgba(0, 213, 99, 0.1);
         animation: glow-pulse 4s ease-in-out infinite alternate;
         will-change: text-shadow;
+        position: relative;
     }
     
     .hero-title-line {
@@ -117,7 +118,6 @@
     
     .hero-highlight {
         color: #00D563;
-        display: block;
         animation: appear-24-7 1s ease-out 2.5s both;
         opacity: 0;
         text-shadow: 
@@ -126,14 +126,13 @@
             0 0 80px rgba(0, 213, 99, 0.4),
             0 0 120px rgba(0, 213, 99, 0.2);
         will-change: opacity, transform;
-        /* Centrar el 24/7 con respecto a "Servicio de Grúa" */
-        text-align: center;
-        margin-left: auto;
-        margin-right: auto;
-        width: fit-content;
-        position: relative;
+        /* Posicionar el 24/7 exactamente en el CENTRO de "Servicio de Grúa" */
+        position: absolute;
+        top: 100%;
         left: 50%;
         transform: translateX(-50%);
+        text-align: center;
+        width: fit-content;
     }
     
     .hero-subtitle {
@@ -809,15 +808,15 @@
     @keyframes appear-24-7 {
         0% {
             opacity: 0;
-            transform: translateX(-50%) translateY(50px) scale(0.5);
+            transform: translateY(50px) scale(0.5);
         }
         50% {
             opacity: 0.5;
-            transform: translateX(-50%) translateY(25px) scale(0.8);
+            transform: translateY(25px) scale(0.8);
         }
         100% {
             opacity: 1;
-            transform: translateX(-50%) translateY(0px) scale(1);
+            transform: translateY(0px) scale(1);
         }
     }
     
@@ -859,6 +858,7 @@
     }
     
     /* Responsive */
+    /* Responsive adjustments para el posicionamiento del 24/7 */
     @media (max-width: 968px) {
         .hero-container {
             grid-template-columns: 1fr;
@@ -867,6 +867,13 @@
         }
         
         .hero-content {
+            text-align: center;
+        }
+        
+        .hero-highlight {
+            /* En responsive mantiene el centrado perfecto */
+            left: 50%;
+            transform: translateX(-50%);
             text-align: center;
         }
         
