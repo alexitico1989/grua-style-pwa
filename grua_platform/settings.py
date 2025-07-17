@@ -12,33 +12,21 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 import os
 from pathlib import Path
-import dj_database_url
+# import dj_database_url  # COMENTADO TEMPORALMENTE
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-tu-clave-secreta-aqui')
+SECRET_KEY = 'django-insecure-@!m_&nb=!+2!@z^4=e5u%a#mj0b4@^_xqj(3_t@+)n&)*l7@+#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+DEBUG = True
 
-# ALLOWED_HOSTS actualizado con dominios personalizados
-ALLOWED_HOSTS = [
-    'web-production-1eac8.up.railway.app',
-    '*.railway.app',
-    'gruastyle.com',
-    'www.gruastyle.com',
-    '10.204.157.26',
-    '.railway.app',
-    '127.0.0.1',
-    'localhost'
-]
-
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -54,7 +42,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Para servir archivos estáticos
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -68,7 +55,7 @@ ROOT_URLCONF = 'grua_platform.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -83,7 +70,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'grua_platform.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
@@ -95,9 +81,8 @@ DATABASES = {
 }
 
 # En producción usar PostgreSQL de Railway
-if 'DATABASE_URL' in os.environ:
-    DATABASES['default'] = dj_database_url.parse(os.environ.get('DATABASE_URL'))
-
+# if 'DATABASE_URL' in os.environ:
+#     DATABASES['default'] = dj_database_url.parse(os.environ.get('DATABASE_URL'))
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -117,11 +102,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'es-cl'
+LANGUAGE_CODE = 'es-es'
 
 TIME_ZONE = 'America/Santiago'
 
@@ -129,83 +113,43 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    BASE_DIR / 'static',
-]
-STATIC_ROOT = BASE_DIR / 'staticfiles'
-
-# Configuración de WhiteNoise para servir archivos estáticos
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Login/Logout URLs
-LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/dashboard/'
-LOGOUT_REDIRECT_URL = '/'
-
-# Configuración de Email (Debug temporal)
-import os
-
-# Debug de variables
-print(f"🔍 DEBUG SETTINGS.PY:")
-print(f"   EMAIL_HOST env: {os.environ.get('EMAIL_HOST', 'NO_DEFINIDO')}")
-print(f"   EMAIL_HOST_USER env: {os.environ.get('EMAIL_HOST_USER', 'NO_DEFINIDO')}")
-print(f"   Todas las variables env que empiecen con EMAIL:")
-for key, value in os.environ.items():
-    if key.startswith('EMAIL'):
-        print(f"     {key}: {'DEFINIDO' if value else 'VACIO'}")
-
+# Configuración del email
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
-EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587))
-EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', 'False') == 'True'
-EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'monardes.luis@gmail.com')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'sin-password')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True').lower() == 'true'
+EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', 'False').lower() == 'true'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 
-# Configuración de emails - usando tu dominio corporativo
-DEFAULT_FROM_EMAIL = f'Grúa Style <{os.environ.get("EMAIL_HOST_USER", "contacto@gruastyle.com")}>'
-SERVER_EMAIL = f'Grúa Style <{os.environ.get("EMAIL_HOST_USER", "contacto@gruastyle.com")}>'
-EMAIL_BIENVENIDA = f'Grúa Style <{os.environ.get("EMAIL_HOST_USER", "contacto@gruastyle.com")}>'
-EMAIL_NOTIFICACIONES = f'Grúa Style <{os.environ.get("EMAIL_HOST_USER", "contacto@gruastyle.com")}>'
-EMAIL_SOPORTE = f'Grúa Style <{os.environ.get("EMAIL_HOST_USER", "contacto@gruastyle.com")}>'
-
-# Configuración de administradores
-ADMINS = [
-    ('Admin', 'alexismkt1989@gmail.com'),
+# Configuración de seguridad
+CSRF_TRUSTED_ORIGINS = [
+    'https://gruastyle.com',
+    'https://www.gruastyle.com',
+    'https://grua-style-pwa-production.up.railway.app',
+    'https://grua-style-pwa-production-e1a8f1c34a86.herokuapp.com',
 ]
 
-# Configuración de Transbank
-TRANSBANK_ENVIRONMENT = os.environ.get('TRANSBANK_ENVIRONMENT', 'integration')
-TRANSBANK_COMMERCE_CODE = os.environ.get('TRANSBANK_COMMERCE_CODE', '597055555532')
-TRANSBANK_API_KEY = os.environ.get('TRANSBANK_API_KEY', 'tu-api-key-transbank-aqui')
+# Configuración para archivos media
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# URLs de retorno de Transbank - se actualizarán automáticamente
-if 'RAILWAY_PUBLIC_DOMAIN' in os.environ:
-    domain = f"https://{os.environ.get('RAILWAY_PUBLIC_DOMAIN')}"
-else:
-    domain = 'http://127.0.0.1:8000'
-
-TRANSBANK_RETURN_URL = f"{domain}/webpay/return/"
-TRANSBANK_FINAL_URL = f"{domain}/webpay/final/"
-
-# Configuración de seguridad para producción
-if 'RAILWAY_ENVIRONMENT' in os.environ:
-    DEBUG = False
-    SECURE_BROWSER_XSS_FILTER = True
-    SECURE_CONTENT_TYPE_NOSNIFF = True
-    X_FRAME_OPTIONS = 'DENY'
-    SECURE_HSTS_SECONDS = 86400
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_PRELOAD = True
-    SECURE_SSL_REDIRECT = True
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# Debug de configuración de email
+print("🔍 DEBUG SETTINGS.PY:")
+print(f" EMAIL_HOST env: {os.environ.get('EMAIL_HOST')}")
+print(f" EMAIL_HOST_USER env: {os.environ.get('EMAIL_HOST_USER')}")
+print(" Todas las variables env que empiecen con EMAIL:")
+for key, value in os.environ.items():
+    if key.startswith('EMAIL_'):
+        print(f" {key}: {'DEFINIDO' if value else 'NO DEFINIDO'}")
