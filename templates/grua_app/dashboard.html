@@ -116,8 +116,202 @@
         color: #00D563;
         font-weight: 600;
     }
+
+    /* Servicios Grid */
+    .services-section {
+        padding: 0 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .service-card {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+        border: 1px solid #333;
+        border-radius: 16px;
+        padding: 1.5rem 1rem;
+        text-decoration: none;
+        color: #fff;
+        text-align: center;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .service-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, 
+            transparent, 
+            rgba(0, 213, 99, 0.1), 
+            transparent);
+        transition: left 0.6s ease;
+    }
+
+    .service-card:hover::before {
+        left: 100%;
+    }
+
+    .service-card:hover {
+        border-color: #00D563;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 213, 99, 0.2);
+        color: #fff;
+    }
+
+    .service-icon {
+        font-size: 2.5rem;
+        margin-bottom: 0.75rem;
+        display: block;
+    }
+
+    .service-title {
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+
+    .service-subtitle {
+        font-size: 0.75rem;
+        color: #999;
+        line-height: 1.3;
+    }
+
+    /* Secciones desplegables */
+    .collapsible-section {
+        margin: 1.5rem;
+        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+        border: 1px solid #333;
+        border-radius: 16px;
+        overflow: hidden;
+    }
+
+    .section-toggle {
+        width: 100%;
+        background: none;
+        border: none;
+        color: #fff;
+        padding: 1.5rem;
+        text-align: left;
+        cursor: pointer;
+        font-size: 1.125rem;
+        font-weight: 600;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+
+    .section-toggle:hover {
+        background: rgba(0, 213, 99, 0.05);
+    }
+
+    .toggle-icon {
+        transition: transform 0.3s ease;
+        color: #00D563;
+    }
+
+    .section-toggle.active .toggle-icon {
+        transform: rotate(180deg);
+    }
+
+    .section-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        background: rgba(0, 0, 0, 0.3);
+    }
+
+    .section-content.active {
+        max-height: 1000px;
+    }
+
+    .section-inner {
+        padding: 1.5rem;
+    }
+
+    /* Facturas */
+    .factura-item {
+        background: #1a1a1a;
+        border: 1px solid #2a2a2a;
+        border-radius: 12px;
+        padding: 1.25rem;
+        margin-bottom: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+
+    .factura-item:hover {
+        border-color: rgba(0, 213, 99, 0.3);
+        background: #222;
+    }
+
+    .factura-info h4 {
+        color: #fff;
+        font-size: 1rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .factura-meta {
+        font-size: 0.875rem;
+        color: #999;
+        margin-bottom: 0.5rem;
+    }
+
+    .factura-amount {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: #00D563;
+    }
+
+    .factura-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .btn-small {
+        padding: 0.5rem 0.875rem;
+        background: #333;
+        border: 1px solid #444;
+        border-radius: 8px;
+        text-decoration: none;
+        color: #fff;
+        font-size: 0.75rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .btn-small:hover {
+        background: #444;
+        color: #fff;
+    }
+
+    .btn-small.primary {
+        background: #00D563;
+        color: #000;
+        border-color: #00D563;
+    }
+
+    .btn-small.primary:hover {
+        background: #00E570;
+        color: #000;
+    }
     
-    /* Botón principal mejorado */
+    /* Botón principal tipo Uber */
     .main-action-card {
         margin: 2rem 1.5rem;
         background: linear-gradient(135deg, #00D563 0%, #00B853 100%);
@@ -429,6 +623,38 @@
         background: linear-gradient(135deg, #38BDF8, #0284C7);
         color: #000;
     }
+
+    /* Stats Cards */
+    .stats-section {
+        padding: 0 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 1rem;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+        border: 1px solid #333;
+        border-radius: 12px;
+        padding: 1.25rem 1rem;
+        text-align: center;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #00D563;
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+        font-size: 0.875rem;
+        color: #999;
+    }
     
     /* Bottom Navigation (solo en app) */
     .bottom-nav {
@@ -540,8 +766,14 @@
             margin: 1.5rem 1rem;
         }
         
-        .solicitudes-section {
+        .solicitudes-section,
+        .services-section,
+        .stats-section {
             padding: 0 1rem;
+        }
+
+        .collapsible-section {
+            margin: 1.5rem 1rem;
         }
         
         .actions-grid {
@@ -550,6 +782,25 @@
         
         .floating-btn {
             right: 1rem;
+        }
+
+        .services-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .factura-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .factura-actions {
+            width: 100%;
+            justify-content: space-between;
         }
     }
     
@@ -564,15 +815,56 @@
             transform: translateY(0);
         }
     }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
     
-    .solicitud-card {
+    .solicitud-card,
+    .service-card,
+    .stat-card {
         animation: slideIn 0.3s ease forwards;
     }
     
     .solicitud-card:nth-child(2) { animation-delay: 0.1s; }
     .solicitud-card:nth-child(3) { animation-delay: 0.2s; }
     .solicitud-card:nth-child(4) { animation-delay: 0.3s; }
+
+    .section-content {
+        animation: fadeIn 0.3s ease forwards;
+    }
 </style>
+
+<script>
+// JavaScript para manejar las secciones desplegables
+document.addEventListener('DOMContentLoaded', function() {
+    const toggleButtons = document.querySelectorAll('.section-toggle');
+    
+    toggleButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const content = this.nextElementSibling;
+            const isActive = this.classList.contains('active');
+            
+            // Cerrar todas las secciones
+            toggleButtons.forEach(btn => {
+                btn.classList.remove('active');
+                btn.nextElementSibling.classList.remove('active');
+            });
+            
+            // Abrir la sección clickeada si no estaba activa
+            if (!isActive) {
+                this.classList.add('active');
+                content.classList.add('active');
+            }
+        });
+    });
+});
+</script>
 {% endblock %}
 
 {% block content %}
@@ -586,7 +878,208 @@
             </div>
         </div>
     </div>
+
+    <!-- Estadísticas rápidas -->
+    <div class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">{{ solicitudes|length|default:0 }}</div>
+                <div class="stat-label">Servicios</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ facturas|length|default:0 }}</div>
+                <div class="stat-label">Facturas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">${{ total_gastado|default:0 }}</div>
+                <div class="stat-label">Total</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ servicios_mes|default:0 }}</div>
+                <div class="stat-label">Este mes</div>
+            </div>
+        </div>
+    </div>
     
+    <!-- Servicios disponibles -->
+    <div class="services-section">
+        <div class="section-header">
+            <div class="section-title">Servicios Disponibles</div>
+        </div>
+        <div class="services-grid">
+            <a href="{% url 'solicitar_servicio' %}?tipo=auto" class="service-card">
+                <div class="service-icon">🚗</div>
+                <div class="service-title">Grúa Auto</div>
+                <div class="service-subtitle">Servicio para automóviles</div>
+            </a>
+            <a href="{% url 'solicitar_servicio' %}?tipo=moto" class="service-card">
+                <div class="service-icon">🏍️</div>
+                <div class="service-title">Grúa Moto</div>
+                <div class="service-subtitle">Especializado en motocicletas</div>
+            </a>
+            <a href="{% url 'solicitar_servicio' %}?tipo=camioneta" class="service-card">
+                <div class="service-icon">🚙</div>
+                <div class="service-title">Grúa Camioneta</div>
+                <div class="service-subtitle">Para SUVs y camionetas</div>
+            </a>
+            <a href="{% url 'solicitar_servicio' %}?tipo=bateria" class="service-card">
+                <div class="service-icon">🔋</div>
+                <div class="service-title">Carga Batería</div>
+                <div class="service-subtitle">Servicio de emergencia</div>
+            </a>
+            <a href="{% url 'solicitar_servicio' %}?tipo=mecanica" class="service-card">
+                <div class="service-icon">🔧</div>
+                <div class="service-title">Asistencia</div>
+                <div class="service-subtitle">Mecánica básica</div>
+            </a>
+            <a href="{% url 'solicitar_servicio' %}?tipo=carga" class="service-card">
+                <div class="service-icon">📦</div>
+                <div class="service-title">Transporte</div>
+                <div class="service-subtitle">Mudanzas y carga</div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Sección de Facturas (Desplegable) -->
+    <div class="collapsible-section">
+        <button class="section-toggle">
+            <span>📄 Mis Facturas</span>
+            <span class="toggle-icon">▼</span>
+        </button>
+        <div class="section-content">
+            <div class="section-inner">
+                {% if facturas %}
+                    {% for factura in facturas %}
+                    <div class="factura-item">
+                        <div class="factura-info">
+                            <h4>Factura #{{ factura.numero }}</h4>
+                            <div class="factura-meta">
+                                {{ factura.fecha|date:"d/m/Y" }} • {{ factura.servicio.get_tipo_display }}
+                            </div>
+                            <div class="factura-amount">${{ factura.total|floatformat:0 }}</div>
+                        </div>
+                        <div class="factura-actions">
+                            <a href="{% url 'descargar_factura_pdf' factura.id %}" class="btn-small primary">
+                                <i class="fas fa-download"></i>
+                                Descargar
+                            </a>
+                            <a href="{% url 'ver_factura' factura.id %}" class="btn-small">
+                                <i class="fas fa-eye"></i>
+                                Ver
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-icon">📄</div>
+                        <div class="empty-title">No hay facturas</div>
+                        <div class="empty-text">
+                            Tus facturas aparecerán aquí después de completar un servicio.
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección de Historial de Servicios (Desplegable) -->
+    <div class="collapsible-section">
+        <button class="section-toggle">
+            <span>📋 Historial de Servicios</span>
+            <span class="toggle-icon">▼</span>
+        </button>
+        <div class="section-content">
+            <div class="section-inner">
+                {% if servicios_completados %}
+                    {% for servicio in servicios_completados %}
+                    <div class="solicitud-card">
+                        <div class="card-header">
+                            <div class="header-row">
+                                <div class="orden-number">{{ servicio.numero_orden }}</div>
+                                <div class="status-badge status-{{ servicio.estado }}">
+                                    {{ servicio.get_estado_display }}
+                                </div>
+                            </div>
+                            
+                            <div class="route-container">
+                                <div class="route-line"></div>
+                                <div class="route-point">
+                                    <div class="route-dot origin"></div>
+                                    <div>
+                                        <div class="route-label">Origen</div>
+                                        <div class="route-text">{{ servicio.direccion_origen }}</div>
+                                    </div>
+                                </div>
+                                <div class="route-point">
+                                    <div class="route-dot destination"></div>
+                                    <div>
+                                        <div class="route-label">Destino</div>
+                                        <div class="route-text">{{ servicio.direccion_destino }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card-info">
+                            <div class="info-row">
+                                <div class="info-label">
+                                    <i class="fas fa-calendar"></i>
+                                    Fecha completado
+                                </div>
+                                <div class="info-value">{{ servicio.fecha_completado|date:"d/m/Y H:i" }}</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">
+                                    <i class="fas fa-truck"></i>
+                                    Tipo de servicio
+                                </div>
+                                <div class="info-value">{{ servicio.get_tipo_servicio_display }}</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">
+                                    <i class="fas fa-star"></i>
+                                    Calificación
+                                </div>
+                                <div class="info-value">
+                                    {% if servicio.calificacion %}
+                                        {% for i in "12345" %}
+                                            {% if forloop.counter <= servicio.calificacion %}⭐{% else %}☆{% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        <a href="{% url 'calificar_servicio' servicio.id %}" style="color: #00D563;">Calificar</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card-actions">
+                            <div class="actions-grid">
+                                <a href="{% url 'ver_servicio_detalle' servicio.id %}" class="action-btn">
+                                    <i class="fas fa-eye"></i>
+                                    Ver Detalle
+                                </a>
+                                <a href="{% url 'repetir_servicio' servicio.id %}" class="action-btn primary">
+                                    <i class="fas fa-redo"></i>
+                                    Repetir
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-icon">📋</div>
+                        <div class="empty-title">No hay servicios completados</div>
+                        <div class="empty-text">
+                            Tu historial de servicios completados aparecerá aquí.
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
     <!-- Botón principal tipo Uber -->
     <div class="main-action-card">
         <a href="{% url 'solicitar_servicio' %}" class="main-action-btn">
@@ -596,17 +1089,17 @@
         </a>
     </div>
     
-    <!-- Sección de solicitudes -->
+    <!-- Sección de solicitudes activas -->
     <div class="solicitudes-section">
         <div class="section-header">
-            <div class="section-title">Mis Solicitudes</div>
-            {% if solicitudes %}
-            <div class="solicitudes-count">{{ solicitudes|length }} solicitud{{ solicitudes|length|pluralize:"es" }}</div>
+            <div class="section-title">Solicitudes Activas</div>
+            {% if solicitudes_activas %}
+            <div class="solicitudes-count">{{ solicitudes_activas|length }} activa{{ solicitudes_activas|length|pluralize:"s" }}</div>
             {% endif %}
         </div>
         
-        {% if solicitudes %}
-            {% for solicitud in solicitudes %}
+        {% if solicitudes_activas %}
+            {% for solicitud in solicitudes_activas %}
             <div class="solicitud-card">
                 <!-- Header de la solicitud -->
                 <div class="card-header">
@@ -662,6 +1155,15 @@
                         <div class="info-value">${{ solicitud.total|floatformat:0 }}</div>
                     </div>
                     {% endif %}
+                    {% if solicitud.estado == 'en_proceso' %}
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-truck"></i>
+                            Grúa asignada
+                        </div>
+                        <div class="info-value">{{ solicitud.grua_asignada.placa|default:"Por asignar" }}</div>
+                    </div>
+                    {% endif %}
                 </div>
                 
                 <!-- Acciones -->
@@ -671,6 +1173,12 @@
                             <i class="fas fa-eye"></i>
                             Ver Detalles
                         </a>
+                        {% if solicitud.estado == 'en_proceso' %}
+                        <a href="{% url 'rastrear_servicio' solicitud.id %}" class="action-btn secondary">
+                            <i class="fas fa-map-marker-alt"></i>
+                            Rastrear
+                        </a>
+                        {% endif %}
                         <a href="{% url 'descargar_pdf_solicitud' solicitud.id %}" class="action-btn">
                             <i class="fas fa-file-pdf"></i>
                             Descargar PDF
@@ -691,6 +1199,12 @@
                             Pagar Ahora
                         </a>
                         {% endif %}
+                        {% if solicitud.estado == 'pendiente' %}
+                        <a href="{% url 'cancelar_solicitud' solicitud.id %}" class="action-btn" style="background: #FF3040; color: #fff;">
+                            <i class="fas fa-times"></i>
+                            Cancelar
+                        </a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -698,9 +1212,9 @@
         {% else %}
             <div class="empty-state">
                 <div class="empty-icon">🚚</div>
-                <div class="empty-title">No hay solicitudes</div>
+                <div class="empty-title">No hay solicitudes activas</div>
                 <div class="empty-text">
-                    Cuando necesites un servicio de grúa, tu historial aparecerá aquí.
+                    Cuando solicites un servicio de grúa, aparecerá aquí.
                 </div>
             </div>
         {% endif %}
@@ -717,11 +1231,11 @@
         <div class="nav-icon">➕</div>
         <div class="nav-label">Solicitar</div>
     </a>
-    <a href="{% url 'dashboard' %}" class="nav-item">
+    <a href="{% url 'historial_servicios' %}" class="nav-item">
         <div class="nav-icon">📋</div>
         <div class="nav-label">Historial</div>
     </a>
-    <a href="#" class="nav-item">
+    <a href="{% url 'perfil_usuario' %}" class="nav-item">
         <div class="nav-icon">👤</div>
         <div class="nav-label">Perfil</div>
     </a>
