@@ -7,6 +7,8 @@ from django.utils import timezone
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import SetPasswordForm
+from django.db.models import Q, Count, Sum
+from datetime import datetime, timedelta
 import uuid
 import traceback
 
@@ -42,11 +44,13 @@ except ImportError:
     PDF_UTILS_AVAILABLE = False
 
 try:
-    from .models import HistorialPago
+    from .models import HistorialPago, Factura
     HISTORIAL_PAGO_AVAILABLE = True
+    FACTURA_AVAILABLE = True
 except ImportError:
-    print("⚠️ HistorialPago no encontrado")
+    print("⚠️ HistorialPago o Factura no encontrado")
     HISTORIAL_PAGO_AVAILABLE = False
+    FACTURA_AVAILABLE = False
 
 
 def get_webpay_options():
@@ -180,20 +184,392 @@ def registro(request):
 
 @login_required
 def dashboard(request):
+    """Dashboard mejorado con estadísticas, facturas y servicios organizados"""
     try:
         from .models import Cliente
         cliente, created = Cliente.objects.get_or_create(
             user=request.user,
             defaults={'telefono': ''}
         )
+        
+        # Obtener todas las solicitudes del cliente
         solicitudes = SolicitudServicio.objects.filter(
             cliente=cliente).order_by('-fecha_solicitud')
-    except:
-        solicitudes = []
+        
+        # Separar solicitudes activas (pendientes, confirmadas, en proceso) de completadas
+        solicitudes_activas = solicitudes.filter(
+            estado__in=['pendiente', 'confirmada', 'en_proceso', 'pendiente_pago']
+        )
+        
+        servicios_completados = solicitudes.filter(
+            estado__in=['completada', 'cancelada']
+        )
+        
+        # Obtener facturas (si el modelo existe)
+        facturas = []
+        if FACTURA_AVAILABLE:
+            try:
+                facturas = Factura.objects.filter(
+                    solicitud__cliente=cliente
+                ).order_by('-fecha_emision')
+            except:
+                # Si no existe el modelo Factura, crear facturas virtuales desde solicitudes pagadas
+                facturas = solicitudes.filter(
+                    pagado=True, 
+                    estado__in=['confirmada', 'completada']
+                )
+        else:
+            # Usar solicitudes pagadas como facturas
+            facturas = solicitudes.filter(
+                pagado=True, 
+                estado__in=['confirmada', 'completada']
+            )
+        
+        # Calcular estadísticas
+        total_servicios = solicitudes.count()
+        total_facturas = len(facturas)
+        
+        # Calcular total gastado
+        total_gastado = 0
+        for solicitud in solicitudes.filter(pagado=True):
+            if hasattr(solicitud, 'costo_total') and solicitud.costo_total:
+                total_gastado += float(solicitud.costo_total)
+        
+        # Servicios del mes actual
+        fecha_inicio_mes = timezone.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        servicios_mes = solicitudes.filter(
+            fecha_solicitud__gte=fecha_inicio_mes
+        ).count()
+        
+        context = {
+            'solicitudes': solicitudes,  # Para compatibilidad con template existente
+            'solicitudes_activas': solicitudes_activas,
+            'servicios_completados': servicios_completados,
+            'facturas': facturas,
+            'total_servicios': total_servicios,
+            'total_facturas': total_facturas,
+            'total_gastado': int(total_gastado),
+            'servicios_mes': servicios_mes,
+        }
+        
+    except Exception as e:
+        print(f"❌ Error en dashboard: {e}")
+        # Fallback básico
+        context = {
+            'solicitudes': [],
+            'solicitudes_activas': [],
+            'servicios_completados': [],
+            'facturas': [],
+            'total_servicios': 0,
+            'total_facturas': 0,
+            'total_gastado': 0,
+            'servicios_mes': 0,
+        }
     
-    context = {'solicitudes': solicitudes}
     return render(request, 'grua_app/dashboard.html', context)
 
+
+# ===== NUEVAS VISTAS PARA FUNCIONALIDADES DEL DASHBOARD =====
+
+@login_required
+def historial_servicios(request):
+    """Vista dedicada al historial completo de servicios"""
+    try:
+        from .models import Cliente
+        cliente = Cliente.objects.get(user=request.user)
+        servicios = SolicitudServicio.objects.filter(
+            cliente=cliente
+        ).order_by('-fecha_solicitud')
+        
+        # Filtros opcionales
+        estado_filtro = request.GET.get('estado')
+        if estado_filtro:
+            servicios = servicios.filter(estado=estado_filtro)
+            
+        mes_filtro = request.GET.get('mes')
+        if mes_filtro:
+            try:
+                año, mes = mes_filtro.split('-')
+                servicios = servicios.filter(
+                    fecha_solicitud__year=int(año),
+                    fecha_solicitud__month=int(mes)
+                )
+            except:
+                pass
+        
+        context = {
+            'servicios': servicios,
+            'estado_filtro': estado_filtro,
+            'mes_filtro': mes_filtro,
+        }
+        
+    except:
+        context = {'servicios': []}
+    
+    return render(request, 'grua_app/historial_servicios.html', context)
+
+
+@login_required
+def ver_factura(request, factura_id):
+    """Vista para ver detalles de una factura específica"""
+    try:
+        from .models import Cliente
+        cliente = Cliente.objects.get(user=request.user)
+        
+        if FACTURA_AVAILABLE:
+            factura = get_object_or_404(Factura, id=factura_id, solicitud__cliente=cliente)
+            solicitud = factura.solicitud
+        else:
+            # Si no hay modelo Factura, usar la solicitud directamente
+            solicitud = get_object_or_404(
+                SolicitudServicio, 
+                id=factura_id, 
+                cliente=cliente, 
+                pagado=True
+            )
+            factura = solicitud  # Usar solicitud como factura
+            
+        context = {
+            'factura': factura,
+            'solicitud': solicitud,
+        }
+        
+    except:
+        messages.error(request, 'Factura no encontrada')
+        return redirect('dashboard')
+    
+    return render(request, 'grua_app/ver_factura.html', context)
+
+
+@login_required
+def descargar_factura_pdf(request, factura_id):
+    """Descarga una factura específica en PDF"""
+    try:
+        from .models import Cliente
+        cliente = Cliente.objects.get(user=request.user)
+        
+        if FACTURA_AVAILABLE:
+            factura = get_object_or_404(Factura, id=factura_id, solicitud__cliente=cliente)
+            solicitud = factura.solicitud
+        else:
+            solicitud = get_object_or_404(
+                SolicitudServicio, 
+                id=factura_id, 
+                cliente=cliente, 
+                pagado=True
+            )
+            
+        if PDF_UTILS_AVAILABLE:
+            pdf_response = generar_pdf_comprobante(solicitud)
+            if pdf_response:
+                return pdf_response
+            else:
+                messages.error(request, 'Error al generar el PDF de la factura.')
+        else:
+            messages.error(request, 'Función de PDF no disponible.')
+            
+    except:
+        messages.error(request, 'Factura no encontrada')
+    
+    return redirect('dashboard')
+
+
+@login_required
+def repetir_servicio(request, servicio_id):
+    """Permite repetir un servicio anterior con los mismos datos"""
+    try:
+        from .models import Cliente
+        cliente = Cliente.objects.get(user=request.user)
+        servicio_original = get_object_or_404(
+            SolicitudServicio, 
+            id=servicio_id, 
+            cliente=cliente
+        )
+        
+        # Pre-llenar el formulario con los datos del servicio anterior
+        form_data = {
+            'direccion_origen': servicio_original.direccion_origen,
+            'direccion_destino': servicio_original.direccion_destino,
+            'marca_vehiculo': servicio_original.marca_vehiculo,
+            'modelo_vehiculo': servicio_original.modelo_vehiculo,
+            'año_vehiculo': servicio_original.año_vehiculo,
+            'descripcion_problema': servicio_original.descripcion_problema,
+        }
+        
+        if hasattr(servicio_original, 'tipo_servicio'):
+            form_data['tipo_servicio'] = servicio_original.tipo_servicio
+        
+        # Redirigir al formulario de solicitud con datos pre-llenados
+        request.session['repetir_servicio_data'] = form_data
+        messages.info(request, f'Repitiendo servicio {servicio_original.numero_orden}')
+        return redirect('solicitar_servicio')
+        
+    except:
+        messages.error(request, 'Servicio no encontrado')
+        return redirect('dashboard')
+
+
+@login_required
+def calificar_servicio(request, servicio_id):
+    """Permite calificar un servicio completado"""
+    try:
+        from .models import Cliente
+        cliente = Cliente.objects.get(user=request.user)
+        servicio = get_object_or_404(
+            SolicitudServicio, 
+            id=servicio_id, 
+            cliente=cliente,
+            estado='completada'
+        )
+        
+        if request.method == 'POST':
+            calificacion = request.POST.get('calificacion')
+            comentario = request.POST.get('comentario', '')
+            
+            try:
+                calificacion = int(calificacion)
+                if 1 <= calificacion <= 5:
+                    servicio.calificacion = calificacion
+                    if hasattr(servicio, 'comentario_calificacion'):
+                        servicio.comentario_calificacion = comentario
+                    servicio.save()
+                    
+                    messages.success(request, f'¡Gracias por calificar el servicio {servicio.numero_orden}!')
+                    return redirect('dashboard')
+                else:
+                    messages.error(request, 'Calificación debe ser entre 1 y 5 estrellas')
+            except ValueError:
+                messages.error(request, 'Calificación inválida')
+        
+        context = {'servicio': servicio}
+        return render(request, 'grua_app/calificar_servicio.html', context)
+        
+    except:
+        messages.error(request, 'Servicio no encontrado')
+        return redirect('dashboard')
+
+
+@login_required
+def rastrear_servicio(request, solicitud_id):
+    """Vista para rastrear un servicio en tiempo real"""
+    try:
+        from .models import Cliente
+        cliente = Cliente.objects.get(user=request.user)
+        solicitud = get_object_or_404(
+            SolicitudServicio, 
+            id=solicitud_id, 
+            cliente=cliente,
+            estado='en_proceso'
+        )
+        
+        context = {
+            'solicitud': solicitud,
+            # Aquí puedes agregar datos de ubicación de la grúa si los tienes
+        }
+        
+        return render(request, 'grua_app/rastrear_servicio.html', context)
+        
+    except:
+        messages.error(request, 'Servicio no encontrado o no está en proceso')
+        return redirect('dashboard')
+
+
+@login_required
+def cancelar_solicitud(request, solicitud_id):
+    """Permite cancelar una solicitud pendiente"""
+    try:
+        from .models import Cliente
+        cliente = Cliente.objects.get(user=request.user)
+        solicitud = get_object_or_404(
+            SolicitudServicio, 
+            id=solicitud_id, 
+            cliente=cliente,
+            estado='pendiente'
+        )
+        
+        if request.method == 'POST':
+            motivo = request.POST.get('motivo', 'Cancelado por el cliente')
+            
+            estado_anterior = solicitud.estado
+            solicitud.estado = 'cancelada'
+            if hasattr(solicitud, 'motivo_cancelacion'):
+                solicitud.motivo_cancelacion = motivo
+            solicitud.save()
+            
+            # Enviar email de actualización de estado
+            if EMAIL_UTILS_AVAILABLE:
+                try:
+                    enviar_actualizacion_estado(solicitud, estado_anterior)
+                except Exception as e:
+                    print(f"⚠️ Error enviando actualización de estado: {e}")
+            
+            messages.success(request, f'Solicitud {solicitud.numero_orden} cancelada')
+            return redirect('dashboard')
+        
+        context = {'solicitud': solicitud}
+        return render(request, 'grua_app/cancelar_solicitud.html', context)
+        
+    except:
+        messages.error(request, 'No se puede cancelar esta solicitud')
+        return redirect('dashboard')
+
+
+@login_required
+def ver_servicio_detalle(request, servicio_id):
+    """Vista detallada de un servicio específico"""
+    try:
+        from .models import Cliente
+        cliente = Cliente.objects.get(user=request.user)
+        servicio = get_object_or_404(SolicitudServicio, id=servicio_id, cliente=cliente)
+        
+        context = {'servicio': servicio}
+        return render(request, 'grua_app/ver_servicio_detalle.html', context)
+        
+    except:
+        messages.error(request, 'Servicio no encontrado')
+        return redirect('dashboard')
+
+
+@login_required
+def perfil_usuario(request):
+    """Vista del perfil del usuario"""
+    try:
+        from .models import Cliente
+        cliente, created = Cliente.objects.get_or_create(
+            user=request.user,
+            defaults={'telefono': ''}
+        )
+        
+        if request.method == 'POST':
+            # Actualizar datos del usuario
+            first_name = request.POST.get('first_name', '')
+            last_name = request.POST.get('last_name', '')
+            email = request.POST.get('email', '')
+            telefono = request.POST.get('telefono', '')
+            
+            request.user.first_name = first_name
+            request.user.last_name = last_name
+            request.user.email = email
+            request.user.save()
+            
+            cliente.telefono = telefono
+            cliente.save()
+            
+            messages.success(request, 'Perfil actualizado exitosamente')
+            return redirect('perfil_usuario')
+        
+        context = {
+            'cliente': cliente,
+        }
+        
+    except Exception as e:
+        print(f"❌ Error en perfil: {e}")
+        context = {'cliente': None}
+    
+    return render(request, 'grua_app/perfil_usuario.html', context)
+
+
+# ===== VISTAS ORIGINALES (MANTENIDAS) =====
 
 @login_required
 def solicitar_servicio(request):
@@ -207,6 +583,14 @@ def solicitar_servicio(request):
     except Exception as e:
         messages.error(request, 'Error al acceder al perfil del cliente.')
         return redirect('dashboard')
+    
+    # Verificar si hay datos de repetición de servicio
+    form_data_inicial = request.session.pop('repetir_servicio_data', {})
+    
+    # Verificar tipo de servicio desde URL
+    tipo_servicio = request.GET.get('tipo')
+    if tipo_servicio:
+        form_data_inicial['tipo_servicio'] = tipo_servicio
         
     if request.method == 'POST':
         form = SolicitudServicioForm(request.POST)
@@ -243,7 +627,7 @@ def solicitar_servicio(request):
             for field, errors in form.errors.items():
                 print(f"   {field}: {errors}")
     else:
-        form = SolicitudServicioForm()
+        form = SolicitudServicioForm(initial=form_data_inicial)
 
     return render(request, 'grua_app/solicitar_servicio.html', {'form': form})
 
@@ -278,8 +662,7 @@ def confirmacion_solicitud(request, solicitud_id):
 
     return render(request, 'grua_app/confirmacion_solicitud.html', context)
 
-# ===== NUEVAS VISTAS PARA PDF =====
-
+# ===== RESTO DE VISTAS ORIGINALES (MANTENIDAS SIN CAMBIOS) =====
 
 @login_required
 def descargar_pdf_solicitud(request, solicitud_id):
