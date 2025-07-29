@@ -156,3 +156,23 @@ DEFAULT_FROM_EMAIL = 'alexismkt1989@gmail.com'  # CAMBIAR por tu email de Gmail
 # También puedes agregar estas opciones adicionales:
 EMAIL_USE_SSL = False  # False porque usamos TLS
 SERVER_EMAIL = 'alexismkt1989@gmail.com'  # CAMBIAR por tu email de Gmail
+# Configuración CSRF para Railway
+import os
+
+# CSRF Settings para Railway
+CSRF_TRUSTED_ORIGINS = [
+    'https://web-production-f080f.up.railway.app',
+    'https://*.railway.app',
+    'https://gruastyle.com',
+    'https://www.gruastyle.com',
+]
+
+# Si está en Railway, usar configuración específica
+if 'RAILWAY_ENVIRONMENT' in os.environ or 'railway' in os.environ.get('RAILWAY_DEPLOYMENT_ID', ''):
+    CSRF_COOKIE_SECURE = False
+    CSRF_COOKIE_SAMESITE = 'Lax'
+    SESSION_COOKIE_SECURE = False
+    SECURE_SSL_REDIRECT = False
+    
+# Permitir todos los hosts en producción
+ALLOWED_HOSTS = ['*']
