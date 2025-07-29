@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Bienvenido a GrúaExpress!</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8fafc;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #6767ff;
+        }
+        .logo {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        .title {
+            color: #6767ff;
+            font-size: 1.8rem;
+            margin: 0;
+        }
+        .welcome-message {
+            background: linear-gradient(135deg, #6767ff, #5a5af0);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .features {
+            margin: 30px 0;
+        }
+        .feature {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            padding: 10px;
+            background: #f8fafc;
+            border-radius: 6px;
+        }
+        .feature-icon {
+            font-size: 1.5rem;
+            margin-right: 15px;
+            width: 30px;
+        }
+        .button {
+            display: inline-block;
+            background: linear-gradient(135deg, #6767ff, #5a5af0);
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px auto;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🚛</div>
+            <h1 class="title">GrúaExpress</h1>
+        </div>
+        
+        <div class="welcome-message">
+            <h2>¡Bienvenido {{ nombre }}!</h2>
+            <p>Tu cuenta ha sido creada exitosamente</p>
+        </div>
+        
+        <p>Nos alegra que te hayas unido a GrúaExpress, la plataforma líder en servicios de grúa en Chile.</p>
+        
+        <div class="features">
+            <h3>Con tu cuenta podrás:</h3>
+            
+            <div class="feature">
+                <span class="feature-icon">🗺️</span>
+                <div>
+                    <strong>Solicitar servicios fácilmente</strong><br>
+                    Ubica tu vehículo en el mapa y solicita ayuda al instante
+                </div>
+            </div>
+            
+            <div class="feature">
+                <span class="feature-icon">💳</span>
+                <div>
+                    <strong>Múltiples métodos de pago</strong><br>
+                    Paga con Webpay, transferencia o efectivo
+                </div>
+            </div>
+            
+            <div class="feature">
+                <span class="feature-icon">📱</span>
+                <div>
+                    <strong>Seguimiento en tiempo real</strong><br>
+                    Monitorea el estado de tu solicitud desde tu dashboard
+                </div>
+            </div>
+            
+            <div class="feature">
+                <span class="feature-icon">🚚</span>
+                <div>
+                    <strong>Servicio 24/7</strong><br>
+                    Estamos disponibles cuando nos necesites
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align: center;">
+            <a href="http://127.0.0.1:8000/login/" class="button">
+                Acceder a mi cuenta
+            </a>
+        </div>
+        
+        <p>Si tienes alguna pregunta o necesitas ayuda, no dudes en contactarnos:</p>
+        <ul>
+            <li>📧 Email: soporte@gruaexpress.cl</li>
+            <li>📞 Teléfono: +56 9 1234 5678</li>
+            <li>🌐 Web: www.gruaexpress.cl</li>
+        </ul>
+        
+        <div class="footer">
+            <p>Este email fue enviado automáticamente. Por favor no responder a este mensaje.</p>
+            <p>&copy; 2025 GrúaExpress. Todos los derechos reservados.</p>
+        </div>
+    </div>
+</body>
+</html>

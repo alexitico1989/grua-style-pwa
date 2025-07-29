@@ -1,0 +1,857 @@
+{% extends 'grua_app/base.html' %}
+{% load static %}
+
+{% block title %}Grúa Style - Precios Transparentes{% endblock %}
+
+{% block extra_css %}
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        background: #000;
+        color: #fff;
+        line-height: 1.4;
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+    }
+    
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+    
+    /* Hero Section */
+    .hero-section {
+        background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+        min-height: 60vh;
+        display: flex;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+        padding: 120px 0 80px 0;
+    }
+    
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 30% 50%, rgba(0, 213, 99, 0.1) 0%, transparent 50%);
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .hero-title {
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        font-weight: 700;
+        margin-bottom: 24px;
+        line-height: 1.1;
+        text-shadow: 
+            0 0 20px rgba(0, 213, 99, 0.6),
+            0 0 40px rgba(0, 213, 99, 0.4),
+            0 0 80px rgba(0, 213, 99, 0.2);
+        animation: glow-pulse 4s ease-in-out infinite alternate;
+    }
+    
+    @keyframes glow-pulse {
+        0% {
+            text-shadow: 
+                0 0 20px rgba(0, 213, 99, 0.6),
+                0 0 40px rgba(0, 213, 99, 0.4),
+                0 0 80px rgba(0, 213, 99, 0.2);
+        }
+        100% {
+            text-shadow: 
+                0 0 25px rgba(0, 213, 99, 0.8),
+                0 0 50px rgba(0, 213, 99, 0.6),
+                0 0 100px rgba(0, 213, 99, 0.4);
+        }
+    }
+    
+    .hero-subtitle {
+        font-size: 1.25rem;
+        color: #ccc;
+        margin-bottom: 40px;
+        line-height: 1.6;
+    }
+    
+    /* Pricing Cards with Images */
+    .pricing-showcase {
+        background: #000;
+        padding: 80px 0;
+    }
+    
+    .pricing-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 40px;
+        margin-bottom: 80px;
+    }
+    
+    .pricing-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+    
+    .pricing-card:hover {
+        transform: translateY(-10px);
+        border-color: rgba(0, 213, 99, 0.3);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    }
+    
+    .card-image {
+        width: 100%;
+        height: 200px;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .card-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        transition: transform 0.3s ease;
+    }
+    
+    .pricing-card:hover .card-image img {
+        transform: scale(1.05);
+    }
+    
+    .card-content {
+        padding: 30px;
+    }
+    
+    .card-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #00D563;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    
+    .price-detail {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 12px;
+    }
+    
+    .price-detail:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+    
+    .price-label {
+        font-size: 1rem;
+        color: #ccc;
+    }
+    
+    .price-value {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #00D563;
+    }
+    
+    /* Main Pricing Section */
+    .main-pricing {
+        background: #0a0a0a;
+        padding: 80px 0;
+    }
+    
+    .section-header {
+        text-align: center;
+        max-width: 600px;
+        margin: 0 auto 60px auto;
+    }
+    
+    .section-title {
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 700;
+        margin-bottom: 20px;
+        line-height: 1.2;
+    }
+    
+    .section-subtitle {
+        font-size: 1.125rem;
+        color: #999;
+        line-height: 1.6;
+    }
+    
+    .pricing-table {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        padding: 40px;
+        max-width: 900px;
+        margin: 0 auto 60px auto;
+        backdrop-filter: blur(10px);
+    }
+    
+    .pricing-table-header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding-bottom: 24px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .table-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+        margin-bottom: 30px;
+    }
+    
+    .table-item {
+        text-align: center;
+        padding: 30px 20px;
+        background: rgba(0, 213, 99, 0.1);
+        border-radius: 16px;
+        border: 1px solid rgba(0, 213, 99, 0.2);
+    }
+    
+    .table-icon {
+        font-size: 3rem;
+        color: #00D563;
+        margin-bottom: 20px;
+    }
+    
+    .table-label {
+        font-size: 1.1rem;
+        color: #ccc;
+        margin-bottom: 10px;
+    }
+    
+    .table-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #00D563;
+        margin-bottom: 10px;
+    }
+    
+    .table-description {
+        font-size: 0.9rem;
+        color: #999;
+    }
+    
+    .pricing-example {
+        background: rgba(0, 213, 99, 0.1);
+        border: 1px solid rgba(0, 213, 99, 0.2);
+        border-radius: 12px;
+        padding: 25px;
+        text-align: center;
+        margin-top: 30px;
+    }
+    
+    .pricing-example strong {
+        color: #00D563;
+        font-size: 1.1rem;
+    }
+    
+    /* Calculator Section */
+    .calculator-section {
+        background: #000;
+        padding: 80px 0;
+    }
+    
+    .calculator-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        padding: 40px;
+        max-width: 600px;
+        margin: 0 auto;
+        backdrop-filter: blur(10px);
+    }
+    
+    .calculator-title {
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #00D563;
+        margin-bottom: 30px;
+    }
+    
+    .input-group {
+        margin-bottom: 20px;
+    }
+    
+    .input-label {
+        display: block;
+        color: #ccc;
+        margin-bottom: 8px;
+        font-weight: 500;
+    }
+    
+    .input-field {
+        width: 100%;
+        padding: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        font-size: 1rem;
+    }
+    
+    .input-field:focus {
+        outline: none;
+        border-color: #00D563;
+        box-shadow: 0 0 0 2px rgba(0, 213, 99, 0.2);
+    }
+    
+    .calculate-btn {
+        width: 100%;
+        padding: 16px;
+        background: #00D563;
+        color: #000;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 20px;
+    }
+    
+    .calculate-btn:hover {
+        background: #00B853;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 213, 99, 0.3);
+    }
+    
+    .result-display {
+        text-align: center;
+        padding: 20px;
+        background: rgba(0, 213, 99, 0.1);
+        border: 1px solid rgba(0, 213, 99, 0.2);
+        border-radius: 12px;
+        margin-top: 20px;
+        display: none;
+    }
+    
+    .result-amount {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #00D563;
+        margin-bottom: 10px;
+    }
+    
+    .result-breakdown {
+        color: #ccc;
+        font-size: 0.9rem;
+    }
+    
+    /* Information Section */
+    .info-section {
+        background: #0a0a0a;
+        padding: 80px 0;
+    }
+    
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 40px;
+    }
+    
+    .info-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 30px;
+        backdrop-filter: blur(10px);
+    }
+    
+    .info-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #00D563, #00B853);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+    
+    .info-icon i {
+        font-size: 1.5rem;
+        color: #000;
+    }
+    
+    .info-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: #fff;
+    }
+    
+    .info-description {
+        color: #ccc;
+        line-height: 1.6;
+    }
+    
+    .info-list {
+        list-style: none;
+        margin-top: 15px;
+    }
+    
+    .info-list li {
+        padding: 5px 0;
+        color: #ccc;
+        position: relative;
+        padding-left: 20px;
+    }
+    
+    .info-list li:before {
+        content: "✓";
+        color: #00D563;
+        font-weight: bold;
+        position: absolute;
+        left: 0;
+    }
+    
+    /* CTA Section */
+    .cta-section {
+        background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+        padding: 80px 0;
+        position: relative;
+    }
+    
+    .cta-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 70% 50%, rgba(0, 213, 99, 0.1) 0%, transparent 50%);
+    }
+    
+    .cta-content {
+        text-align: center;
+        max-width: 600px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .cta-title {
+        font-size: clamp(2rem, 4vw, 2.5rem);
+        font-weight: 700;
+        margin-bottom: 20px;
+        line-height: 1.2;
+    }
+    
+    .cta-subtitle {
+        font-size: 1.125rem;
+        color: #ccc;
+        margin-bottom: 40px;
+        line-height: 1.6;
+    }
+    
+    .cta-buttons {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .btn-uber {
+        padding: 16px 32px;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 180px;
+    }
+    
+    .btn-primary {
+        background: #00D563;
+        color: #000;
+    }
+    
+    .btn-primary:hover {
+        background: #00B853;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(0, 213, 99, 0.3);
+        color: #000;
+        text-decoration: none;
+    }
+    
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: #fff;
+        text-decoration: none;
+        transform: translateY(-2px);
+    }
+    
+    .btn-icon {
+        margin-right: 8px;
+        font-size: 1.1rem;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .pricing-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .table-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .cta-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .btn-uber {
+            width: 100%;
+            max-width: 280px;
+        }
+        
+        .pricing-table,
+        .calculator-card {
+            padding: 25px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .container {
+            padding: 0 16px;
+        }
+        
+        .pricing-card,
+        .info-card {
+            padding: 20px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">Precios Transparentes</h1>
+            <p class="hero-subtitle">
+                Sin sorpresas, sin costos ocultos. Conoce nuestras tarifas claras y 
+                competitivas para el servicio de grúa más confiable de Santiago.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Pricing Showcase with Images -->
+<section class="pricing-showcase">
+    <div class="container">
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <div class="card-image">
+                    <img src="{% static 'images/gruas/1000720465.jpg' %}" alt="Servicio Base de Grúa">
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Servicio Base</h3>
+                    <div class="price-detail">
+                        <span class="price-label">Precio Base</span>
+                        <span class="price-value">$30.000</span>
+                    </div>
+                    <div class="price-detail">
+                        <span class="price-label">Por Kilómetro</span>
+                        <span class="price-value">$1.500</span>
+                    </div>
+                    <div class="price-detail">
+                        <span class="price-label">Cobertura</span>
+                        <span class="price-value">Región Metropolitana</span>
+                    </div>
+                    <div class="price-detail">
+                        <span class="price-label">Disponibilidad</span>
+                        <span class="price-value">24/7</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pricing-card">
+                <div class="card-image">
+                    <img src="{% static 'images/gruas/1000720476.jpg' %}" alt="Servicio Nocturno de Grúa">
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Servicio Nocturno</h3>
+                    <div class="price-detail">
+                        <span class="price-label">Precio Base</span>
+                        <span class="price-value">$30.000</span>
+                    </div>
+                    <div class="price-detail">
+                        <span class="price-label">Por Kilómetro</span>
+                        <span class="price-value">$1.500</span>
+                    </div>
+                    <div class="price-detail">
+                        <span class="price-label">Horario</span>
+                        <span class="price-value">22:00 - 06:00</span>
+                    </div>
+                    <div class="price-detail">
+                        <span class="price-label">Respuesta</span>
+                        <span class="price-value">&lt; 30 min</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pricing-card">
+                <div class="card-image">
+                    <img src="{% static 'images/gruas/1000720478.jpg' %}" alt="Servicio Express de Grúa">
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Servicio Express</h3>
+                    <div class="price-detail">
+                        <span class="price-label">Precio Base</span>
+                        <span class="price-value">$30.000</span>
+                    </div>
+                    <div class="price-detail">
+                        <span class="price-label">Por Kilómetro</span>
+                        <span class="price-value">$1.500</span>
+                    </div>
+                    <div class="price-detail">
+                        <span class="price-label">Tiempo Respuesta</span>
+                        <span class="price-value">&lt; 15 min</span>
+                    </div>
+                    <div class="price-detail">
+                        <span class="price-label">Prioridad</span>
+                        <span class="price-value">Máxima</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Pricing Section -->
+<section class="main-pricing">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Estructura de Precios</h2>
+            <p class="section-subtitle">
+                Tarifas fijas y transparentes para todos nuestros servicios
+            </p>
+        </div>
+        
+        <div class="pricing-table">
+            <div class="pricing-table-header">
+                <h3>Tarifas Oficiales 2025</h3>
+            </div>
+            
+            <div class="table-grid">
+                <div class="table-item">
+                    <div class="table-icon">🚀</div>
+                    <div class="table-label">Tarifa Base</div>
+                    <div class="table-value">$30.000</div>
+                    <div class="table-description">Costo inicial del servicio</div>
+                </div>
+                
+                <div class="table-item">
+                    <div class="table-icon">📏</div>
+                    <div class="table-label">Por Kilómetro</div>
+                    <div class="table-value">$1.500</div>
+                    <div class="table-description">Cada kilómetro recorrido</div>
+                </div>
+                
+                <div class="table-item">
+                    <div class="table-icon">💎</div>
+                    <div class="table-label">Tarifa Mínima</div>
+                    <div class="table-value">$35.000</div>
+                    <div class="table-description">Costo mínimo garantizado</div>
+                </div>
+            </div>
+            
+            <div class="pricing-example">
+                <strong>Ejemplo de Cálculo:</strong><br>
+                Viaje de 10 km = $30.000 (base) + (10 × $1.500) = <strong>$45.000</strong>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Calculator Section -->
+<section class="calculator-section">
+    <div class="container">
+        <div class="calculator-card">
+            <h3 class="calculator-title">Calculadora de Tarifas</h3>
+            
+            <div class="input-group">
+                <label class="input-label" for="distance">Distancia estimada (km)</label>
+                <input type="number" id="distance" class="input-field" placeholder="Ingresa los kilómetros" min="1" max="100">
+            </div>
+            
+            <button class="calculate-btn" onclick="calculatePrice()">
+                💰 Calcular Precio
+            </button>
+            
+            <div id="result" class="result-display">
+                <div class="result-amount" id="totalAmount">$0</div>
+                <div class="result-breakdown" id="breakdown"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Information Section -->
+<section class="info-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Información Adicional</h2>
+            <p class="section-subtitle">
+                Todo lo que necesitas saber sobre nuestros precios y servicios
+            </p>
+        </div>
+        
+        <div class="info-grid">
+            <div class="info-card">
+                <div class="info-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h3 class="info-title">Horarios y Tarifas</h3>
+                <p class="info-description">
+                    Nuestras tarifas son las mismas las 24 horas del día, los 7 días de la semana. 
+                    Sin recargos nocturnos ni de fin de semana.
+                </p>
+                <ul class="info-list">
+                    <li>Mismo precio día y noche</li>
+                    <li>Sin recargos de fin de semana</li>
+                    <li>Tarifas fijas todo el año</li>
+                </ul>
+            </div>
+            
+            <div class="info-card">
+                <div class="info-icon">
+                    <i class="fas fa-map-marked-alt"></i>
+                </div>
+                <h3 class="info-title">Área de Cobertura</h3>
+                <p class="info-description">
+                    Cubrimos toda la Región Metropolitana con el mismo precio base. 
+                    La distancia se calcula desde nuestro punto más cercano.
+                </p>
+                <ul class="info-list">
+                    <li>Toda la Región Metropolitana</li>
+                    <li>Cálculo desde punto más cercano</li>
+                    <li>GPS en tiempo real</li>
+                </ul>
+            </div>
+            
+            <div class="info-card">
+                <div class="info-icon">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+                <h3 class="info-title">Formas de Pago</h3>
+                <p class="info-description">
+                    Aceptamos múltiples formas de pago para tu comodidad. 
+                    Pago seguro y sin comisiones adicionales.
+                </p>
+                <ul class="info-list">
+                    <li>Efectivo</li>
+                    <li>Transferencia bancaria</li>
+                    <li>Webpay (Tarjetas)</li>
+                    <li>Sin comisiones extra</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-content">
+            <h2 class="cta-title">¿Listo para solicitar tu grúa?</h2>
+            <p class="cta-subtitle">
+                Precios transparentes, servicio confiable y atención 24/7
+            </p>
+            
+            <div class="cta-buttons">
+                <a href="{% url 'solicitar_servicio' %}" class="btn-uber btn-primary">
+                    <span class="btn-icon">🚚</span>
+                    Solicitar Grúa Ahora
+                </a>
+                <a href="{% url 'registro' %}" class="btn-uber btn-secondary">
+                    <span class="btn-icon">📱</span>
+                    Crear Cuenta
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+function calculatePrice() {
+    const distance = parseFloat(document.getElementById('distance').value);
+    const resultDiv = document.getElementById('result');
+    const totalAmountDiv = document.getElementById('totalAmount');
+    const breakdownDiv = document.getElementById('breakdown');
+    
+    if (!distance || distance <= 0) {
+        alert('Por favor ingresa una distancia válida');
+        return;
+    }
+    
+    const basePrice = 30000;
+    const pricePerKm = 1500;
+    const minimumPrice = 35000;
+    
+    const calculatedPrice = basePrice + (distance * pricePerKm);
+    const finalPrice = Math.max(calculatedPrice, minimumPrice);
+    
+    totalAmountDiv.textContent = `$${finalPrice.toLocaleString('es-CL')}`;
+    breakdownDiv.innerHTML = `
+        Tarifa base: $${basePrice.toLocaleString('es-CL')}<br>
+        Distancia: ${distance} km × $${pricePerKm.toLocaleString('es-CL')} = $${(distance * pricePerKm).toLocaleString('es-CL')}<br>
+        ${finalPrice === minimumPrice && calculatedPrice < minimumPrice ? 
+          `<span style="color: #00D563;">Se aplica tarifa mínima: $${minimumPrice.toLocaleString('es-CL')}</span>` : 
+          ''}
+    `;
+    
+    resultDiv.style.display = 'block';
+}
+
+// Permitir calcular con Enter
+document.getElementById('distance').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        calculatePrice();
+    }
+});
+</script>
+
+{% endblock %}

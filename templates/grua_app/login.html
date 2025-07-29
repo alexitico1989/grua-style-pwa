@@ -1,0 +1,480 @@
+{% extends 'grua_app/base.html' %}
+{% load static %}
+
+{% block title %}Iniciar Sesión - Grúa Style{% endblock %}
+
+{% block extra_css %}
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        background: #000;
+        color: #fff;
+        line-height: 1.4;
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+        min-height: 100vh;
+    }
+    
+    /* Login Page Container */
+    .login-page {
+        background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+        padding: 20px;
+    }
+    
+    .login-page::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 30% 50%, rgba(0, 213, 99, 0.1) 0%, transparent 50%);
+    }
+    
+    .login-container {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        padding: 40px;
+        max-width: 450px;
+        width: 100%;
+        backdrop-filter: blur(10px);
+        position: relative;
+        z-index: 2;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    }
+    
+    .login-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .login-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #00D563, #00B853);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        color: #000;
+        font-size: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 213, 99, 0.3);
+        animation: icon-pulse 3s ease-in-out infinite;
+    }
+    
+    @keyframes icon-pulse {
+        0%, 100% {
+            transform: scale(1);
+            box-shadow: 0 10px 30px rgba(0, 213, 99, 0.3);
+        }
+        50% {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(0, 213, 99, 0.5);
+        }
+    }
+    
+    .login-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: #fff;
+        text-shadow: 
+            0 0 10px rgba(0, 213, 99, 0.3),
+            0 0 20px rgba(0, 213, 99, 0.2);
+    }
+    
+    .login-subtitle {
+        color: #ccc;
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+    
+    /* Form Styles */
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: #fff;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        backdrop-filter: blur(10px);
+    }
+    
+    .form-control::placeholder {
+        color: #999;
+    }
+    
+    .form-control:focus {
+        outline: none;
+        border-color: #00D563;
+        box-shadow: 0 0 0 3px rgba(0, 213, 99, 0.2);
+        background: rgba(255, 255, 255, 0.15);
+    }
+    
+    .form-control:hover {
+        border-color: rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.12);
+    }
+    
+    /* Button Styles */
+    .btn-login {
+        width: 100%;
+        background: linear-gradient(135deg, #00D563, #00B853);
+        color: #000;
+        border: none;
+        padding: 16px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 8px 25px rgba(0, 213, 99, 0.3);
+    }
+    
+    .btn-login:hover {
+        background: linear-gradient(135deg, #00B853, #00D563);
+        transform: translateY(-2px);
+        box-shadow: 0 12px 35px rgba(0, 213, 99, 0.4);
+    }
+    
+    .btn-login:active {
+        transform: translateY(0);
+    }
+    
+    /* Messages */
+    .error-messages {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        color: #FCA5A5;
+        backdrop-filter: blur(10px);
+    }
+    
+    .alert {
+        padding: 1rem;
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+        backdrop-filter: blur(10px);
+    }
+    
+    .alert-success {
+        background: rgba(34, 197, 94, 0.1);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        color: #86EFAC;
+    }
+    
+    .alert-error {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        color: #FCA5A5;
+    }
+    
+    .alert-info {
+        background: rgba(59, 130, 246, 0.1);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        color: #93C5FD;
+    }
+    
+    /* Form Links */
+    .form-links {
+        text-align: center;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .form-links p {
+        margin-bottom: 0.75rem;
+        color: #ccc;
+    }
+    
+    .form-links a {
+        color: #00D563;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .form-links a:hover {
+        color: #00B853;
+        text-decoration: underline;
+        text-shadow: 0 0 10px rgba(0, 213, 99, 0.3);
+    }
+    
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 8px 16px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        margin-bottom: 1rem;
+    }
+    
+    .back-link:hover {
+        background: rgba(255, 255, 255, 0.15);
+        transform: translateX(-2px);
+        text-decoration: none;
+    }
+    
+    /* Input Autofill Override */
+    .form-control:-webkit-autofill,
+    .form-control:-webkit-autofill:hover,
+    .form-control:-webkit-autofill:focus {
+        -webkit-box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.1) inset !important;
+        -webkit-text-fill-color: #fff !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .login-page {
+            padding: 16px;
+        }
+        
+        .login-container {
+            padding: 30px 25px;
+        }
+        
+        .login-title {
+            font-size: 1.75rem;
+        }
+        
+        .form-control,
+        .btn-login {
+            padding: 14px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .login-container {
+            padding: 25px 20px;
+        }
+        
+        .login-icon {
+            width: 70px;
+            height: 70px;
+            font-size: 1.75rem;
+        }
+        
+        .login-title {
+            font-size: 1.5rem;
+        }
+    }
+    
+    /* Loading State */
+    .btn-login.loading {
+        opacity: 0.7;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+    
+    .btn-login.loading::after {
+        content: "";
+        width: 16px;
+        height: 16px;
+        margin-left: 10px;
+        border: 2px solid transparent;
+        border-top: 2px solid #000;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        display: inline-block;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-page">
+    <div class="login-container">
+        <div class="login-header">
+            <div class="login-icon">
+                👤
+            </div>
+            <h2 class="login-title">Iniciar Sesión</h2>
+            <p class="login-subtitle">Accede a tu cuenta de Grúa Style</p>
+        </div>
+        
+        {% if form.errors %}
+            <div class="error-messages">
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        <form method="post" id="loginForm">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="id_username" class="form-label">Usuario</label>
+                <input 
+                    type="text" 
+                    name="username" 
+                    class="form-control" 
+                    id="id_username" 
+                    required 
+                    autocomplete="username"
+                    placeholder="Ingresa tu usuario"
+                >
+            </div>
+            
+            <div class="form-group">
+                <label for="id_password" class="form-label">Contraseña</label>
+                <input 
+                    type="password" 
+                    name="password" 
+                    class="form-control" 
+                    id="id_password" 
+                    required 
+                    autocomplete="current-password"
+                    placeholder="Ingresa tu contraseña"
+                >
+            </div>
+            
+            <button type="submit" class="btn-login" id="loginBtn">
+                Iniciar Sesión
+            </button>
+            
+            {% if next %}
+                <input type="hidden" name="next" value="{{ next }}">
+            {% endif %}
+        </form>
+        
+        <div class="form-links">
+            <p>
+                <a href="{% url 'home' %}" class="back-link">
+                    ← Volver al Inicio
+                </a>
+            </p>
+            <p>
+                <a href="{% url 'forgot_password' %}">¿Olvidaste tu contraseña?</a>
+            </p>
+            <p>¿No tienes cuenta? <a href="{% url 'registro' %}">Regístrate aquí</a></p>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('loginForm');
+    const loginBtn = document.getElementById('loginBtn');
+    const inputs = document.querySelectorAll('input[type="text"], input[type="password"]');
+    
+    // Mejorar interacción con inputs
+    inputs.forEach(input => {
+        input.style.pointerEvents = 'auto';
+        input.style.userSelect = 'text';
+        
+        input.addEventListener('click', function() {
+            console.log('✅ Input clickeado:', this.name);
+            this.focus();
+        });
+        
+        input.addEventListener('focus', function() {
+            console.log('✅ Input enfocado:', this.name);
+            this.parentElement.style.transform = 'scale(1.02)';
+            this.parentElement.style.transition = 'transform 0.2s ease';
+        });
+        
+        input.addEventListener('blur', function() {
+            this.parentElement.style.transform = 'scale(1)';
+        });
+        
+        // Efecto de escritura
+        input.addEventListener('input', function() {
+            if (this.value.length > 0) {
+                this.style.borderColor = '#00D563';
+                this.style.boxShadow = '0 0 0 2px rgba(0, 213, 99, 0.1)';
+            } else {
+                this.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                this.style.boxShadow = 'none';
+            }
+        });
+    });
+    
+    // Efecto de loading en el botón
+    form.addEventListener('submit', function() {
+        loginBtn.classList.add('loading');
+        loginBtn.textContent = 'Iniciando sesión...';
+        
+        // Si hay error, revertir el estado
+        setTimeout(() => {
+            if (loginBtn.classList.contains('loading')) {
+                loginBtn.classList.remove('loading');
+                loginBtn.textContent = 'Iniciar Sesión';
+            }
+        }, 5000);
+    });
+    
+    // Auto-redirección si ya está autenticado
+    {% if user.is_authenticated %}
+        console.log('✅ Usuario ya autenticado, redirigiendo...');
+        setTimeout(() => {
+            window.location.href = "{% url 'dashboard' %}";
+        }, 1000);
+    {% endif %}
+    
+    // Animación de entrada
+    const container = document.querySelector('.login-container');
+    container.style.opacity = '0';
+    container.style.transform = 'translateY(20px)';
+    
+    setTimeout(() => {
+        container.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+        container.style.opacity = '1';
+        container.style.transform = 'translateY(0)';
+    }, 100);
+});
+</script>
+{% endblock %}

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitud de Grúa - {{ solicitud.numero_orden }}</title>
+    <style>
+        @media print {
+            body { margin: 0; }
+            .no-print { display: none !important; }
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #007bff;
+            margin: 0;
+            font-size: 2.5em;
+        }
+        
+        .header h2 {
+            color: #666;
+            margin: 5px 0;
+            font-weight: normal;
+        }
+        
+        .order-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        
+        .order-info h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .info-section {
+            background: white;
+            padding: 20px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+        }
+        
+        .info-section h4 {
+            margin-top: 0;
+            color: #495057;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 10px;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dotted #dee2e6;
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        
+        .label {
+            font-weight: bold;
+            color: #495057;
+        }
+        
+        .value {
+            color: #212529;
+        }
+        
+        .cost-summary {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        
+        .cost-summary h4 {
+            margin-top: 0;
+            color: #1976d2;
+        }
+        
+        .total-row {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #1976d2;
+            border-top: 2px solid #1976d2;
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.9em;
+        }
+        
+        .status-pendiente {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .status-confirmada {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #00b894;
+        }
+        
+        .status-completada {
+            background: #cce5ff;
+            color: #004085;
+            border: 1px solid #0984e3;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #dee2e6;
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+        
+        .print-btn {
+            background: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-bottom: 20px;
+        }
+        
+        .print-btn:hover {
+            background: #0056b3;
+        }
+        
+        @media (max-width: 768px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .info-row {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="no-print">
+        <button class="print-btn" onclick="window.print()">
+            🖨️ Imprimir Solicitud
+        </button>
+        <button class="print-btn" onclick="window.close()" style="background: #6c757d;">
+            ← Volver
+        </button>
+    </div>
+
+    <div class="header">
+        <h1>GrúaStyle</h1>
+        <h2>Solicitud de Servicio de Grúa</h2>
+        <p>Servicio profesional 24/7 en la Región Metropolitana</p>
+    </div>
+
+    <div class="order-info">
+        <h3>📋 Información de la Solicitud</h3>
+        <div class="info-row">
+            <span class="label">Número de Orden:</span>
+            <span class="value">{{ solicitud.numero_orden }}</span>
+        </div>
+        <div class="info-row">
+            <span class="label">Estado:</span>
+            <span class="status-badge status-{{ solicitud.estado }}">{{ solicitud.get_estado_display }}</span>
+        </div>
+        <div class="info-row">
+            <span class="label">Fecha de Solicitud:</span>
+            <span class="value">{{ solicitud.fecha_solicitud|date:"d/m/Y H:i" }}</span>
+        </div>
+        <div class="info-row">
+            <span class="label">Cliente:</span>
+            <span class="value">{{ solicitud.cliente.get_full_name|default:solicitud.cliente.username }}</span>
+        </div>
+    </div>
+
+    <div class="info-grid">
+        <div class="info-section">
+            <h4>📍 Información del Servicio</h4>
+            <div class="info-row">
+                <span class="label">Origen:</span>
+                <span class="value">{{ solicitud.origen }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Destino:</span>
+                <span class="value">{{ solicitud.destino }}</span>
+            </div>
+            {% if solicitud.distancia_km %}
+            <div class="info-row">
+                <span class="label">Distancia:</span>
+                <span class="value">{{ solicitud.distancia_km }} km</span>
+            </div>
+            {% endif %}
+            <div class="info-row">
+                <span class="label">Tipo de Vehículo:</span>
+                <span class="value">{{ solicitud.get_tipo_vehiculo_display }}</span>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h4>💳 Información de Pago</h4>
+            {% if solicitud.metodo_pago %}
+            <div class="info-row">
+                <span class="label">Método de Pago:</span>
+                <span class="value">{{ solicitud.get_metodo_pago_display }}</span>
+            </div>
+            {% endif %}
+            {% if solicitud.costo_total %}
+            <div class="info-row">
+                <span class="label">Costo Total:</span>
+                <span class="value">${{ solicitud.costo_total|floatformat:0 }}</span>
+            </div>
+            {% endif %}
+            <div class="info-row">
+                <span class="label">Estado de Pago:</span>
+                <span class="value">{% if solicitud.pagado %}✅ Pagado{% else %}⏳ Pendiente{% endif %}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="cost-summary">
+        <h4>💰 Desglose de Costos</h4>
+        <div class="info-row">
+            <span class="label">Tarifa Base:</span>
+            <span class="value">${{ tarifa_base|floatformat:0 }}</span>
+        </div>
+        {% if solicitud.distancia_km %}
+        <div class="info-row">
+            <span class="label">Costo por Kilómetro ({{ solicitud.distancia_km }} km × ${{ tarifa_por_km|floatformat:0 }}):</span>
+            <span class="value">${{ costo_km|floatformat:0 }}</span>
+        </div>
+        {% endif %}
+        <div class="info-row total-row">
+            <span class="label">TOTAL:</span>
+            <span class="value">${{ total|floatformat:0 }}</span>
+        </div>
+    </div>
+
+    {% if solicitud.observaciones %}
+    <div class="info-section">
+        <h4>📝 Observaciones</h4>
+        <p>{{ solicitud.observaciones }}</p>
+    </div>
+    {% endif %}
+
+    <div class="footer">
+        <p><strong>GrúaStyle</strong> - Servicio profesional de grúa 24/7</p>
+        <p>📞 +56 9 61833876 | 📧 contacto@gruastyle.com</p>
+        <p>Documento generado el {{ fecha_generacion|date:"d/m/Y H:i" }}</p>
+        <p><em>Este documento es válido sin firma ni timbre</em></p>
+    </div>
+
+    <script>
+        // Auto-abrir diálogo de impresión si viene de un enlace de impresión
+        if (window.location.search.includes('auto=print')) {
+            window.print();
+        }
+    </script>
+</body>
+</html>

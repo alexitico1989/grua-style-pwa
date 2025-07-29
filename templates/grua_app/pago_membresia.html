@@ -1,0 +1,667 @@
+{% extends 'grua_app/base.html' %}
+{% load static %}
+
+{% block title %}Pago Membresía {{ plan_data.nombre }} - Grúa Style{% endblock %}
+
+{% block extra_css %}
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+        color: #fff;
+        line-height: 1.4;
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+        min-height: 100vh;
+    }
+    
+    .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    /* Header Section */
+    .payment-header {
+        text-align: center;
+        margin-bottom: 50px;
+        position: relative;
+    }
+
+    .payment-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+        background: linear-gradient(135deg, #fff, #00D563);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-shadow: 0 0 30px rgba(0, 213, 99, 0.3);
+    }
+
+    .payment-subtitle {
+        font-size: 1.1rem;
+        color: #ccc;
+    }
+
+    /* Main Content */
+    .payment-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        align-items: start;
+    }
+
+    /* Plan Summary */
+    .plan-summary {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        padding: 40px 30px;
+        backdrop-filter: blur(15px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        position: sticky;
+        top: 40px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .plan-summary::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(0, 213, 99, 0.1), transparent);
+        animation: shimmer 6s infinite;
+    }
+
+    .plan-summary-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .plan-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #00D563, #00B454);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .plan-name {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: #fff;
+    }
+
+    .plan-price {
+        font-size: 3rem;
+        font-weight: 800;
+        color: #00D563;
+        margin-bottom: 5px;
+        text-shadow: 0 0 20px rgba(0, 213, 99, 0.4);
+    }
+
+    .plan-period {
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 30px;
+    }
+
+    .plan-features {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .plan-features li {
+        display: flex;
+        align-items: center;
+        padding: 12px 0;
+        color: rgba(255, 255, 255, 0.9);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .plan-features li:last-child {
+        border-bottom: none;
+    }
+
+    .plan-features li i {
+        color: #00D563;
+        margin-right: 15px;
+        width: 20px;
+        text-align: center;
+    }
+
+    /* Payment Form */
+    .payment-form {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        padding: 40px 30px;
+        backdrop-filter: blur(15px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .payment-form::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(0, 213, 99, 0.1), transparent);
+        animation: shimmer 8s infinite;
+    }
+
+    .form-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .form-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 30px;
+        color: #fff;
+        text-align: center;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        color: #ccc;
+        font-weight: 500;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 15px 20px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        color: #fff;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+
+    .form-input:focus {
+        outline: none;
+        border-color: #00D563;
+        box-shadow: 0 0 20px rgba(0, 213, 99, 0.2);
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    .form-input::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 15px;
+    }
+
+    /* Payment Methods */
+    .payment-methods {
+        margin: 30px 0;
+    }
+
+    .payment-method {
+        display: flex;
+        align-items: center;
+        padding: 15px 20px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        margin-bottom: 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .payment-method:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(0, 213, 99, 0.3);
+    }
+
+    .payment-method.selected {
+        border-color: #00D563;
+        background: rgba(0, 213, 99, 0.1);
+    }
+
+    .payment-method input[type="radio"] {
+        margin-right: 15px;
+        accent-color: #00D563;
+    }
+
+    .payment-method-icon {
+        font-size: 1.5rem;
+        margin-right: 15px;
+        color: #00D563;
+    }
+
+    .payment-method-info {
+        flex-grow: 1;
+    }
+
+    .payment-method-name {
+        font-weight: 600;
+        color: #fff;
+        margin-bottom: 3px;
+    }
+
+    .payment-method-desc {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* Security Info */
+    .security-info {
+        background: rgba(0, 213, 99, 0.1);
+        border: 1px solid rgba(0, 213, 99, 0.2);
+        border-radius: 12px;
+        padding: 20px;
+        margin: 30px 0;
+        text-align: center;
+    }
+
+    .security-info i {
+        font-size: 2rem;
+        color: #00D563;
+        margin-bottom: 10px;
+    }
+
+    .security-info h4 {
+        color: #fff;
+        margin-bottom: 8px;
+    }
+
+    .security-info p {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.9rem;
+    }
+
+    /* Submit Button */
+    .submit-button {
+        width: 100%;
+        padding: 18px 30px;
+        background: linear-gradient(135deg, #00D563, #00B454);
+        border: none;
+        border-radius: 15px;
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 10px 30px rgba(0, 213, 99, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .submit-button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .submit-button:hover::before {
+        left: 100%;
+    }
+
+    .submit-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 40px rgba(0, 213, 99, 0.4);
+    }
+
+    .submit-button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: 0 10px 30px rgba(0, 213, 99, 0.3);
+    }
+
+    /* Terms */
+    .terms {
+        margin: 20px 0;
+        text-align: center;
+    }
+
+    .terms label {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255, 255, 255, 0.8);
+        cursor: pointer;
+    }
+
+    .terms input[type="checkbox"] {
+        margin-right: 10px;
+        accent-color: #00D563;
+    }
+
+    .terms a {
+        color: #00D563;
+        text-decoration: none;
+    }
+
+    .terms a:hover {
+        text-decoration: underline;
+    }
+
+    /* Back Button */
+    .back-button {
+        display: inline-flex;
+        align-items: center;
+        color: #ccc;
+        text-decoration: none;
+        margin-bottom: 30px;
+        transition: all 0.3s ease;
+        padding: 10px 15px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .back-button:hover {
+        color: #00D563;
+        background: rgba(0, 213, 99, 0.1);
+        text-decoration: none;
+    }
+
+    .back-button i {
+        margin-right: 8px;
+    }
+
+    /* Animations */
+    @keyframes shimmer {
+        0% { left: -100%; }
+        100% { left: 100%; }
+    }
+
+    /* Responsive */
+    @media (max-width: 968px) {
+        .payment-container {
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        .plan-summary {
+            position: static;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            padding: 20px 16px;
+        }
+
+        .plan-summary,
+        .payment-form {
+            padding: 30px 20px;
+        }
+
+        .payment-title {
+            font-size: 2rem;
+        }
+
+        .plan-price {
+            font-size: 2.5rem;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .plan-summary,
+        .payment-form {
+            padding: 25px 20px;
+        }
+
+        .payment-title {
+            font-size: 1.8rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Back Button -->
+    <a href="{% url 'membresias' %}" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+        Volver a Membresías
+    </a>
+
+    <!-- Header -->
+    <div class="payment-header">
+        <h1 class="payment-title">Completar Suscripción</h1>
+        <p class="payment-subtitle">Estás a un paso de acceder a todos los beneficios premium</p>
+    </div>
+
+    <!-- Main Content -->
+    <div class="payment-container">
+        <!-- Plan Summary -->
+        <div class="plan-summary">
+            <div class="plan-summary-content">
+                <div class="plan-badge">Plan Seleccionado</div>
+                <h2 class="plan-name">{{ plan_data.nombre }}</h2>
+                <div class="plan-price">${{ plan_data.precio|floatformat:0 }}</div>
+                <div class="plan-period">por mes</div>
+                
+                <ul class="plan-features">
+                    <li>
+                        <i class="fas fa-check"></i>
+                        Servicio de grúa 24/7
+                    </li>
+                    <li>
+                        <i class="fas fa-check"></i>
+                        {% if plan_data.servicios_incluidos == 0 %}
+                            Servicios ilimitados
+                        {% else %}
+                            {{ plan_data.servicios_incluidos }} servicios incluidos por mes
+                        {% endif %}
+                    </li>
+                    <li>
+                        <i class="fas fa-check"></i>
+                        {{ plan_data.descuento }}% de descuento en servicios adicionales
+                    </li>
+                    <li>
+                        <i class="fas fa-check"></i>
+                        Soporte premium 24/7
+                    </li>
+                    {% if plan == 'premium' or plan == 'vip' %}
+                    <li>
+                        <i class="fas fa-check"></i>
+                        Tiempo de respuesta prioritario
+                    </li>
+                    {% endif %}
+                    {% if plan == 'vip' %}
+                    <li>
+                        <i class="fas fa-check"></i>
+                        Conductor personal asignado
+                    </li>
+                    <li>
+                        <i class="fas fa-check"></i>
+                        Seguimiento GPS en tiempo real
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- Payment Form -->
+        <div class="payment-form">
+            <div class="form-content">
+                <h2 class="form-title">Información de Pago</h2>
+                
+                <form method="post" action="{% url 'procesar_pago_membresia' %}" id="paymentForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="plan" value="{{ plan }}">
+                    <input type="hidden" name="precio" value="{{ plan_data.precio }}">
+                    
+                    <!-- Método de Pago -->
+                    <div class="form-group">
+                        <label class="form-label">Método de Pago</label>
+                        <div class="payment-methods">
+                            <div class="payment-method selected" onclick="selectPaymentMethod(this, 'webpay')">
+                                <input type="radio" name="metodo_pago" value="webpay" checked>
+                                <i class="fab fa-cc-visa payment-method-icon"></i>
+                                <div class="payment-method-info">
+                                    <div class="payment-method-name">WebPay Plus</div>
+                                    <div class="payment-method-desc">Pago seguro con tarjeta de crédito o débito</div>
+                                </div>
+                            </div>
+                            
+                            <div class="payment-method" onclick="selectPaymentMethod(this, 'transferencia')">
+                                <input type="radio" name="metodo_pago" value="transferencia">
+                                <i class="fas fa-university payment-method-icon"></i>
+                                <div class="payment-method-info">
+                                    <div class="payment-method-name">Transferencia Bancaria</div>
+                                    <div class="payment-method-desc">Pago directo desde tu cuenta bancaria</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información Personal -->
+                    <div class="form-group">
+                        <label class="form-label" for="nombre">Nombre Completo</label>
+                        <input type="text" class="form-input" id="nombre" name="nombre" 
+                               value="{{ user.first_name }} {{ user.last_name }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email</label>
+                        <input type="email" class="form-input" id="email" name="email" 
+                               value="{{ user.email }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="telefono">Teléfono</label>
+                        <input type="tel" class="form-input" id="telefono" name="telefono" 
+                               placeholder="+56 9 1234 5678" required>
+                    </div>
+
+                    <!-- Información de Facturación -->
+                    <div class="form-group">
+                        <label class="form-label" for="rut">RUT</label>
+                        <input type="text" class="form-input" id="rut" name="rut" 
+                               placeholder="12.345.678-9" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="direccion">Dirección de Facturación</label>
+                        <input type="text" class="form-input" id="direccion" name="direccion" 
+                               placeholder="Tu dirección completa" required>
+                    </div>
+
+                    <!-- Security Info -->
+                    <div class="security-info">
+                        <i class="fas fa-shield-alt"></i>
+                        <h4>Pago 100% Seguro</h4>
+                        <p>Tu información está protegida con encriptación SSL de nivel bancario</p>
+                    </div>
+
+                    <!-- Terms -->
+                    <div class="terms">
+                        <label>
+                            <input type="checkbox" name="acepta_terminos" required>
+                            Acepto los <a href="#" target="_blank">términos y condiciones</a> y la <a href="#" target="_blank">política de privacidad</a>
+                        </label>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="submit-button" id="submitBtn">
+                        <i class="fas fa-lock"></i>
+                        Suscribirse Ahora - ${{ plan_data.precio|floatformat:0 }}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function selectPaymentMethod(element, method) {
+    // Remover selección anterior
+    document.querySelectorAll('.payment-method').forEach(pm => {
+        pm.classList.remove('selected');
+    });
+    
+    // Seleccionar nuevo método
+    element.classList.add('selected');
+    element.querySelector('input[type="radio"]').checked = true;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('paymentForm');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    form.addEventListener('submit', function(e) {
+        // Deshabilitar botón para evitar doble envío
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
+        
+        // Simular delay de procesamiento
+        setTimeout(() => {
+            // El formulario se enviará normalmente
+        }, 100);
+    });
+
+    // Formatear RUT mientras se escribe
+    const rutInput = document.getElementById('rut');
+    rutInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/[^0-9kK]/g, '');
+        if (value.length > 1) {
+            value = value.slice(0, -1).replace(/\B(?=(\d{3})+(?!\d))/g, '.') + '-' + value.slice(-1);
+        }
+        e.target.value = value;
+    });
+
+    // Formatear teléfono
+    const telefonoInput = document.getElementById('telefono');
+    telefonoInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/[^0-9]/g, '');
+        if (value.startsWith('569')) {
+            value = '+56 9 ' + value.slice(3).replace(/(\d{4})(\d{4})/, '$1 $2');
+        } else if (value.startsWith('56')) {
+            value = '+56 ' + value.slice(2);
+        } else if (value.startsWith('9')) {
+            value = '+56 9 ' + value.slice(1).replace(/(\d{4})(\d{4})/, '$1 $2');
+        }
+        e.target.value = value;
+    });
+
+    console.log('✅ Payment form loaded successfully');
+});
+</script>
+
+{% endblock %}

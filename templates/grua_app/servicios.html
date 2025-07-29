@@ -1,0 +1,506 @@
+{% extends 'grua_app/base.html' %}
+
+{% block title %}Servicios - Grúa Style{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Variables para contexto web/app */
+    :root {
+        --content-padding-bottom: 40px;
+    }
+    
+    @media (display-mode: standalone) {
+        :root {
+            --content-padding-bottom: 100px;
+        }
+    }
+    
+    body {
+        background: #000;
+        color: #fff;
+    }
+    
+    /* Container principal */
+    .servicios-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding-bottom: var(--content-padding-bottom);
+    }
+    
+    /* Hero section */
+    .hero-section {
+        background: linear-gradient(135deg, #000 0%, #1a1a1a 50%, #000 100%);
+        padding: 4rem 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+            radial-gradient(circle at 20% 20%, rgba(0, 213, 99, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, rgba(0, 213, 99, 0.1) 0%, transparent 50%);
+        pointer-events: none;
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+    
+    .hero-icon {
+        font-size: 4rem;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(135deg, #00D563, #00B853);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .hero-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #fff, #ccc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.25rem;
+        color: #ccc;
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+    
+    /* Servicios grid */
+    .servicios-grid {
+        padding: 3rem 2rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .servicio-card {
+        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+        border: 1px solid #333;
+        border-radius: 20px;
+        padding: 2rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .servicio-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, 
+            transparent, 
+            rgba(0, 213, 99, 0.1), 
+            transparent);
+        transition: left 0.6s ease;
+    }
+    
+    .servicio-card:hover {
+        border-color: rgba(0, 213, 99, 0.5);
+        box-shadow: 0 10px 30px rgba(0, 213, 99, 0.2);
+        transform: translateY(-5px);
+    }
+    
+    .servicio-card:hover::before {
+        left: 100%;
+    }
+    
+    .servicio-icon {
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+        color: #00D563;
+        display: block;
+    }
+    
+    .servicio-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: #fff;
+    }
+    
+    .servicio-description {
+        color: #ccc;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+    }
+    
+    .servicio-features {
+        list-style: none;
+        margin-bottom: 2rem;
+    }
+    
+    .servicio-features li {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.75rem;
+        color: #fff;
+        font-size: 0.9rem;
+    }
+    
+    .servicio-features li::before {
+        content: '✓';
+        color: #00D563;
+        font-weight: 700;
+        margin-right: 0.75rem;
+        font-size: 1.1rem;
+    }
+    
+    .servicio-precio {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background: rgba(0, 213, 99, 0.1);
+        border-radius: 12px;
+        border: 1px solid rgba(0, 213, 99, 0.3);
+        margin-bottom: 1.5rem;
+    }
+    
+    .precio-label {
+        color: #ccc;
+        font-size: 0.9rem;
+    }
+    
+    .precio-value {
+        color: #00D563;
+        font-size: 1.25rem;
+        font-weight: 700;
+    }
+    
+    .servicio-btn {
+        width: 100%;
+        padding: 1rem 2rem;
+        background: linear-gradient(135deg, #00D563, #00B853);
+        color: #000;
+        text-decoration: none;
+        border-radius: 12px;
+        font-weight: 700;
+        text-align: center;
+        transition: all 0.3s ease;
+        display: block;
+    }
+    
+    .servicio-btn:hover {
+        background: linear-gradient(135deg, #00E570, #00C760);
+        color: #000;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 213, 99, 0.4);
+    }
+    
+    /* Sección de características */
+    .caracteristicas-section {
+        background: #0a0a0a;
+        padding: 4rem 2rem;
+    }
+    
+    .section-title {
+        text-align: center;
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 3rem;
+        color: #fff;
+    }
+    
+    .caracteristicas-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+    
+    .caracteristica-item {
+        text-align: center;
+        padding: 2rem 1rem;
+    }
+    
+    .caracteristica-icon {
+        font-size: 2.5rem;
+        color: #00D563;
+        margin-bottom: 1rem;
+    }
+    
+    .caracteristica-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: #fff;
+    }
+    
+    .caracteristica-text {
+        color: #ccc;
+        line-height: 1.6;
+    }
+    
+    /* CTA Section */
+    .cta-section {
+        background: linear-gradient(135deg, #00D563, #00B853);
+        padding: 4rem 2rem;
+        text-align: center;
+        margin: 3rem 2rem;
+        border-radius: 20px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .cta-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, 
+            transparent, 
+            rgba(255, 255, 255, 0.2), 
+            transparent);
+        animation: shine 3s infinite;
+    }
+    
+    @keyframes shine {
+        0% { left: -100%; }
+        50% { left: -100%; }
+        100% { left: 100%; }
+    }
+    
+    .cta-content {
+        position: relative;
+        z-index: 2;
+    }
+    
+    .cta-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: #000;
+    }
+    
+    .cta-text {
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        color: #000;
+        opacity: 0.8;
+    }
+    
+    .cta-btn {
+        display: inline-block;
+        padding: 1rem 2rem;
+        background: #000;
+        color: #00D563;
+        text-decoration: none;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .cta-btn:hover {
+        background: #1a1a1a;
+        color: #00D563;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .hero-section {
+            padding: 3rem 1rem;
+        }
+        
+        .hero-title {
+            font-size: 2rem;
+        }
+        
+        .servicios-grid {
+            grid-template-columns: 1fr;
+            padding: 2rem 1rem;
+            gap: 1.5rem;
+        }
+        
+        .servicio-card {
+            padding: 1.5rem;
+        }
+        
+        .caracteristicas-section {
+            padding: 3rem 1rem;
+        }
+        
+        .caracteristicas-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .cta-section {
+            margin: 2rem 1rem;
+            padding: 3rem 1rem;
+        }
+    }
+    
+    /* Animaciones */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .servicio-card {
+        animation: fadeInUp 0.6s ease forwards;
+    }
+    
+    .servicio-card:nth-child(1) { animation-delay: 0.1s; }
+    .servicio-card:nth-child(2) { animation-delay: 0.2s; }
+    .servicio-card:nth-child(3) { animation-delay: 0.3s; }
+    .servicio-card:nth-child(4) { animation-delay: 0.4s; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="servicios-container">
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">Nuestros Servicios</h1>
+            <p class="hero-subtitle">
+                Ofrecemos una amplia gama de servicios de grúa y asistencia vehicular 
+                disponibles las 24 horas del día, los 7 días de la semana.
+            </p>
+        </div>
+    </section>
+    
+    <!-- Grid de Servicios -->
+    <section class="servicios-grid">
+        <!-- Grúa para Autos -->
+        <div class="servicio-card">
+            <h3 class="servicio-title">Grúa para Autos</h3>
+            <p class="servicio-description">
+                Servicio especializado para vehículos livianos. Traslado seguro y rápido 
+                de tu automóvil a cualquier destino dentro de la Región Metropolitana.
+            </p>
+            <ul class="servicio-features">
+                <li>Plataforma hidráulica</li>
+                <li>Operadores certificados</li>
+                <li>Seguro</li>
+            </ul>
+            <div class="servicio-precio">
+                <span class="precio-label">Desde:</span>
+                <span class="precio-value">$30.000</span>
+            </div>
+            <a href="{% url 'solicitar_servicio' %}" class="servicio-btn">
+                Solicitar Servicio
+            </a>
+        </div>
+        
+        <!-- Grúa para Camionetas -->
+        <div class="servicio-card">
+            <h3 class="servicio-title">Grúa para Camionetas</h3>
+            <p class="servicio-description">
+                Servicio especializado para vehículos medianos como camionetas, SUVs y 
+                furgones. Equipos de mayor capacidad para tu tranquilidad.
+            </p>
+            <ul class="servicio-features">
+                <li>Grúas de mayor tonelaje y capacidad</li>
+                <li>Plataforma reforzada</li>
+                <li>Sistema de amarre especializado</li>
+            </ul>
+            <div class="servicio-precio">
+                <span class="precio-label">Desde:</span>
+                <span class="precio-value">$30.000</span>
+            </div>
+            <a href="{% url 'solicitar_servicio' %}" class="servicio-btn">
+                Solicitar Servicio
+            </a>
+        </div>
+    
+        
+        <!-- Servicio de Emergencia -->
+        <div class="servicio-card">
+            <h3 class="servicio-title">Emergencias 24/7</h3>
+            <p class="servicio-description">
+                Servicio de emergencia disponible las 24 horas. Para situaciones críticas 
+                que requieren atención inmediata en cualquier momento del día.
+            </p>
+            <ul class="servicio-features">
+                <li>Disponibilidad inmediata 24/7</li>
+                <li>Tiempo de respuesta prioritario</li>
+                <li>Atención en carreteras y autopistas</li>
+            </ul>
+            <div class="servicio-precio">
+                <span class="precio-label">Desde:</span>
+                <span class="precio-value">$30.000</span>
+            </div>
+            <a href="{% url 'solicitar_servicio' %}" class="servicio-btn">
+                Solicitar Servicio
+            </a>
+        </div>
+    </section>
+    
+    <!-- Sección de Características -->
+    <section class="caracteristicas-section">
+        <h2 class="section-title">¿Por qué elegir Grúa Style?</h2>
+        <div class="caracteristicas-grid">
+            <div class="caracteristica-item">
+                <div class="caracteristica-icon">⚡</div>
+                <h3 class="caracteristica-title">Respuesta Rápida</h3>
+                <p class="caracteristica-text">
+                    Tiempo promedio de respuesta de 15-30 minutos en toda la RM. 
+                    Tu tiempo es valioso y lo respetamos.
+                </p>
+            </div>
+            <div class="caracteristica-item">
+                <div class="caracteristica-icon">🛡️</div>
+                <h3 class="caracteristica-title">100% Asegurado</h3>
+                <p class="caracteristica-text">
+                    Todos nuestros servicios incluyen seguro de responsabilidad civil. 
+                    Tu vehículo está protegido en todo momento.
+                </p>
+            </div>
+            <div class="caracteristica-item">
+                  <div class="caracteristica-icon">👨‍⚖️</div>
+                <h3 class="caracteristica-title">Operadores Certificados</h3>
+                <p class="caracteristica-text">
+                    Personal altamente capacitado y certificado. Años de experiencia 
+                    en el rubro nos respaldan.
+                </p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <h2 class="cta-title">¿Necesitas un servicio ahora?</h2>
+            <p class="cta-text">
+                No esperes más. Solicita tu grúa ahora y recibe atención inmediata.
+            </p>
+            <a href="{% url 'solicitar_servicio' %}" class="cta-btn">
+                Solicitar Grúa Ahora
+            </a>
+        </div>
+    </section>
+</div>
+{% endblock %}

@@ -1,0 +1,476 @@
+{% extends 'grua_app/base.html' %}
+{% load static %}
+
+{% block title %}Editar Perfil - Grúa Style{% endblock %}
+
+{% block extra_css %}
+<style>
+    .editar-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 40px 20px;
+        min-height: calc(100vh - 200px);
+    }
+
+    .editar-header {
+        text-align: center;
+        margin-bottom: 40px;
+        background: linear-gradient(135deg, rgba(0, 213, 99, 0.1), rgba(0, 213, 99, 0.05));
+        border: 1px solid rgba(0, 213, 99, 0.2);
+        border-radius: 20px;
+        padding: 30px;
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .editar-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(0, 213, 99, 0.1), transparent);
+        animation: shimmer 3s infinite;
+    }
+
+    .editar-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 10px;
+        text-shadow: 0 0 20px rgba(0, 213, 99, 0.3);
+        position: relative;
+        z-index: 2;
+    }
+
+    .editar-header p {
+        color: #ccc;
+        font-size: 1.1rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .form-card {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 40px;
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 30px;
+    }
+
+    .form-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(0, 213, 99, 0.1), transparent);
+        animation: shimmer 4s infinite;
+    }
+
+    .form-section {
+        margin-bottom: 35px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .form-section:last-child {
+        margin-bottom: 0;
+    }
+
+    .section-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #00D563;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-shadow: 0 0 15px rgba(0, 213, 99, 0.3);
+    }
+
+    .section-title i {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #00D563, #00B853);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #000;
+        font-size: 1.2rem;
+        box-shadow: 0 5px 15px rgba(0, 213, 99, 0.3);
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .form-grid.full {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-group label {
+        display: block;
+        color: #fff;
+        font-weight: 600;
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-group label i {
+        color: #00D563;
+        width: 16px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 14px 18px;
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        color: #fff;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #00D563;
+        box-shadow: 0 0 0 3px rgba(0, 213, 99, 0.1);
+        background: rgba(0, 0, 0, 0.4);
+    }
+
+    .form-control::placeholder {
+        color: #666;
+    }
+
+    .form-control[readonly] {
+        background: rgba(255, 255, 255, 0.05);
+        color: #999;
+        cursor: not-allowed;
+    }
+
+    .btn-container {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        margin-top: 40px;
+        flex-wrap: wrap;
+    }
+
+    .btn-form {
+        padding: 14px 32px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1rem;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        border: none;
+        backdrop-filter: blur(10px);
+        min-width: 160px;
+        justify-content: center;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #00D563, #00B853);
+        color: #000;
+        box-shadow: 0 5px 15px rgba(0, 213, 99, 0.3);
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #00B853, #009642);
+        color: #000;
+        text-decoration: none;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 213, 99, 0.4);
+    }
+
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #fff;
+    }
+
+    .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.15);
+        color: #fff;
+        text-decoration: none;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(255, 255, 255, 0.1);
+    }
+
+    .form-errors {
+        background: rgba(255, 71, 87, 0.1);
+        border: 1px solid rgba(255, 71, 87, 0.3);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 30px;
+        color: #ff4757;
+    }
+
+    .form-errors ul {
+        margin: 0;
+        padding-left: 20px;
+    }
+
+    .form-errors h4 {
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .help-text {
+        color: #999;
+        font-size: 0.85rem;
+        margin-top: 5px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .required-field::after {
+        content: '*';
+        color: #ff4757;
+        margin-left: 4px;
+    }
+
+    /* Animaciones */
+    @keyframes shimmer {
+        0% { left: -100%; }
+        100% { left: 100%; }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .editar-container {
+            padding: 20px 16px;
+        }
+
+        .form-card {
+            padding: 30px 20px;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .btn-container {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .btn-form {
+            width: 100%;
+            max-width: 280px;
+        }
+
+        .editar-header h1 {
+            font-size: 2rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .editar-header {
+            padding: 25px 20px;
+        }
+
+        .form-card {
+            padding: 25px 15px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="editar-container">
+    <!-- Header -->
+    <div class="editar-header">
+        <h1>
+            <i class="fas fa-edit"></i>
+            Editar Mi Perfil
+        </h1>
+        <p>Actualiza tu información personal y de contacto</p>
+    </div>
+
+    <!-- Errores del formulario -->
+    {% if form.errors %}
+        <div class="form-errors">
+            <h4>
+                <i class="fas fa-exclamation-triangle"></i>
+                Por favor corrige los siguientes errores:
+            </h4>
+            {% for field, errors in form.errors.items %}
+                {% for error in errors %}
+                    <p>• {{ error }}</p>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Formulario -->
+    <form method="post" class="form-card">
+        {% csrf_token %}
+        
+        <!-- Información Personal -->
+        <div class="form-section">
+            <h3 class="section-title">
+                <i class="fas fa-user"></i>
+                Información Personal
+            </h3>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="{{ form.first_name.id_for_label }}" class="required-field">
+                        <i class="fas fa-user"></i>
+                        {{ form.first_name.label }}
+                    </label>
+                    {{ form.first_name }}
+                    {% if form.first_name.help_text %}
+                        <div class="help-text">
+                            <i class="fas fa-info-circle"></i>
+                            {{ form.first_name.help_text }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.last_name.id_for_label }}" class="required-field">
+                        <i class="fas fa-user"></i>
+                        {{ form.last_name.label }}
+                    </label>
+                    {{ form.last_name }}
+                    {% if form.last_name.help_text %}
+                        <div class="help-text">
+                            <i class="fas fa-info-circle"></i>
+                            {{ form.last_name.help_text }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="{{ form.username.id_for_label }}" class="required-field">
+                        <i class="fas fa-at"></i>
+                        {{ form.username.label }}
+                    </label>
+                    {{ form.username }}
+                    <div class="help-text">
+                        <i class="fas fa-info-circle"></i>
+                        Tu nombre de usuario único en el sistema
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.rut.id_for_label }}" class="required-field">
+                        <i class="fas fa-id-card"></i>
+                        {{ form.rut.label }}
+                    </label>
+                    {{ form.rut }}
+                    <div class="help-text">
+                        <i class="fas fa-lock"></i>
+                        El RUT no se puede modificar por seguridad
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información de Contacto -->
+        <div class="form-section">
+            <h3 class="section-title">
+                <i class="fas fa-address-book"></i>
+                Información de Contacto
+            </h3>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="{{ form.email.id_for_label }}" class="required-field">
+                        <i class="fas fa-envelope"></i>
+                        {{ form.email.label }}
+                    </label>
+                    {{ form.email }}
+                    <div class="help-text">
+                        <i class="fas fa-info-circle"></i>
+                        Usado para notificaciones y recuperación de cuenta
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.telefono.id_for_label }}" class="required-field">
+                        <i class="fas fa-phone"></i>
+                        {{ form.telefono.label }}
+                    </label>
+                    {{ form.telefono }}
+                    <div class="help-text">
+                        <i class="fas fa-info-circle"></i>
+                        Para contactarte durante el servicio
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-grid full">
+                <div class="form-group">
+                    <label for="{{ form.direccion.id_for_label }}" class="required-field">
+                        <i class="fas fa-map-marker-alt"></i>
+                        {{ form.direccion.label }}
+                    </label>
+                    {{ form.direccion }}
+                    <div class="help-text">
+                        <i class="fas fa-info-circle"></i>
+                        Tu dirección principal para servicios
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botones -->
+        <div class="btn-container">
+            <button type="submit" class="btn-form btn-primary">
+                <i class="fas fa-save"></i>
+                Guardar Cambios
+            </button>
+            <a href="{% url 'perfil' %}" class="btn-form btn-secondary">
+                <i class="fas fa-times"></i>
+                Cancelar
+            </a>
+        </div>
+    </form>
+
+    <!-- Acción Adicional -->
+    <div class="form-card" style="text-align: center; margin-top: 20px;">
+        <h3 style="color: #00D563; margin-bottom: 15px;">
+            <i class="fas fa-shield-alt"></i>
+            Seguridad de la Cuenta
+        </h3>
+        <p style="color: #ccc; margin-bottom: 20px;">
+            ¿Quieres cambiar tu contraseña? Hazlo de forma segura.
+        </p>
+        <a href="{% url 'cambiar_password' %}" class="btn-form btn-secondary">
+            <i class="fas fa-lock"></i>
+            Cambiar Contraseña
+        </a>
+    </div>
+</div>
+{% endblock %}

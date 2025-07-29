@@ -1,0 +1,257 @@
+{% extends 'grua_app/base.html' %}
+
+{% block title %}Procesar Pago - GrúaExpress{% endblock %}
+
+{% block extra_css %}
+<style>
+    .payment-method {
+        border: 2px solid rgba(103, 151, 255, 0.3);
+        border-radius: 1rem;
+        padding: 2rem;
+        margin-bottom: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(248,250,252,0.9));
+    }
+    
+    .payment-method:hover {
+        border-color: #6767ff;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 32px rgba(103, 151, 255, 0.2);
+    }
+    
+    .payment-method.selected {
+        border-color: #6767ff;
+        background: linear-gradient(135deg, rgba(103, 151, 255, 0.1), rgba(90, 90, 240, 0.1));
+    }
+    
+    .payment-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin: 0 auto 1rem;
+    }
+    
+    .webpay-icon {
+        background: linear-gradient(135deg, #ff6b6b, #ff5252);
+        color: white;
+    }
+    
+    .transfer-icon {
+        background: linear-gradient(135deg, #4ecdc4, #44b3ac);
+        color: white;
+    }
+    
+    .cash-icon {
+        background: linear-gradient(135deg, #45b7d1, #3a9bc1);
+        color: white;
+    }
+    
+    .cost-summary {
+        background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        border: 2px solid rgba(103, 151, 255, 0.2);
+    }
+    
+    .cost-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        padding: 0.25rem 0;
+    }
+    
+    .cost-total {
+        border-top: 2px solid #6767ff;
+        padding-top: 0.75rem;
+        margin-top: 0.75rem;
+        font-weight: bold;
+        font-size: 1.2rem;
+        color: #6767ff;
+    }
+    
+    .btn-confirm {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 0.75rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+        margin-top: 1.5rem;
+    }
+    
+    .btn-confirm:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+    }
+    
+    .btn-confirm:disabled {
+        background: #9ca3af;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white text-center">
+                    <h3 class="mb-0">💳 Procesar Pago</h3>
+                    <p class="mb-0">Solicitud #{{ solicitud.numero_orden }}</p>
+                </div>
+                
+                <div class="card-body p-4">
+                    <!-- Resumen de Costos -->
+                    <div class="cost-summary">
+                        <h5 class="text-center mb-3">📊 Resumen de Costos</h5>
+                        
+                        <div class="cost-row">
+                            <span>Tarifa Base:</span>
+                            <span>${{ tarifa_base|floatformat:0 }}</span>
+                        </div>
+                        
+                        {% if solicitud.distancia_km %}
+                        <div class="cost-row">
+                            <span>Distancia ({{ solicitud.distancia_km|floatformat:1 }} km):</span>
+                            <span>${{ costo_km|floatformat:0 }}</span>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="cost-row cost-total">
+                            <span>Total a Pagar:</span>
+                            <span>${{ total|floatformat:0 }}</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Resumen del Servicio -->
+                    <div class="mb-4">
+                        <h5>📍 Detalles del Servicio</h5>
+                        <p><strong>Origen:</strong> {{ solicitud.direccion_origen }}</p>
+                        <p><strong>Destino:</strong> {{ solicitud.direccion_destino }}</p>
+                        <p><strong>Fecha:</strong> {{ solicitud.fecha_servicio|date:"d/m/Y H:i" }}</p>
+                        <p><strong>Vehículo:</strong> {{ solicitud.tipo_vehiculo|title }}</p>
+                    </div>
+                    
+                    <!-- Métodos de Pago -->
+                    <form method="post" id="paymentForm">
+                        {% csrf_token %}
+                        
+                        <h5 class="mb-3">Selecciona tu método de pago:</h5>
+                        
+                        <!-- Webpay -->
+                        <div class="payment-method" data-method="webpay">
+                            <div class="webpay-icon payment-icon">💳</div>
+                            <h6 class="text-center">Webpay Plus</h6>
+                            <p class="text-center text-muted mb-0">Pago con tarjeta de crédito o débito</p>
+                        </div>
+                        
+                        <!-- Transferencia -->
+                        <div class="payment-method" data-method="transferencia">
+                            <div class="transfer-icon payment-icon">🏦</div>
+                            <h6 class="text-center">Transferencia Bancaria</h6>
+                            <p class="text-center text-muted mb-0">Transfiere a nuestra cuenta bancaria</p>
+                        </div>
+                        
+                        <!-- Efectivo -->
+                        <div class="payment-method" data-method="efectivo">
+                            <div class="cash-icon payment-icon">💰</div>
+                            <h6 class="text-center">Pago en Efectivo</h6>
+                            <p class="text-center text-muted mb-0">Paga al conductor al momento del servicio</p>
+                        </div>
+                        
+                        <input type="hidden" name="metodo_pago" id="metodo_pago">
+                        
+                        <button type="button" class="btn-confirm" id="confirmBtn" disabled>
+                            Selecciona un método de pago
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const paymentMethods = document.querySelectorAll('.payment-method');
+    const metodoPagoInput = document.getElementById('metodo_pago');
+    const confirmBtn = document.getElementById('confirmBtn');
+    const form = document.getElementById('paymentForm');
+    
+    let selectedMethod = null;
+    
+    // Manejar selección de método de pago
+    paymentMethods.forEach(method => {
+        method.addEventListener('click', function() {
+            // Remover selección anterior
+            paymentMethods.forEach(m => m.classList.remove('selected'));
+            
+            // Seleccionar método actual
+            this.classList.add('selected');
+            selectedMethod = this.dataset.method;
+            metodoPagoInput.value = selectedMethod;
+            
+            // Actualizar botón
+            updateConfirmButton();
+        });
+    });
+    
+    // Actualizar estado del botón
+    function updateConfirmButton() {
+        if (selectedMethod) {
+            confirmBtn.disabled = false;
+            
+            switch(selectedMethod) {
+                case 'webpay':
+                    confirmBtn.textContent = '💳 Pagar con Webpay';
+                    confirmBtn.style.background = 'linear-gradient(135deg, #ff6b6b, #ff5252)';
+                    break;
+                case 'transferencia':
+                    confirmBtn.textContent = '🏦 Continuar con Transferencia';
+                    confirmBtn.style.background = 'linear-gradient(135deg, #4ecdc4, #44b3ac)';
+                    break;
+                case 'efectivo':
+                    confirmBtn.textContent = '💰 Confirmar Pago en Efectivo';
+                    confirmBtn.style.background = 'linear-gradient(135deg, #45b7d1, #3a9bc1)';
+                    break;
+            }
+        } else {
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = 'Selecciona un método de pago';
+            confirmBtn.style.background = '#9ca3af';
+        }
+    }
+    
+    // Manejar envío del formulario
+    confirmBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        if (!selectedMethod) {
+            alert('Por favor selecciona un método de pago');
+            return;
+        }
+        
+        if (selectedMethod === 'webpay') {
+            // Redirigir directamente a Webpay
+            window.location.href = "{% url 'iniciar_pago_webpay' solicitud.id %}";
+        } else {
+            // Enviar formulario para transferencia o efectivo
+            form.submit();
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,509 @@
+{% extends 'grua_app/base.html' %}
+{% load static %}
+
+{% block title %}Registro - Grúa Style{% endblock %}
+
+{% block extra_css %}
+<style>
+    .registro-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 40px 20px;
+        min-height: calc(100vh - 200px);
+    }
+
+    .registro-header {
+        text-align: center;
+        margin-bottom: 40px;
+        background: linear-gradient(135deg, rgba(0, 213, 99, 0.1), rgba(0, 213, 99, 0.05));
+        border: 1px solid rgba(0, 213, 99, 0.2);
+        border-radius: 20px;
+        padding: 30px;
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .registro-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(0, 213, 99, 0.1), transparent);
+        animation: shimmer 3s infinite;
+    }
+
+    .registro-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 10px;
+        text-shadow: 0 0 20px rgba(0, 213, 99, 0.3);
+        position: relative;
+        z-index: 2;
+    }
+
+    .registro-header p {
+        color: #ccc;
+        font-size: 1.1rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .form-card {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 40px;
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 30px;
+    }
+
+    .form-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(0, 213, 99, 0.1), transparent);
+        animation: shimmer 4s infinite;
+    }
+
+    .form-section {
+        margin-bottom: 35px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .section-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #00D563;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-shadow: 0 0 15px rgba(0, 213, 99, 0.3);
+    }
+
+    .section-title i {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #00D563, #00B853);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #000;
+        font-size: 1.2rem;
+        box-shadow: 0 5px 15px rgba(0, 213, 99, 0.3);
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .form-grid.full {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-group label {
+        display: block;
+        color: #fff;
+        font-weight: 600;
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-group label i {
+        color: #00D563;
+        width: 16px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 14px 18px;
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        color: #fff;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #00D563;
+        box-shadow: 0 0 0 3px rgba(0, 213, 99, 0.1);
+        background: rgba(0, 0, 0, 0.4);
+    }
+
+    .form-control::placeholder {
+        color: #666;
+    }
+
+    .btn-container {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        margin-top: 40px;
+        flex-wrap: wrap;
+    }
+
+    .btn-form {
+        padding: 14px 32px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1rem;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        border: none;
+        backdrop-filter: blur(10px);
+        min-width: 160px;
+        justify-content: center;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #00D563, #00B853);
+        color: #000;
+        box-shadow: 0 5px 15px rgba(0, 213, 99, 0.3);
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #00B853, #009642);
+        color: #000;
+        text-decoration: none;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 213, 99, 0.4);
+    }
+
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #fff;
+    }
+
+    .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.15);
+        color: #fff;
+        text-decoration: none;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(255, 255, 255, 0.1);
+    }
+
+    .form-errors {
+        background: rgba(255, 71, 87, 0.1);
+        border: 1px solid rgba(255, 71, 87, 0.3);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 30px;
+        color: #ff4757;
+    }
+
+    .form-errors ul {
+        margin: 0;
+        padding-left: 20px;
+    }
+
+    .form-errors h4 {
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .help-text {
+        color: #999;
+        font-size: 0.85rem;
+        margin-top: 5px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .required-field::after {
+        content: '*';
+        color: #ff4757;
+        margin-left: 4px;
+    }
+
+    .login-link {
+        text-align: center;
+        padding: 20px;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 12px;
+        margin-top: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .login-link a {
+        color: #00D563;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .login-link a:hover {
+        color: #00B853;
+        text-decoration: underline;
+    }
+
+    /* Animaciones */
+    @keyframes shimmer {
+        0% { left: -100%; }
+        100% { left: 100%; }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .registro-container {
+            padding: 20px 16px;
+        }
+
+        .form-card {
+            padding: 30px 20px;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .btn-container {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .btn-form {
+            width: 100%;
+            max-width: 280px;
+        }
+
+        .registro-header h1 {
+            font-size: 2rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .registro-header {
+            padding: 25px 20px;
+        }
+
+        .form-card {
+            padding: 25px 15px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="registro-container">
+    <!-- Header -->
+    <div class="registro-header">
+        <h1>
+            <i class="fas fa-user-plus"></i>
+            Crear Tu Cuenta
+        </h1>
+        <p>Únete a Grúa Style y accede a nuestros servicios 24/7</p>
+    </div>
+
+    <!-- Errores del formulario -->
+    {% if form.errors %}
+        <div class="form-errors">
+            <h4>
+                <i class="fas fa-exclamation-triangle"></i>
+                Por favor corrige los siguientes errores:
+            </h4>
+            {% for field, errors in form.errors.items %}
+                {% for error in errors %}
+                    <p>• {{ error }}</p>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Formulario -->
+    <form method="post" class="form-card">
+        {% csrf_token %}
+        
+        <!-- Información Personal -->
+        <div class="form-section">
+            <h3 class="section-title">
+                <i class="fas fa-user"></i>
+                Información Personal
+            </h3>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="{{ form.first_name.id_for_label }}" class="required-field">
+                        <i class="fas fa-user"></i>
+                        Nombre
+                    </label>
+                    {{ form.first_name }}
+                    <div class="help-text">
+                        <i class="fas fa-info-circle"></i>
+                        Tu nombre real
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.last_name.id_for_label }}" class="required-field">
+                        <i class="fas fa-user"></i>
+                        Apellido
+                    </label>
+                    {{ form.last_name }}
+                    <div class="help-text">
+                        <i class="fas fa-info-circle"></i>
+                        Tu apellido real
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="{{ form.username.id_for_label }}" class="required-field">
+                        <i class="fas fa-at"></i>
+                        Nombre de Usuario
+                    </label>
+                    {{ form.username }}
+                    <div class="help-text">
+                        <i class="fas fa-info-circle"></i>
+                        Único en el sistema, sin espacios
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.rut.id_for_label }}" class="required-field">
+                        <i class="fas fa-id-card"></i>
+                        RUT
+                    </label>
+                    {{ form.rut }}
+                    <div class="help-text">
+                        <i class="fas fa-info-circle"></i>
+                        Formato: 12.345.678-9
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información de Contacto -->
+        <div class="form-section">
+            <h3 class="section-title">
+                <i class="fas fa-address-book"></i>
+                Información de Contacto
+            </h3>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="{{ form.email.id_for_label }}" class="required-field">
+                        <i class="fas fa-envelope"></i>
+                        Correo Electrónico
+                    </label>
+                    {{ form.email }}
+                    <div class="help-text">
+                        <i class="fas fa-info-circle"></i>
+                        Para notificaciones y recuperación de cuenta
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.telefono.id_for_label }}" class="required-field">
+                        <i class="fas fa-phone"></i>
+                        Teléfono
+                    </label>
+                    {{ form.telefono }}
+                    <div class="help-text">
+                        <i class="fas fa-info-circle"></i>
+                        Para contactarte durante el servicio
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-grid full">
+                <div class="form-group">
+                    <label for="{{ form.direccion.id_for_label }}" class="required-field">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Dirección
+                    </label>
+                    {{ form.direccion }}
+                    <div class="help-text">
+                        <i class="fas fa-info-circle"></i>
+                        Tu dirección principal para servicios
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seguridad -->
+        <div class="form-section">
+            <h3 class="section-title">
+                <i class="fas fa-lock"></i>
+                Seguridad de la Cuenta
+            </h3>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="{{ form.password1.id_for_label }}" class="required-field">
+                        <i class="fas fa-key"></i>
+                        Contraseña
+                    </label>
+                    {{ form.password1 }}
+                    <div class="help-text">
+                        <i class="fas fa-info-circle"></i>
+                        Mínimo 8 caracteres, no solo números
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.password2.id_for_label }}" class="required-field">
+                        <i class="fas fa-check-double"></i>
+                        Confirmar Contraseña
+                    </label>
+                    {{ form.password2 }}
+                    <div class="help-text">
+                        <i class="fas fa-info-circle"></i>
+                        Repite exactamente la misma contraseña
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botones -->
+        <div class="btn-container">
+            <button type="submit" class="btn-form btn-primary">
+                <i class="fas fa-user-plus"></i>
+                Crear Mi Cuenta
+            </button>
+            <a href="{% url 'login' %}" class="btn-form btn-secondary">
+                <i class="fas fa-sign-in-alt"></i>
+                Ya tengo cuenta
+            </a>
+        </div>
+    </form>
+
+    <!-- Link de Login -->
+    <div class="login-link">
+        <p style="color: #ccc;">
+            ¿Ya tienes una cuenta? 
+            <a href="{% url 'login' %}">Inicia sesión aquí</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

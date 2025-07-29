@@ -1,0 +1,920 @@
+{% extends 'grua_app/base.html' %}
+{% load static %}
+
+{% block title %}Membresías Premium - Grúa Style{% endblock %}
+
+{% block extra_css %}
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+        color: #fff;
+        line-height: 1.4;
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+        min-height: 100vh;
+    }
+    
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    /* Hero Section */
+    .hero-section {
+        padding: 120px 0 80px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 50% 50%, rgba(0, 213, 99, 0.1) 0%, transparent 50%);
+        z-index: 1;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        padding: 60px 40px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        max-width: 800px;
+        margin: 0 auto;
+        overflow: hidden;
+    }
+
+    .hero-content::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(0, 213, 99, 0.1), transparent);
+        animation: shimmer 4s infinite;
+    }
+
+    .hero-title {
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        font-weight: 700;
+        margin-bottom: 20px;
+        background: linear-gradient(135deg, #fff, #00D563);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-shadow: 0 0 30px rgba(0, 213, 99, 0.3);
+    }
+
+    .hero-subtitle {
+        font-size: 1.25rem;
+        color: #ccc;
+        margin-bottom: 30px;
+        line-height: 1.6;
+    }
+
+    .hero-icon {
+        font-size: 4rem;
+        color: #00D563;
+        margin-bottom: 30px;
+        text-shadow: 0 0 30px rgba(0, 213, 99, 0.5);
+        animation: float 3s ease-in-out infinite;
+    }
+
+    /* Plans Section */
+    .plans-section {
+        padding: 80px 0;
+        position: relative;
+    }
+
+    .plans-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 30% 80%, rgba(0, 213, 99, 0.05) 0%, transparent 50%);
+    }
+
+    .plans-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 40px;
+        margin-top: 60px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .plan-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        padding: 40px 30px;
+        text-align: center;
+        position: relative;
+        transition: all 0.4s ease;
+        backdrop-filter: blur(15px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+    }
+
+    .plan-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(0, 213, 99, 0.1), transparent);
+        animation: shimmer 6s infinite;
+        z-index: 1;
+    }
+
+    .plan-card:hover {
+        transform: translateY(-10px);
+        border-color: rgba(0, 213, 99, 0.4);
+        box-shadow: 0 20px 60px rgba(0, 213, 99, 0.2);
+    }
+
+    .plan-card.featured {
+        border: 2px solid #00D563;
+        transform: scale(1.05);
+        background: rgba(0, 213, 99, 0.1);
+    }
+
+    .plan-card.featured::after {
+        content: "⭐ MÁS POPULAR";
+        position: absolute;
+        top: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(135deg, #00D563, #00B454);
+        color: white;
+        padding: 8px 20px;
+        border-radius: 25px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        box-shadow: 0 5px 15px rgba(0, 213, 99, 0.4);
+        animation: pulse-glow 2s ease-in-out infinite alternate;
+        z-index: 3;
+    }
+
+    .plan-card.featured:hover {
+        transform: scale(1.05) translateY(-10px);
+    }
+
+    .plan-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .plan-icon {
+        font-size: 3rem;
+        margin-bottom: 20px;
+        display: block;
+        color: #00D563;
+        text-shadow: 0 0 20px rgba(0, 213, 99, 0.5);
+        animation: float 4s ease-in-out infinite;
+    }
+
+    .plan-name {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+        color: #fff;
+        text-shadow: 0 0 10px rgba(0, 213, 99, 0.2);
+    }
+
+    .plan-price {
+        font-size: 3rem;
+        font-weight: 800;
+        color: #00D563;
+        margin-bottom: 10px;
+        text-shadow: 0 0 20px rgba(0, 213, 99, 0.4);
+        line-height: 1;
+    }
+
+    .plan-period {
+        font-size: 1rem;
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 30px;
+    }
+
+    .plan-features {
+        list-style: none;
+        padding: 0;
+        margin: 30px 0;
+        text-align: left;
+    }
+
+    .plan-features li {
+        display: flex;
+        align-items: center;
+        padding: 12px 0;
+        color: rgba(255, 255, 255, 0.9);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .plan-features li:last-child {
+        border-bottom: none;
+    }
+
+    .plan-features li:hover {
+        color: #fff;
+        background: rgba(0, 213, 99, 0.1);
+        padding-left: 10px;
+        border-radius: 8px;
+    }
+
+    .plan-features li i {
+        color: #00D563;
+        margin-right: 15px;
+        font-size: 1.1rem;
+        width: 20px;
+        text-align: center;
+    }
+
+    .plan-button {
+        width: 100%;
+        padding: 18px 30px;
+        border: 2px solid #00D563;
+        border-radius: 15px;
+        background: transparent;
+        color: #00D563;
+        font-weight: 700;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        position: relative;
+        overflow: hidden;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .plan-button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(0, 213, 99, 0.3), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .plan-button:hover::before {
+        left: 100%;
+    }
+
+    .plan-button:hover {
+        background: #00D563;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(0, 213, 99, 0.4);
+        text-decoration: none;
+    }
+
+    .plan-card.featured .plan-button {
+        background: #00D563;
+        color: white;
+        box-shadow: 0 5px 15px rgba(0, 213, 99, 0.3);
+    }
+
+    .plan-card.featured .plan-button:hover {
+        background: #00B454;
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 15px 30px rgba(0, 213, 99, 0.5);
+    }
+
+    /* Benefits Section */
+    .benefits-section {
+        padding: 80px 0;
+        background: rgba(0, 213, 99, 0.05);
+        margin: 80px 0;
+        border-radius: 24px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .benefits-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(0, 213, 99, 0.1), transparent);
+        animation: shimmer 8s infinite;
+    }
+
+    .benefits-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+    }
+
+    .benefits-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 30px;
+        text-shadow: 0 0 20px rgba(0, 213, 99, 0.3);
+    }
+
+    .benefits-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+        margin-top: 50px;
+    }
+
+    .benefit-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 30px 20px;
+        text-align: center;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+    }
+
+    .benefit-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(0, 213, 99, 0.3);
+        box-shadow: 0 10px 30px rgba(0, 213, 99, 0.15);
+    }
+
+    .benefit-icon {
+        font-size: 2.5rem;
+        color: #00D563;
+        margin-bottom: 20px;
+        text-shadow: 0 0 15px rgba(0, 213, 99, 0.5);
+    }
+
+    .benefit-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: #fff;
+    }
+
+    .benefit-description {
+        color: #ccc;
+        line-height: 1.5;
+    }
+
+    /* FAQ Section */
+    .faq-section {
+        padding: 80px 0;
+        position: relative;
+    }
+
+    .faq-title {
+        text-align: center;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 50px;
+        text-shadow: 0 0 20px rgba(0, 213, 99, 0.3);
+    }
+
+    .faq-item {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        margin-bottom: 20px;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+    }
+
+    .faq-item:hover {
+        border-color: rgba(0, 213, 99, 0.3);
+    }
+
+    .faq-question {
+        padding: 25px 30px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 1.1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+
+    .faq-question:hover {
+        background: rgba(0, 213, 99, 0.1);
+        color: #00D563;
+    }
+
+    .faq-question i {
+        transition: transform 0.3s ease;
+        color: #00D563;
+    }
+
+    .faq-item.active .faq-question i {
+        transform: rotate(180deg);
+    }
+
+    .faq-answer {
+        padding: 0 30px;
+        max-height: 0;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        color: #ccc;
+        line-height: 1.6;
+    }
+
+    .faq-item.active .faq-answer {
+        padding: 0 30px 25px;
+        max-height: 200px;
+    }
+
+    /* CTA Section */
+    .cta-section {
+        padding: 80px 0;
+        text-align: center;
+        background: rgba(0, 213, 99, 0.05);
+        border-radius: 24px;
+        margin: 80px 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cta-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(0, 213, 99, 0.1), transparent);
+        animation: shimmer 5s infinite;
+    }
+
+    .cta-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .cta-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        text-shadow: 0 0 20px rgba(0, 213, 99, 0.3);
+    }
+
+    .cta-subtitle {
+        font-size: 1.2rem;
+        color: #ccc;
+        margin-bottom: 40px;
+    }
+
+    .cta-button {
+        padding: 20px 40px;
+        background: linear-gradient(135deg, #00D563, #00B454);
+        border: none;
+        border-radius: 15px;
+        color: white;
+        font-size: 1.2rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 10px 30px rgba(0, 213, 99, 0.3);
+    }
+
+    .cta-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(0, 213, 99, 0.4);
+        text-decoration: none;
+        color: white;
+    }
+
+    /* Animaciones */
+    @keyframes shimmer {
+        0% { left: -100%; }
+        100% { left: 100%; }
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+
+    @keyframes pulse-glow {
+        0% { 
+            box-shadow: 0 5px 15px rgba(0, 213, 99, 0.4);
+            text-shadow: 0 0 10px rgba(0, 213, 99, 0.5);
+        }
+        100% { 
+            box-shadow: 0 8px 25px rgba(0, 213, 99, 0.6);
+            text-shadow: 0 0 15px rgba(0, 213, 99, 0.8);
+        }
+    }
+
+    /* Responsive */
+    @media (max-width: 968px) {
+        .plans-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .plan-card.featured {
+            transform: none;
+        }
+
+        .plan-card.featured:hover {
+            transform: translateY(-10px);
+        }
+
+        .hero-content {
+            padding: 50px 30px;
+        }
+
+        .benefits-grid {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+    }
+
+    @media (max-width: 768px) {
+        .hero-content {
+            padding: 40px 25px;
+        }
+
+        .plan-card {
+            padding: 30px 20px;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+        }
+
+        .plan-price {
+            font-size: 2.5rem;
+        }
+
+        .benefits-title,
+        .faq-title,
+        .cta-title {
+            font-size: 2rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .container {
+            padding: 0 16px;
+        }
+
+        .hero-content,
+        .plan-card {
+            padding: 25px 20px;
+        }
+
+        .faq-question,
+        .faq-answer {
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <i class="fas fa-crown hero-icon"></i>
+            <h1 class="hero-title">Membresías Premium</h1>
+            <p class="hero-subtitle">
+                Accede a beneficios exclusivos, descuentos especiales y servicios prioritarios. 
+                Elige el plan perfecto para tus necesidades.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Plans Section -->
+<section class="plans-section">
+    <div class="container">
+        <div class="plans-grid">
+            <!-- Plan Básico -->
+            <div class="plan-card">
+                <div class="plan-content">
+                    <i class="fas fa-star plan-icon"></i>
+                    <h3 class="plan-name">Básico</h3>
+                    <div class="plan-price">$19.990</div>
+                    <div class="plan-period">por mes</div>
+                    
+                    <ul class="plan-features">
+                        <li>
+                            <i class="fas fa-check"></i>
+                            Servicio de grúa 24/7
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            2 servicios incluidos por mes
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            10% de descuento en servicios adicionales
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            Soporte por chat básico
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            Tiempo de respuesta estándar
+                        </li>
+                    </ul>
+                    
+                    <a href="{% url 'pago_membresia' %}?plan=basico" class="plan-button">
+                        Seleccionar Básico
+                    </a>
+                </div>
+            </div>
+
+            <!-- Plan Premium -->
+            <div class="plan-card featured">
+                <div class="plan-content">
+                    <i class="fas fa-gem plan-icon"></i>
+                    <h3 class="plan-name">Premium</h3>
+                    <div class="plan-price">$29.990</div>
+                    <div class="plan-period">por mes</div>
+                    
+                    <ul class="plan-features">
+                        <li>
+                            <i class="fas fa-check"></i>
+                            Servicio de grúa 24/7 prioritario
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            5 servicios incluidos por mes
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            20% de descuento en servicios adicionales
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            Soporte premium por teléfono
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            Tiempo de respuesta prioritario
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            Asistencia mecánica básica incluida
+                        </li>
+                    </ul>
+                    
+                    <a href="{% url 'pago_membresia' %}?plan=premium" class="plan-button">
+                        Seleccionar Premium
+                    </a>
+                </div>
+            </div>
+
+            <!-- Plan VIP -->
+            <div class="plan-card">
+                <div class="plan-content">
+                    <i class="fas fa-crown plan-icon"></i>
+                    <h3 class="plan-name">VIP</h3>
+                    <div class="plan-price">$49.990</div>
+                    <div class="plan-period">por mes</div>
+                    
+                    <ul class="plan-features">
+                        <li>
+                            <i class="fas fa-check"></i>
+                            Servicio exclusivo 24/7
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            Servicios ilimitados
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            30% de descuento en servicios externos
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            Soporte VIP dedicado 24/7
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            Tiempo de respuesta inmediato
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            Asistencia mecánica completa
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            Seguimiento GPS en tiempo real
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            Conductor personal asignado
+                        </li>
+                    </ul>
+                    
+                    <a href="{% url 'pago_membresia' %}?plan=vip" class="plan-button">
+                        Seleccionar VIP
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Benefits Section -->
+<section class="benefits-section">
+    <div class="container">
+        <div class="benefits-content">
+            <h2 class="benefits-title">¿Por qué elegir una membresía?</h2>
+            
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <i class="fas fa-bolt benefit-icon"></i>
+                    <h3 class="benefit-title">Respuesta Rápida</h3>
+                    <p class="benefit-description">
+                        Tiempos de respuesta mejorados con prioridad sobre usuarios regulares.
+                    </p>
+                </div>
+                
+                <div class="benefit-card">
+                    <i class="fas fa-piggy-bank benefit-icon"></i>
+                    <h3 class="benefit-title">Ahorro Garantizado</h3>
+                    <p class="benefit-description">
+                        Descuentos significativos que se pagan solos con el uso regular.
+                    </p>
+                </div>
+                
+                <div class="benefit-card">
+                    <i class="fas fa-headset benefit-icon"></i>
+                    <h3 class="benefit-title">Soporte Premium</h3>
+                    <p class="benefit-description">
+                        Atención personalizada y soporte técnico especializado 24/7.
+                    </p>
+                </div>
+                
+                <div class="benefit-card">
+                    <i class="fas fa-shield-alt benefit-icon"></i>
+                    <h3 class="benefit-title">Servicios Incluidos</h3>
+                    <p class="benefit-description">
+                        Servicios mensuales incluidos sin costos adicionales.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="faq-section">
+    <div class="container">
+        <h2 class="faq-title">Preguntas Frecuentes</h2>
+        
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                ¿Puedo cambiar mi plan en cualquier momento?
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                Sí, puedes cambiar tu plan en cualquier momento. Los cambios se aplicarán en tu próximo ciclo de facturación.
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                ¿Qué pasa si no uso todos mis servicios incluidos?
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                Los servicios no utilizados no se acumulan para el siguiente mes, pero siempre tendrás acceso a descuentos en servicios adicionales.
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                ¿Cómo funciona la renovación automática?
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                Tu membresía se renovará automáticamente cada mes. Puedes cancelar en cualquier momento sin penalizaciones.
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                ¿Hay período de prueba?
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                Ofrecemos 7 días de prueba gratuita para que puedas experimentar todos los beneficios de tu membresía elegida.
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-content">
+            <h2 class="cta-title">¿Listo para comenzar?</h2>
+            <p class="cta-subtitle">
+                Únete a cientos de clientes satisfechos que ya disfrutan de nuestros servicios premium
+            </p>
+            <a href="#plans" class="cta-button">
+                <i class="fas fa-rocket"></i>
+                Elegir Mi Plan
+            </a>
+        </div>
+    </div>
+</section>
+
+<script>
+function toggleFAQ(element) {
+    const faqItem = element.parentElement;
+    const isActive = faqItem.classList.contains('active');
+    
+    // Cerrar todos los FAQs
+    document.querySelectorAll('.faq-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    
+    // Abrir el actual si no estaba activo
+    if (!isActive) {
+        faqItem.classList.add('active');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Smooth scroll para el CTA button
+    document.querySelector('.cta-button').addEventListener('click', function(e) {
+        if (this.getAttribute('href') === '#plans') {
+            e.preventDefault();
+            document.querySelector('.plans-section').scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+    });
+
+    // Animaciones de entrada
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '0';
+                entry.target.style.transform = 'translateY(30px)';
+                entry.target.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
+                
+                setTimeout(() => {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }, 100);
+                
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+    
+    // Observar elementos para animaciones
+    const animatedElements = document.querySelectorAll('.plan-card, .benefit-card, .faq-item, .hero-content');
+    animatedElements.forEach(element => {
+        observer.observe(element);
+    });
+
+    console.log('✅ Membresías page loaded successfully');
+});
+</script>
+
+{% endblock %}

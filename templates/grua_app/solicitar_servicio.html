@@ -1,0 +1,1363 @@
+{% extends 'grua_app/base.html' %}
+{% load static %}
+
+{% block title %}Solicitar Servicio - Grúa Style{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        background: #000;
+        color: #fff;
+        line-height: 1.4;
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+    }
+    
+    .servicio-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+        min-height: 100vh;
+    }
+    
+    /* Hero Header */
+    .servicio-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+        padding: 3rem 2rem;
+        border-radius: 24px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .servicio-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 30% 50%, rgba(0, 213, 99, 0.1) 0%, transparent 50%);
+    }
+    
+    .servicio-header h1 {
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: #fff;
+        position: relative;
+        z-index: 2;
+        text-shadow: 
+            0 0 20px rgba(0, 213, 99, 0.6),
+            0 0 40px rgba(0, 213, 99, 0.4);
+        animation: glow-pulse 4s ease-in-out infinite alternate;
+    }
+    
+    @keyframes glow-pulse {
+        0% {
+            text-shadow: 
+                0 0 20px rgba(0, 213, 99, 0.6),
+                0 0 40px rgba(0, 213, 99, 0.4);
+        }
+        100% {
+            text-shadow: 
+                0 0 25px rgba(0, 213, 99, 0.8),
+                0 0 50px rgba(0, 213, 99, 0.6);
+        }
+    }
+    
+    .servicio-header p {
+        font-size: 1.2rem;
+        color: #ccc;
+        position: relative;
+        z-index: 2;
+    }
+    
+    /* Main Content Grid */
+    .servicio-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    /* Form Section */
+    .formulario-section {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 2rem;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    }
+    
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        color: #00D563;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    /* Form Groups */
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: #fff;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        backdrop-filter: blur(10px);
+    }
+    
+    .form-control::placeholder {
+        color: #999;
+    }
+    
+    .form-control:focus {
+        outline: none;
+        border-color: #00D563;
+        box-shadow: 0 0 0 3px rgba(0, 213, 99, 0.2);
+        background: rgba(255, 255, 255, 0.15);
+    }
+    
+    .form-control:hover {
+        border-color: rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.12);
+    }
+    
+    /* Vehicle Section */
+    .vehicle-section {
+        background: rgba(0, 213, 99, 0.1);
+        border: 1px solid rgba(0, 213, 99, 0.2);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .vehicle-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #00D563;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .vehicle-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+    
+    /* Sección de Método de Pago */
+    .form-section {
+        background: rgba(255, 193, 7, 0.1);
+        border: 1px solid rgba(255, 193, 7, 0.3);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-section h3 {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #FFD700;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .form-help {
+        background: rgba(255, 243, 205, 0.1);
+        border: 1px solid rgba(255, 235, 156, 0.3);
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 20px;
+        color: #FFD700;
+        font-size: 0.9rem;
+        backdrop-filter: blur(10px);
+    }
+    
+    .payment-methods {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-top: 15px;
+    }
+    
+    .payment-option {
+        position: relative;
+    }
+    
+    .payment-option input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    
+    .payment-label {
+        display: flex;
+        align-items: center;
+        padding: 20px;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.05);
+        gap: 15px;
+        backdrop-filter: blur(10px);
+    }
+    
+    .payment-label:hover {
+        border-color: #FFD700;
+        box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);
+        transform: translateY(-2px);
+        background: rgba(255, 215, 0, 0.1);
+    }
+    
+    .payment-option input[type="radio"]:checked + .payment-label {
+        border-color: #FFD700;
+        background: rgba(255, 215, 0, 0.15);
+        box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+    }
+    
+    .payment-icon {
+        font-size: 2.5rem;
+        min-width: 60px;
+        text-align: center;
+    }
+    
+    .payment-info {
+        flex: 1;
+    }
+    
+    .payment-info h4 {
+        margin: 0 0 5px 0;
+        color: #fff;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+    
+    .payment-info p {
+        margin: 0 0 8px 0;
+        color: #ccc;
+        font-size: 0.9rem;
+    }
+    
+    .payment-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        text-transform: uppercase;
+    }
+    
+    .payment-badge.cash {
+        background: rgba(34, 197, 94, 0.2);
+        color: #22C55E;
+        border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+    
+    .payment-badge.transfer {
+        background: rgba(59, 130, 246, 0.2);
+        color: #3B82F6;
+        border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+    
+    .payment-badge.card {
+        background: rgba(245, 158, 11, 0.2);
+        color: #F59E0B;
+        border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    
+    /* Map Section */
+    .mapa-section {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 1.5rem;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    }
+    
+    #map {
+        height: 450px;
+        width: 100%;
+        border-radius: 12px;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        background: #1a1a1a;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    /* Asegurar que los tiles de Leaflet se muestren correctamente */
+    .leaflet-container {
+        height: 100%;
+        width: 100%;
+        background: #1a1a1a !important;
+    }
+    
+    .leaflet-tile-pane {
+        opacity: 1 !important;
+    }
+    
+    .leaflet-tile {
+        opacity: 1 !important;
+    }
+    
+    /* Instructions */
+    .instrucciones-mapa {
+        background: rgba(59, 130, 246, 0.1);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+        color: #93C5FD;
+        backdrop-filter: blur(10px);
+    }
+    
+    /* Selected Points */
+    .puntos-seleccionados {
+        background: rgba(0, 213, 99, 0.1);
+        border: 1px solid rgba(0, 213, 99, 0.3);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        backdrop-filter: blur(10px);
+    }
+    
+    .punto-info {
+        margin-bottom: 0.5rem;
+        padding: 0.75rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Loading indicator para direcciones */
+    .direccion-loading {
+        color: #FFD700 !important;
+        font-style: italic;
+        opacity: 0.8;
+    }
+    
+    /* Price Calculator */
+    .calculadora-precio {
+        background: rgba(0, 213, 99, 0.1);
+        border: 1px solid rgba(0, 213, 99, 0.2);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        backdrop-filter: blur(10px);
+    }
+    
+    .calculadora-titulo {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #00D563;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .precio-detalle {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        padding: 0.5rem 0;
+        color: #ccc;
+    }
+    
+    .precio-total {
+        border-top: 2px solid #00D563;
+        padding-top: 0.75rem;
+        margin-top: 0.75rem;
+        font-weight: bold;
+        font-size: 1.3rem;
+        color: #00D563;
+    }
+    
+    /* Buttons */
+    .btn-primary {
+        width: 100%;
+        background: linear-gradient(135deg, #00D563, #00B853);
+        color: #000;
+        border: none;
+        padding: 16px 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 25px rgba(0, 213, 99, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    
+    .btn-primary:hover:not(:disabled) {
+        background: linear-gradient(135deg, #00B853, #00D563);
+        transform: translateY(-2px);
+        box-shadow: 0 12px 35px rgba(0, 213, 99, 0.4);
+    }
+    
+    .btn-primary:disabled {
+        background: #666;
+        color: #999;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+        opacity: 0.5;
+    }
+    
+    /* Messages */
+    .alert {
+        padding: 1rem;
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+        backdrop-filter: blur(10px);
+    }
+    
+    .alert-success {
+        background: rgba(34, 197, 94, 0.1);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        color: #86EFAC;
+    }
+    
+    .alert-error {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        color: #FCA5A5;
+    }
+    
+    /* Helper Text */
+    .helper-text {
+        font-size: 0.8rem;
+        color: #999;
+        margin-top: 0.25rem;
+        font-style: italic;
+    }
+    
+    /* Loading State */
+    .btn-primary.loading::after {
+        content: "";
+        width: 16px;
+        height: 16px;
+        margin-left: 10px;
+        border: 2px solid transparent;
+        border-top: 2px solid #000;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        display: inline-block;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    /* Responsive */
+    @media (max-width: 1024px) {
+        .servicio-content {
+            grid-template-columns: 1fr;
+        }
+        
+        .vehicle-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .servicio-container {
+            padding: 16px;
+        }
+        
+        .formulario-section,
+        .mapa-section {
+            padding: 1.5rem;
+        }
+        
+        .servicio-header {
+            padding: 2rem 1rem;
+        }
+        
+        #map {
+            height: 350px;
+        }
+        
+        .payment-label {
+            padding: 15px;
+            gap: 12px;
+        }
+        
+        .payment-icon {
+            font-size: 2rem;
+            min-width: 50px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .formulario-section,
+        .mapa-section {
+            padding: 1rem;
+        }
+        
+        .form-control,
+        .btn-primary {
+            padding: 14px;
+        }
+        
+        .payment-methods {
+            gap: 12px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="servicio-container">
+    <div class="servicio-header">
+        <h1>🚗 Solicitar Servicio de Grúa</h1>
+        <p>Selecciona los puntos en el mapa, completa la información y elige tu método de pago</p>
+    </div>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    <div class="servicio-content">
+        <!-- Formulario -->
+        <div class="formulario-section">
+            <h3 class="section-title">
+                📋 Detalles del Servicio
+            </h3>
+            
+            <form method="post" id="servicioForm">
+                {% csrf_token %}
+                
+                <!-- Información del Vehículo -->
+                <div class="vehicle-section">
+                    <h4 class="vehicle-title">
+                        🚙 Información del Vehículo
+                    </h4>
+                    <div class="vehicle-grid">
+                        <div class="form-group">
+                            <label class="form-label">Tipo de Vehículo</label>
+                            <select name="tipo_vehiculo" class="form-control" required>
+                                <option value="">Seleccionar tipo</option>
+                                <option value="auto">Automóvil</option>
+                                <option value="suv">SUV/Camioneta</option>
+                                <option value="pickup">Pick-up</option>
+                                <option value="moto">Motocicleta</option>
+                                <option value="furgon">Furgón</option>
+                                <option value="otro">Otro</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Marca</label>
+                            <input type="text" 
+                                   name="marca_vehiculo" 
+                                   class="form-control" 
+                                   placeholder="Ej: Toyota, Chevrolet, Ford"
+                                   required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Modelo</label>
+                            <input type="text" 
+                                   name="modelo_vehiculo" 
+                                   class="form-control" 
+                                   placeholder="Ej: Corolla, Spark, Ranger"
+                                   required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Placa / Patente</label>
+                            <input type="text" 
+                                   name="placa_vehiculo" 
+                                   class="form-control" 
+                                   placeholder="Ej: AB-CD-12 o ABCD-12"
+                                   style="text-transform: uppercase"
+                                   required>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Ubicaciones -->
+                <div class="form-group">
+                    <label for="{{ form.direccion_origen.id_for_label }}" class="form-label">
+                        📍 Dirección de Origen
+                    </label>
+                    {{ form.direccion_origen }}
+                    <div class="helper-text">Donde se encuentra tu vehículo actualmente</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.direccion_destino.id_for_label }}" class="form-label">
+                        🎯 Dirección de Destino
+                    </label>
+                    {{ form.direccion_destino }}
+                    <div class="helper-text">Donde necesitas que lleven tu vehículo</div>
+                </div>
+                
+                <!-- Fecha y Hora -->
+                <div class="form-group">
+                    <label for="{{ form.fecha_servicio.id_for_label }}" class="form-label">
+                        📅 Fecha y Hora del Servicio
+                    </label>
+                    {{ form.fecha_servicio }}
+                    <div class="helper-text">Cuándo necesitas el servicio</div>
+                </div>
+                
+                <!-- Problema -->
+                <div class="form-group">
+                    <label for="{{ form.descripcion_problema.id_for_label }}" class="form-label">
+                        🔧 Descripción del Problema
+                    </label>
+                    {{ form.descripcion_problema }}
+                    <div class="helper-text">Describe qué le pasó a tu vehículo</div>
+                </div>
+                
+                <!-- Distancia -->
+                <div class="form-group">
+                    <label for="{{ form.distancia_km.id_for_label }}" class="form-label">
+                        📏 Distancia (km)
+                    </label>
+                    {{ form.distancia_km }}
+                    <div class="helper-text">Se calculará automáticamente al seleccionar puntos en el mapa</div>
+                </div>
+                
+                <!-- NUEVA SECCIÓN: Método de Pago -->
+                <div class="form-section">
+                    <h3><i class="fas fa-credit-card"></i> Método de Pago</h3>
+                    <p class="form-help">⚠️ <strong>Importante:</strong> Una vez enviada la solicitud, no podrás cambiar el método de pago seleccionado.</p>
+                    
+                    <div class="payment-methods">
+                        {{ form.metodo_pago.errors }}
+                        
+                        <div class="payment-option">
+                            <input type="radio" id="efectivo" name="metodo_pago" value="efectivo" class="form-check-input" required>
+                            <label for="efectivo" class="payment-label">
+                                <div class="payment-icon">💵</div>
+                                <div class="payment-info">
+                                    <h4>Pago en Efectivo</h4>
+                                    <p>Pagas directamente al conductor cuando llegue</p>
+                                    <span class="payment-badge cash">Más común</span>
+                                </div>
+                            </label>
+                        </div>
+                        
+                        <div class="payment-option">
+                            <input type="radio" id="transferencia" name="metodo_pago" value="transferencia" class="form-check-input" required>
+                            <label for="transferencia" class="payment-label">
+                                <div class="payment-icon">🏦</div>
+                                <div class="payment-info">
+                                    <h4>Transferencia Bancaria</h4>
+                                    <p>Transferencia a nuestra cuenta bancaria</p>
+                                    <span class="payment-badge transfer">Seguro</span>
+                                </div>
+                            </label>
+                        </div>
+                        
+                        <div class="payment-option">
+                            <input type="radio" id="webpay" name="metodo_pago" value="webpay" class="form-check-input" required>
+                            <label for="webpay" class="payment-label">
+                                <div class="payment-icon">💳</div>
+                                <div class="payment-info">
+                                    <h4>Tarjeta Débito/Crédito</h4>
+                                    <p>Pago inmediato con WebPay</p>
+                                    <span class="payment-badge card">Instantáneo</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Calculadora de Precio -->
+                <div class="calculadora-precio" id="calculadoraPrecio" style="display: none;">
+                    <h4 class="calculadora-titulo">
+                        💰 Cálculo de Precio
+                    </h4>
+                    <div class="precio-detalle">
+                        <span>Tarifa Base:</span>
+                        <span>$30.000</span>
+                    </div>
+                    <div class="precio-detalle" id="costoPorKm" style="display: none;">
+                        <span>Costo por Distancia (<span id="distanciaTexto">0</span> km):</span>
+                        <span id="costoDistancia">$0</span>
+                    </div>
+                    <div class="precio-detalle precio-total">
+                        <span>Total a Pagar:</span>
+                        <span id="precioTotal">$30.000</span>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-primary" id="btnSolicitar" disabled>
+                    🚛 Solicitar Grúa y Procesar Pago
+                </button>
+            </form>
+        </div>
+        
+        <!-- Mapa -->
+        <div class="mapa-section">
+            <h3 class="section-title">
+                🗺️ Seleccionar Ubicaciones
+            </h3>
+            
+            <div class="instrucciones-mapa">
+                <strong>📍 Instrucciones:</strong><br>
+                1. <strong>Primer clic:</strong> Selecciona el punto de origen (donde está tu vehículo)<br>
+                2. <strong>Segundo clic:</strong> Selecciona el punto de destino<br>
+                3. <strong>Método de pago:</strong> Elige cómo quieres pagar<br>
+                4. Se procesará el pago automáticamente según tu elección<br>
+                <small style="color: #FFB800;">💡 La ruta verde muestra el camino real por calles y las direcciones se convierten automáticamente</small>
+            </div>
+            
+            <div id="map"></div>
+            
+            <div class="puntos-seleccionados" id="puntosSeleccionados" style="display: none;">
+                <h4 style="color: #00D563; margin-bottom: 1rem;">📌 Puntos Seleccionados:</h4>
+                <div id="puntoOrigen" class="punto-info" style="display: none;">
+                    <strong>🟢 Origen:</strong> <span id="direccionOrigen">Obteniendo dirección...</span>
+                </div>
+                <div id="puntoDestino" class="punto-info" style="display: none;">
+                    <strong>🔴 Destino:</strong> <span id="direccionDestino">Obteniendo dirección...</span>
+                </div>
+                <div id="infoRuta" class="punto-info" style="display: none;">
+                    <strong>🛣️ Distancia:</strong> <span id="distanciaRuta"></span> km
+                    <span id="duracionRuta" style="display: none; margin-left: 10px; color: #00D563;"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+console.log('🚀 Iniciando sistema de mapa con geocodificación...');
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Variables globales
+    let map = null;
+    let puntoOrigen = null;
+    let puntoDestino = null;
+    let markerOrigen = null;
+    let markerDestino = null;
+    let rutaLayer = null;
+    
+    // Configuración
+    const TARIFA_BASE = 30000;
+    const TARIFA_POR_KM = 1500;
+    const TARIFA_MINIMA = 35000;
+    
+    // Función para formatear precios
+    function formatearPrecio(numero) {
+        return '$' + new Intl.NumberFormat('es-CL').format(Math.round(numero));
+    }
+    
+    // Función para inicializar el mapa
+    function inicializarMapa() {
+        console.log('📍 Intentando crear mapa...');
+        
+        try {
+            // Verificar si Leaflet está disponible
+            if (typeof L === 'undefined') {
+                throw new Error('Leaflet no está disponible');
+            }
+            
+            console.log('✅ Leaflet disponible, creando mapa...');
+            
+            // Crear el mapa centrado en Santiago
+            map = L.map('map', {
+                center: [-33.4489, -70.6693],
+                zoom: 12,
+                zoomControl: true,
+                scrollWheelZoom: true
+            });
+            
+            console.log('✅ Mapa creado, agregando tiles...');
+            
+            // Agregar capa de tiles
+            const tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19
+            });
+            
+            tileLayer.addTo(map);
+            
+            console.log('✅ Tiles agregados');
+            
+            // Agregar marcador inicial
+            const marcadorInicial = L.marker([-33.4489, -70.6693])
+                .addTo(map)
+                .bindPopup('📍 Santiago - Haz clic en el mapa para seleccionar puntos')
+                .openPopup();
+            
+            // Event listener para clics en el mapa
+            map.on('click', function(e) {
+                console.log('🖱️ Clic en mapa:', e.latlng);
+                manejarClickMapa(e.latlng);
+            });
+            
+            console.log('✅ Mapa completamente inicializado');
+            
+            // Remover marcador inicial después de 3 segundos
+            setTimeout(() => {
+                if (marcadorInicial) {
+                    map.removeLayer(marcadorInicial);
+                }
+            }, 3000);
+            
+        } catch (error) {
+            console.error('❌ Error inicializando mapa:', error);
+            mostrarErrorMapa();
+        }
+    }
+    
+    // Función para obtener dirección desde coordenadas (Geocodificación Inversa)
+    async function obtenerDireccion(lat, lng) {
+        console.log(`🌍 Obteniendo dirección para: ${lat}, ${lng}`);
+        
+        try {
+            // Usar Nominatim de OpenStreetMap para geocodificación inversa
+            const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1&accept-language=es`;
+            
+            const response = await fetch(url, {
+                headers: {
+                    'User-Agent': 'GruaStyle/1.0'
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error('Error en la respuesta del servidor');
+            }
+            
+            const data = await response.json();
+            
+            if (data && data.display_name) {
+                // Formatear la dirección para Chile
+                let direccion = '';
+                const address = data.address || {};
+                
+                // Construir dirección en formato chileno
+                if (address.house_number && address.road) {
+                    direccion = `${address.road} ${address.house_number}`;
+                } else if (address.road) {
+                    direccion = address.road;
+                } else {
+                    direccion = data.display_name.split(',')[0];
+                }
+                
+                // Agregar comuna/barrio
+                if (address.suburb || address.neighbourhood) {
+                    direccion += `, ${address.suburb || address.neighbourhood}`;
+                }
+                
+                // Agregar ciudad
+                if (address.city || address.town || address.village) {
+                    direccion += `, ${address.city || address.town || address.village}`;
+                } else if (address.county) {
+                    direccion += `, ${address.county}`;
+                }
+                
+                console.log(`✅ Dirección obtenida: ${direccion}`);
+                return direccion;
+            } else {
+                throw new Error('No se encontró información de dirección');
+            }
+            
+        } catch (error) {
+            console.warn('⚠️ Error obteniendo dirección:', error);
+            // Retornar coordenadas como fallback
+            return `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+        }
+    }
+    
+    // Función para manejar clics en el mapa
+    async function manejarClickMapa(latlng) {
+        if (!puntoOrigen) {
+            // Primer clic - establecer origen
+            console.log('🟢 Estableciendo origen');
+            puntoOrigen = latlng;
+            
+            // Crear marcador de origen
+            markerOrigen = L.marker(latlng, {
+                icon: L.icon({
+                    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+                    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41],
+                    popupAnchor: [1, -34],
+                    shadowSize: [41, 41]
+                })
+            }).addTo(map);
+            
+            markerOrigen.bindPopup('🟢 Punto de Origen').openPopup();
+            
+            // Mostrar información con loading
+            mostrarPuntoSeleccionado('origen', latlng, true);
+            
+            // Obtener dirección real
+            const direccion = await obtenerDireccion(latlng.lat, latlng.lng);
+            
+            // Actualizar campo de formulario y mostrar dirección
+            document.getElementById('id_direccion_origen').value = direccion;
+            mostrarPuntoSeleccionado('origen', latlng, false, direccion);
+            
+        } else if (!puntoDestino) {
+            // Segundo clic - establecer destino
+            console.log('🔴 Estableciendo destino');
+            puntoDestino = latlng;
+            
+            // Crear marcador de destino
+            markerDestino = L.marker(latlng, {
+                icon: L.icon({
+                    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+                    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41],
+                    popupAnchor: [1, -34],
+                    shadowSize: [41, 41]
+                })
+            }).addTo(map);
+            
+            markerDestino.bindPopup('🔴 Punto de Destino').openPopup();
+            
+            // Mostrar información con loading
+            mostrarPuntoSeleccionado('destino', latlng, true);
+            
+            // Obtener dirección real
+            const direccion = await obtenerDireccion(latlng.lat, latlng.lng);
+            
+            // Actualizar campo de formulario y mostrar dirección
+            document.getElementById('id_direccion_destino').value = direccion;
+            mostrarPuntoSeleccionado('destino', latlng, false, direccion);
+            
+            // Calcular y mostrar ruta
+            calcularRuta();
+            
+        } else {
+            // Tercer clic - reiniciar
+            console.log('🔄 Reiniciando puntos');
+            reiniciarPuntos();
+            manejarClickMapa(latlng); // Establecer nuevo origen
+        }
+        
+        verificarFormulario();
+    }
+    
+    // Función para mostrar punto seleccionado
+    function mostrarPuntoSeleccionado(tipo, latlng, loading = false, direccion = null) {
+        // Mostrar contenedor
+        document.getElementById('puntosSeleccionados').style.display = 'block';
+        
+        if (tipo === 'origen') {
+            const elemento = document.getElementById('puntoOrigen');
+            const direccionElemento = document.getElementById('direccionOrigen');
+            
+            elemento.style.display = 'block';
+            
+            if (loading) {
+                direccionElemento.textContent = 'Obteniendo dirección...';
+                direccionElemento.className = 'direccion-loading';
+            } else {
+                direccionElemento.textContent = direccion || `${latlng.lat.toFixed(6)}, ${latlng.lng.toFixed(6)}`;
+                direccionElemento.className = '';
+            }
+        } else {
+            const elemento = document.getElementById('puntoDestino');
+            const direccionElemento = document.getElementById('direccionDestino');
+            
+            elemento.style.display = 'block';
+            
+            if (loading) {
+                direccionElemento.textContent = 'Obteniendo dirección...';
+                direccionElemento.className = 'direccion-loading';
+            } else {
+                direccionElemento.textContent = direccion || `${latlng.lat.toFixed(6)}, ${latlng.lng.toFixed(6)}`;
+                direccionElemento.className = '';
+            }
+        }
+    }
+    
+    // Función para calcular ruta
+    function calcularRuta() {
+        if (!puntoOrigen || !puntoDestino) return;
+        
+        console.log('🛣️ Calculando ruta...');
+        
+        // Primero intentar obtener ruta real por calles
+        obtenerRutaReal().then(exito => {
+            if (!exito) {
+                // Si falla, usar línea recta
+                calcularLineaRecta();
+            }
+        });
+    }
+    
+    // Función para obtener ruta real usando OSRM
+    function obtenerRutaReal() {
+        return new Promise((resolve) => {
+            const url = `https://router.project-osrm.org/route/v1/driving/${puntoOrigen.lng},${puntoOrigen.lat};${puntoDestino.lng},${puntoDestino.lat}?overview=full&geometries=geojson`;
+            
+            console.log('🚗 Consultando OSRM para ruta real...');
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.routes && data.routes.length > 0) {
+                        const ruta = data.routes[0];
+                        const distanciaKm = (ruta.distance / 1000).toFixed(2);
+                        const duracionMin = Math.round(ruta.duration / 60);
+                        
+                        console.log(`✅ Ruta real obtenida: ${distanciaKm} km, ${duracionMin} min`);
+                        
+                        // Dibujar ruta real
+                        dibujarRutaReal(ruta.geometry, distanciaKm, duracionMin);
+                        resolve(true);
+                    } else {
+                        console.warn('⚠️ No se encontró ruta en OSRM');
+                        resolve(false);
+                    }
+                })
+                .catch(error => {
+                    console.warn('⚠️ Error con OSRM:', error);
+                    resolve(false);
+                });
+        });
+    }
+    
+    // Función para dibujar ruta real
+    function dibujarRutaReal(geometry, distanciaKm, duracionMin) {
+        // Limpiar ruta anterior
+        if (rutaLayer) {
+            map.removeLayer(rutaLayer);
+        }
+        
+        // Convertir coordenadas (OSRM usa lng,lat, Leaflet usa lat,lng)
+        const coordenadas = geometry.coordinates.map(coord => [coord[1], coord[0]]);
+        
+        // Crear polyline
+        rutaLayer = L.polyline(coordenadas, {
+            color: '#00D563',
+            weight: 5,
+            opacity: 0.8
+        }).addTo(map);
+        
+        // Ajustar vista para mostrar toda la ruta
+        map.fitBounds(rutaLayer.getBounds(), { padding: [20, 20] });
+        
+        // Actualizar información
+        actualizarInfoRuta(distanciaKm, duracionMin);
+    }
+    
+    // Función para calcular línea recta (fallback)
+    function calcularLineaRecta() {
+        console.log('📏 Calculando línea recta...');
+        
+        // Limpiar ruta anterior
+        if (rutaLayer) {
+            map.removeLayer(rutaLayer);
+        }
+        
+        // Calcular distancia
+        const distancia = map.distance(puntoOrigen, puntoDestino) / 1000;
+        const distanciaKm = distancia.toFixed(2);
+        
+        console.log(`📏 Distancia en línea recta: ${distanciaKm} km`);
+        
+        // Crear línea recta
+        rutaLayer = L.polyline([puntoOrigen, puntoDestino], {
+            color: '#FFB800',
+            weight: 4,
+            opacity: 0.7,
+            dashArray: '10, 5'
+        }).addTo(map);
+        
+        // Ajustar vista
+        map.fitBounds(rutaLayer.getBounds(), { padding: [20, 20] });
+        
+        // Actualizar información
+        actualizarInfoRuta(distanciaKm);
+    }
+    
+    // Función para actualizar información de ruta
+    function actualizarInfoRuta(distanciaKm, duracionMin = null) {
+        // Actualizar campo del formulario
+        document.getElementById('id_distancia_km').value = distanciaKm;
+        
+        // Mostrar información de distancia
+        document.getElementById('infoRuta').style.display = 'block';
+        document.getElementById('distanciaRuta').textContent = distanciaKm;
+        
+        if (duracionMin) {
+            document.getElementById('duracionRuta').textContent = `(${duracionMin} min)`;
+            document.getElementById('duracionRuta').style.display = 'inline';
+        }
+        
+        // Calcular y mostrar precio
+        calcularPrecio(parseFloat(distanciaKm));
+    }
+    
+    // Función para calcular precio
+    function calcularPrecio(distanciaKm) {
+        const costoDistancia = distanciaKm * TARIFA_POR_KM;
+        const total = Math.max(TARIFA_BASE + costoDistancia, TARIFA_MINIMA);
+        
+        console.log(`💰 Calculando precio: Base ${TARIFA_BASE} + Distancia ${costoDistancia} = ${total}`);
+        
+        // Mostrar calculadora
+        const calculadora = document.getElementById('calculadoraPrecio');
+        calculadora.style.display = 'block';
+        
+        // Actualizar valores
+        document.getElementById('distanciaTexto').textContent = distanciaKm;
+        document.getElementById('costoDistancia').textContent = formatearPrecio(costoDistancia);
+        document.getElementById('precioTotal').textContent = formatearPrecio(total);
+        
+        // Mostrar/ocultar línea de costo por km
+        const costoPorKm = document.getElementById('costoPorKm');
+        costoPorKm.style.display = distanciaKm > 0 ? 'flex' : 'none';
+    }
+    
+    // Función para reiniciar puntos
+    function reiniciarPuntos() {
+        puntoOrigen = null;
+        puntoDestino = null;
+        
+        // Remover marcadores
+        if (markerOrigen) {
+            map.removeLayer(markerOrigen);
+            markerOrigen = null;
+        }
+        if (markerDestino) {
+            map.removeLayer(markerDestino);
+            markerDestino = null;
+        }
+        if (rutaLayer) {
+            map.removeLayer(rutaLayer);
+            rutaLayer = null;
+        }
+        
+        // Limpiar campos
+        document.getElementById('id_direccion_origen').value = '';
+        document.getElementById('id_direccion_destino').value = '';
+        document.getElementById('id_distancia_km').value = '';
+        
+        // Ocultar información
+        document.getElementById('puntosSeleccionados').style.display = 'none';
+        document.getElementById('calculadoraPrecio').style.display = 'none';
+    }
+    
+    // Función para mostrar error del mapa
+    function mostrarErrorMapa() {
+        document.getElementById('map').innerHTML = `
+            <div style="display: flex; align-items: center; justify-content: center; height: 100%; 
+                        background: rgba(255,193,7,0.1); border-radius: 12px; color: #FFD700; 
+                        flex-direction: column; gap: 15px; padding: 20px; text-align: center;">
+                <div style="font-size: 2rem;">🗺️</div>
+                <div style="font-size: 1.1rem; font-weight: 600;">Mapa no disponible</div>
+                <div style="font-size: 0.9rem;">Puedes continuar escribiendo las direcciones manualmente</div>
+                <div style="font-size: 0.8rem; color: #ccc;">El sistema calculará un precio estimado</div>
+            </div>`;
+        
+        // Habilitar modo manual
+        habilitarModoManual();
+    }
+    
+    // Función para habilitar modo manual
+    function habilitarModoManual() {
+        console.log('🔧 Habilitando modo manual...');
+        
+        // Cambiar placeholders
+        document.getElementById('id_direccion_origen').placeholder = 'Escribe la dirección donde está tu vehículo';
+        document.getElementById('id_direccion_destino').placeholder = 'Escribe la dirección de destino';
+        
+        // Agregar event listeners
+        document.getElementById('id_direccion_origen').addEventListener('input', verificarFormulario);
+        document.getElementById('id_direccion_destino').addEventListener('input', verificarFormulario);
+        
+        // Calcular precio por defecto (5km)
+        calcularPrecio(5);
+        document.getElementById('id_distancia_km').value = '5';
+        
+        verificarFormulario();
+    }
+    
+    // Función para verificar formulario
+    function verificarFormulario() {
+        const campos = {
+            tipoVehiculo: document.querySelector('select[name="tipo_vehiculo"]')?.value || '',
+            marca: document.querySelector('input[name="marca_vehiculo"]')?.value?.trim() || '',
+            modelo: document.querySelector('input[name="modelo_vehiculo"]')?.value?.trim() || '',
+            placa: document.querySelector('input[name="placa_vehiculo"]')?.value?.trim() || '',
+            origen: document.getElementById('id_direccion_origen')?.value?.trim() || '',
+            destino: document.getElementById('id_direccion_destino')?.value?.trim() || '',
+            fecha: document.getElementById('id_fecha_servicio')?.value || '',
+            descripcion: document.getElementById('id_descripcion_problema')?.value?.trim() || '',
+            metodoPago: document.querySelector('input[name="metodo_pago"]:checked')
+        };
+        
+        const completo = campos.tipoVehiculo && campos.marca && campos.modelo && 
+                        campos.placa && campos.origen && campos.destino && 
+                        campos.fecha && campos.descripcion && campos.metodoPago;
+        
+        const boton = document.getElementById('btnSolicitar');
+        boton.disabled = !completo;
+        
+        // Actualizar texto del botón
+        if (completo && campos.metodoPago) {
+            switch (campos.metodoPago.value) {
+                case 'efectivo':
+                    boton.innerHTML = '💵 Solicitar Grúa - Pago en Efectivo';
+                    break;
+                case 'transferencia':
+                    boton.innerHTML = '🏦 Solicitar Grúa - Pago por Transferencia';
+                    break;
+                case 'webpay':
+                    boton.innerHTML = '💳 Solicitar Grúa - Pago con Tarjeta';
+                    break;
+                default:
+                    boton.innerHTML = '🚛 Solicitar Grúa';
+            }
+        } else {
+            boton.innerHTML = '🚛 Solicitar Grúa y Procesar Pago';
+        }
+        
+        console.log('📋 Formulario', completo ? 'completo' : 'incompleto');
+    }
+    
+    // Event listeners para todos los campos
+    const selectores = [
+        'select[name="tipo_vehiculo"]',
+        'input[name="marca_vehiculo"]',
+        'input[name="modelo_vehiculo"]',
+        'input[name="placa_vehiculo"]',
+        '#id_fecha_servicio',
+        '#id_descripcion_problema',
+        'input[name="metodo_pago"]'
+    ];
+    
+    selectores.forEach(selector => {
+        const elementos = document.querySelectorAll(selector);
+        elementos.forEach(elemento => {
+            const evento = elemento.tagName === 'SELECT' ? 'change' : 
+                          elemento.type === 'radio' ? 'change' : 'input';
+            elemento.addEventListener(evento, verificarFormulario);
+        });
+    });
+    
+    // Event listener especial para placa (mayúsculas)
+    const placaInput = document.querySelector('input[name="placa_vehiculo"]');
+    if (placaInput) {
+        placaInput.addEventListener('input', function(e) {
+            e.target.value = e.target.value.toUpperCase();
+        });
+    }
+    
+    // Event listener para envío del formulario
+    const form = document.getElementById('servicioForm');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const origen = document.getElementById('id_direccion_origen').value.trim();
+            const destino = document.getElementById('id_direccion_destino').value.trim();
+            const metodoPago = document.querySelector('input[name="metodo_pago"]:checked');
+            
+            if (!origen || !destino) {
+                e.preventDefault();
+                alert('Por favor, completa las direcciones de origen y destino');
+                return false;
+            }
+            
+            if (!metodoPago) {
+                e.preventDefault();
+                alert('Por favor, selecciona un método de pago');
+                return false;
+            }
+            
+            // Confirmación
+            let mensaje = '';
+            switch (metodoPago.value) {
+                case 'efectivo':
+                    mensaje = '¿Confirmas el pago en efectivo al conductor?';
+                    break;
+                case 'transferencia':
+                    mensaje = '¿Confirmas el pago por transferencia bancaria?';
+                    break;
+                case 'webpay':
+                    mensaje = '¿Confirmas el pago con tarjeta de débito/crédito?';
+                    break;
+            }
+            
+            if (!confirm(`${mensaje}\n\nEsta opción no se puede cambiar después.`)) {
+                e.preventDefault();
+                return false;
+            }
+            
+            // Deshabilitar botón y mostrar loading
+            const boton = document.getElementById('btnSolicitar');
+            boton.disabled = true;
+            boton.innerHTML = '⏳ Procesando solicitud...';
+            
+            console.log('✅ Enviando formulario...');
+        });
+    }
+    
+    // Inicialización
+    console.log('🚀 Configurando sistema...');
+    
+    // Intentar inicializar el mapa después de un breve delay
+    setTimeout(() => {
+        inicializarMapa();
+        verificarFormulario();
+    }, 1000);
+    
+    // Verificar estado inicial
+    verificarFormulario();
+});
+</script>
+
+{% endblock %}

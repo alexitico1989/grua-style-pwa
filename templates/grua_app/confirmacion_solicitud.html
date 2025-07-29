@@ -1,0 +1,246 @@
+{% extends 'grua_app/base.html' %}
+
+{% block title %}Confirmación de Solicitud - GrúaExpress{% endblock %}
+
+{% block extra_css %}
+<style>
+    .confirmacion-container {
+        max-width: 800px;
+        margin: 3rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 8px 32px rgba(103, 151, 255, 0.15);
+    }
+    
+    .confirmacion-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding: 2rem;
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        border-radius: 1rem;
+    }
+    
+    .confirmacion-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+    }
+    
+    .detalles-servicio {
+        background: #f8fafc;
+        border-radius: 1rem;
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .detalle-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .detalle-item:last-child {
+        border-bottom: none;
+    }
+    
+    .detalle-label {
+        font-weight: 600;
+        color: #374151;
+    }
+    
+    .detalle-valor {
+        color: #6b7280;
+        text-align: right;
+    }
+    
+    .precio-seccion {
+        background: #ecfdf5;
+        border: 2px solid #10b981;
+        border-radius: 1rem;
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .precio-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        padding: 0.5rem 0;
+    }
+    
+    .precio-total {
+        border-top: 2px solid #10b981;
+        padding-top: 1rem;
+        margin-top: 1rem;
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #10b981;
+    }
+    
+    .metodos-pago {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+    
+    .metodo-pago {
+        background: white;
+        border: 2px solid #e2e8f0;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: inherit;
+    }
+    
+    .metodo-pago:hover {
+        border-color: #10b981;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(16, 185, 129, 0.2);
+        text-decoration: none;
+        color: inherit;
+    }
+    
+    .metodo-icon {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+    
+    .metodo-nombre {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    
+    .metodo-descripcion {
+        font-size: 0.875rem;
+        color: #6b7280;
+    }
+    
+    .acciones {
+        text-align: center;
+        margin-top: 2rem;
+    }
+    
+    .btn {
+        padding: 0.875rem 2rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        margin: 0 0.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-secondary {
+        background: #f3f4f6;
+        color: #374151;
+        border: 2px solid #e5e7eb;
+    }
+    
+    .btn-secondary:hover {
+        background: #e5e7eb;
+        text-decoration: none;
+        color: #374151;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="confirmacion-container">
+    <div class="confirmacion-header">
+        <div class="confirmacion-icon">✅</div>
+        <h1>¡Solicitud Creada Exitosamente!</h1>
+        <p>Número de Orden: <strong>{{ solicitud.numero_orden }}</strong></p>
+    </div>
+    
+    <div class="detalles-servicio">
+        <h3>📋 Detalles del Servicio</h3>
+        
+        <div class="detalle-item">
+            <span class="detalle-label">📍 Punto de Origen:</span>
+            <span class="detalle-valor">{{ solicitud.direccion_origen }}</span>
+        </div>
+        
+        <div class="detalle-item">
+            <span class="detalle-label">🎯 Punto de Destino:</span>
+            <span class="detalle-valor">{{ solicitud.direccion_destino }}</span>
+        </div>
+        
+        <div class="detalle-item">
+            <span class="detalle-label">📅 Fecha y Hora:</span>
+            <span class="detalle-valor">{{ solicitud.fecha_servicio|date:"d/m/Y H:i" }}</span>
+        </div>
+        
+        <div class="detalle-item">
+            <span class="detalle-label">📏 Distancia:</span>
+            <span class="detalle-valor">{{ solicitud.distancia_km|default:"No especificada" }} km</span>
+        </div>
+        
+        <div class="detalle-item">
+            <span class="detalle-label">🔧 Problema:</span>
+            <span class="detalle-valor">{{ solicitud.descripcion_problema }}</span>
+        </div>
+        
+        <div class="detalle-item">
+            <span class="detalle-label">📊 Estado:</span>
+            <span class="detalle-valor">{{ solicitud.get_estado_display }}</span>
+        </div>
+    </div>
+    
+    <div class="precio-seccion">
+        <h3>💰 Cálculo de Precio</h3>
+        
+        <div class="precio-item">
+            <span>Tarifa Base:</span>
+            <span>${{ tarifa_base|floatformat:0 }}</span>
+        </div>
+        
+        {% if solicitud.distancia_km %}
+        <div class="precio-item">
+            <span>Distancia ({{ solicitud.distancia_km }} km × ${{ 1200|floatformat:0 }}):</span>
+            <span>${{ costo_km|floatformat:0 }}</span>
+        </div>
+        {% endif %}
+        
+        <div class="precio-item precio-total">
+            <span>Total a Pagar:</span>
+            <span>${{ total|floatformat:0 }}</span>
+        </div>
+    </div>
+    
+    <h3>💳 Selecciona tu Método de Pago</h3>
+    
+    <div class="metodos-pago">
+        <a href="{% url 'procesar_transferencia' solicitud.id %}" class="metodo-pago">
+            <span class="metodo-icon">🏦</span>
+            <div class="metodo-nombre">Transferencia Bancaria</div>
+            <div class="metodo-descripcion">Transfiere a nuestra cuenta y envía el comprobante</div>
+        </a>
+        
+        <a href="{% url 'procesar_efectivo' solicitud.id %}" class="metodo-pago">
+            <span class="metodo-icon">💵</span>
+            <div class="metodo-nombre">Efectivo</div>
+            <div class="metodo-descripcion">Paga en efectivo cuando llegue la grúa</div>
+        </a>
+        
+        <a href="{% url 'iniciar_pago_webpay' solicitud.id %}" class="metodo-pago">
+            <span class="metodo-icon">💳</span>
+            <div class="metodo-nombre">WebPay</div>
+            <div class="metodo-descripcion">Pago en línea con tarjeta de débito/crédito</div>
+        </a>
+    </div>
+    
+    <div class="acciones">
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+            ← Volver al Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}
