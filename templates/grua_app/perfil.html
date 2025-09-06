@@ -136,6 +136,19 @@
         box-shadow: 0 8px 25px rgba(0, 213, 99, 0.4);
     }
 
+    .btn-perfil.danger {
+        background: linear-gradient(135deg, rgba(255, 71, 87, 0.2), rgba(255, 71, 87, 0.1));
+        border-color: rgba(255, 71, 87, 0.4);
+        color: #ff4757;
+    }
+
+    .btn-perfil.danger:hover {
+        background: linear-gradient(135deg, rgba(255, 71, 87, 0.3), rgba(255, 71, 87, 0.2));
+        border-color: rgba(255, 71, 87, 0.6);
+        color: #ff4757;
+        box-shadow: 0 8px 25px rgba(255, 71, 87, 0.2);
+    }
+
     .perfil-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -198,6 +211,89 @@
         font-weight: 700;
         color: #fff;
         text-shadow: 0 0 15px rgba(0, 213, 99, 0.2);
+    }
+
+    /* Estilos específicos para membresía */
+    .membresia-activa {
+        background: linear-gradient(135deg, rgba(0, 213, 99, 0.15), rgba(0, 213, 99, 0.08));
+        border-color: rgba(0, 213, 99, 0.3);
+    }
+
+    .membresia-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: linear-gradient(135deg, #00D563, #00B853);
+        color: #000;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        box-shadow: 0 5px 15px rgba(0, 213, 99, 0.3);
+    }
+
+    .membresia-info {
+        margin-bottom: 25px;
+    }
+
+    .membresia-nombre {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 8px;
+    }
+
+    .membresia-detalle {
+        color: #ccc;
+        font-size: 0.95rem;
+        margin-bottom: 4px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .membresia-vencimiento {
+        background: rgba(255, 165, 2, 0.2);
+        border: 1px solid rgba(255, 165, 2, 0.3);
+        color: #ffa502;
+        padding: 8px 16px;
+        border-radius: 12px;
+        font-size: 0.9rem;
+        text-align: center;
+        margin: 15px 0;
+    }
+
+    .membresia-vencimiento.pronto {
+        background: rgba(255, 71, 87, 0.2);
+        border-color: rgba(255, 71, 87, 0.3);
+        color: #ff4757;
+    }
+
+    .membresia-vencimiento.lejano {
+        background: rgba(0, 213, 99, 0.2);
+        border-color: rgba(0, 213, 99, 0.3);
+        color: #00D563;
+    }
+
+    .membresia-acciones {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 20px;
+    }
+
+    .sin-membresia {
+        text-align: center;
+        padding: 40px 20px;
+        color: #999;
+    }
+
+    .sin-membresia i {
+        font-size: 3rem;
+        margin-bottom: 20px;
+        opacity: 0.3;
+        color: #00D563;
     }
 
     .datos-lista {
@@ -424,6 +520,10 @@
         .perfil-datos h1 {
             font-size: 1.8rem;
         }
+
+        .membresia-acciones {
+            flex-direction: column;
+        }
     }
 
     @media (max-width: 480px) {
@@ -527,6 +627,78 @@
             </ul>
         </div>
 
+        <!-- NUEVA SECCIÓN: Membresía Activa -->
+        <div class="perfil-card {% if membresia_activa %}membresia-activa{% endif %}">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <h3 class="card-title">Mi Membresía</h3>
+            </div>
+            
+            {% if membresia_activa %}
+                <div class="membresia-badge">
+                    <i class="fas fa-star"></i>
+                    Membresía Activa
+                </div>
+                
+                <div class="membresia-info">
+                    <div class="membresia-nombre">
+                        {{ membresia_activa.tipo_membresia.get_nombre_display|title }}
+                    </div>
+                    
+                    <div class="membresia-detalle">
+                        <i class="fas fa-calendar-check"></i>
+                        Activa desde: {{ membresia_activa.fecha_inicio|date:"d/m/Y" }}
+                    </div>
+                    
+                    <div class="membresia-detalle">
+                        <i class="fas fa-truck"></i>
+                        Servicios disponibles: {{ membresia_activa.servicios_disponibles }}
+                    </div>
+                    
+                    <div class="membresia-detalle">
+                        <i class="fas fa-percentage"></i>
+                        Descuento: {{ membresia_activa.tipo_membresia.descuento_porcentaje }}%
+                    </div>
+                </div>
+                
+                <!-- Vencimiento -->
+                <div class="membresia-vencimiento lejano">
+                    <i class="fas fa-calendar-alt"></i>
+                    Válida hasta {{ membresia_activa.fecha_vencimiento|date:"d/m/Y" }}
+                </div>
+                
+                <div class="membresia-acciones">
+                    <a href="{% url 'membresias' %}" class="btn-perfil">
+                        <i class="fas fa-arrow-up"></i>
+                        Cambiar Plan
+                    </a>
+                    
+                    <form method="post" action="{% url 'cancelar_membresia' %}" style="margin: 0;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-perfil danger" style="width: 100%; border: none;" 
+                                onclick="return confirm('¿Estás seguro de que quieres cancelar tu membresía?')">
+                            <i class="fas fa-times"></i>
+                            Cancelar Membresía
+                        </button>
+                    </form>
+                </div>
+            {% else %}
+                <div class="sin-membresia">
+                    <i class="fas fa-crown"></i>
+                    <p style="margin-bottom: 20px;">No tienes una membresía activa</p>
+                    <p style="color: #ccc; font-size: 0.9rem; margin-bottom: 25px;">
+                        Obtén beneficios exclusivos, descuentos y servicios prioritarios
+                    </p>
+                    <a href="{% url 'membresias' %}" class="btn-perfil primary">
+                        <i class="fas fa-plus"></i>
+                        Contratar Membresía
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
         <!-- Estadísticas -->
         <div class="perfil-card">
             <div class="card-header">
@@ -571,7 +743,7 @@
                         <div class="servicio-item">
                             <div class="servicio-info">
                                 <h4>{{ solicitud.numero_orden }}</h4>
-                                <p>{{ solicitud.fecha_solicitud|date:"d/m/Y H:i" }} - {{ solicitud.direccion_origen|truncatechars:40 }}</p>
+                                <p>{{ solicitud.fecha_solicitud_formateada }} - {{ solicitud.direccion_origen|truncatechars:40 }}</p>
                             </div>
                             <span class="servicio-estado estado-{{ solicitud.estado }}">
                                 {{ solicitud.get_estado_display }}
@@ -621,7 +793,7 @@
                 <i class="fas fa-headset"></i>
                 Soporte
             </a>
-            <a href="#" class="btn-perfil">
+            <a href="{% url 'membresias' %}" class="btn-perfil">
                 <i class="fas fa-crown"></i>
                 Membresías Premium
             </a>

@@ -1,0 +1,419 @@
+{% extends 'grua_app/base.html' %}
+{% load static %}
+
+{% block title %}Procesar Pago - Grúa Style{% endblock %}
+
+{% block extra_css %}
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+    color: #ffffff;
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Efectos glassmorphism base */
+.glassmorphism {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 32px;
+    margin-bottom: 32px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.glassmorphism::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(0, 213, 99, 0.1),
+        transparent
+    );
+    animation: shimmer 6s infinite;
+}
+
+.glassmorphism:hover {
+    transform: translateY(-2px);
+    border-color: rgba(0, 213, 99, 0.3);
+    box-shadow: 0 30px 60px rgba(0, 213, 99, 0.15);
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Hero Section glassmorphism */
+.hero-section {
+    background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+    padding: 60px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 30% 50%, rgba(0, 213, 99, 0.1) 0%, transparent 50%);
+}
+
+.hero-content {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 40px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    position: relative;
+    z-index: 2;
+}
+
+.hero-title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700;
+    margin-bottom: 20px;
+    line-height: 1.2;
+    text-shadow: 0 0 20px rgba(0, 213, 99, 0.3);
+    color: #ffffff;
+}
+
+.hero-subtitle {
+    font-size: 1.125rem;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.glassmorphism h2 {
+    color: #00D563;
+    margin-bottom: 24px;
+    font-size: 1.8rem;
+    font-weight: 600;
+    text-shadow: 0 0 20px rgba(0, 213, 99, 0.3);
+}
+
+/* Back Button */
+.back-button {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 12px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 2rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.back-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(0, 213, 99, 0.3);
+    color: #fff;
+    text-decoration: none;
+    transform: translateY(-2px);
+}
+
+/* Summary Items */
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.summary-item:last-child {
+    border-bottom: none;
+}
+
+.summary-item strong {
+    color: #00D563;
+    font-weight: 600;
+}
+
+.summary-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 2px solid #00D563;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #00D563;
+}
+
+/* Payment Option */
+.payment-option {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.payment-option::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(0, 213, 99, 0.2),
+        transparent
+    );
+    animation: shimmer 4s infinite;
+}
+
+.payment-option:hover {
+    border-color: rgba(0, 213, 99, 0.5);
+    background: rgba(0, 213, 99, 0.1);
+    transform: translateY(-4px);
+    box-shadow: 0 15px 40px rgba(0, 213, 99, 0.2);
+}
+
+.payment-button {
+    width: 100%;
+    background: transparent;
+    border: none;
+    padding: 32px 24px;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 2;
+}
+
+.payment-button:hover {
+    background: rgba(0, 213, 99, 0.08);
+}
+
+.payment-icon {
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, #00D563, #00B853);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: #000;
+    box-shadow: 0 8px 25px rgba(0, 213, 99, 0.3);
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.payment-option:hover .payment-icon {
+    transform: scale(1.1);
+    box-shadow: 0 12px 35px rgba(0, 213, 99, 0.5);
+}
+
+.payment-info {
+    text-align: center;
+}
+
+.payment-info h3 {
+    margin: 0 0 8px 0;
+    font-weight: 600;
+    font-size: 1.4rem;
+    color: #00D563;
+    text-shadow: 0 0 10px rgba(0, 213, 99, 0.2);
+}
+
+.payment-info p {
+    margin: 0 0 12px 0;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1rem;
+    line-height: 1.4;
+}
+
+.payment-badge {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 193, 7, 0.3));
+    color: #FFD700;
+    border: 1px solid rgba(255, 215, 0, 0.4);
+    display: inline-block;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        padding: 16px;
+    }
+    
+    .glassmorphism {
+        padding: 24px 20px;
+        margin-bottom: 24px;
+    }
+    
+    .hero-content {
+        padding: 32px 24px;
+    }
+    
+    .payment-button {
+        padding: 24px 20px;
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
+    }
+    
+    .payment-info {
+        text-align: center;
+    }
+    
+    .summary-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .summary-total {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .glassmorphism h2 {
+        font-size: 1.5rem;
+    }
+    
+    .hero-title {
+        font-size: 2rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">Procesar Pago</h1>
+            <p class="hero-subtitle">
+                Completa tu pago de forma segura con Mercado Pago
+            </p>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <a href="{% url 'dashboard' %}" class="back-button">
+        ← Volver al Dashboard
+    </a>
+    
+    <!-- Resumen del Pedido -->
+    <section class="glassmorphism">
+        <h2>Resumen del Servicio</h2>
+        
+        <div class="summary-item">
+            <span>Número de Orden:</span>
+            <strong>{{ solicitud.numero_orden }}</strong>
+        </div>
+        
+        <div class="summary-item">
+            <span>Origen:</span>
+            <span>{{ solicitud.direccion_origen|truncatechars:50 }}</span>
+        </div>
+        
+        <div class="summary-item">
+            <span>Destino:</span>
+            <span>{{ solicitud.direccion_destino|truncatechars:50 }}</span>
+        </div>
+        
+        {% if solicitud.marca_vehiculo and solicitud.modelo_vehiculo %}
+        <div class="summary-item">
+            <span>Vehículo:</span>
+            <span>{{ solicitud.marca_vehiculo }} {{ solicitud.modelo_vehiculo }}</span>
+        </div>
+        {% endif %}
+        
+        {% if solicitud.distancia_km %}
+        <div class="summary-item">
+            <span>Distancia:</span>
+            <span>{{ solicitud.distancia_km }} km</span>
+        </div>
+        {% endif %}
+        
+        <div class="summary-total">
+            <span>Total a Pagar:</span>
+            <span>${{ precio_total|floatformat:0 }}</span>
+        </div>
+    </section>
+    
+    <!-- Método de Pago -->
+    <section class="glassmorphism">
+        <h2>Método de Pago</h2>
+        
+        <div class="payment-option">
+            <form action="{% url 'mercadopago_checkout' solicitud.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="payment-button">
+                    <div class="payment-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <div class="payment-info">
+                        <h3>Tarjeta de Débito/Crédito</h3>
+                        <p>Pago seguro y confiable con Mercado Pago.<br>
+                        Acepta todas las tarjetas principales.</p>
+                        <span class="payment-badge">Pago Instantáneo</span>
+                    </div>
+                </button>
+            </form>
+        </div>
+    </section>
+</div>
+{% endblock %}

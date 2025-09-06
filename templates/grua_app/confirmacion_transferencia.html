@@ -4,100 +4,341 @@
 
 {% block extra_css %}
 <style>
+    /* Variables para contexto web/app */
+    :root {
+        --content-padding-bottom: 40px;
+    }
+
+    @media (display-mode: standalone) {
+        :root {
+            --content-padding-bottom: 100px;
+        }
+    }
+
+    body {
+        background: #000;
+        color: #fff;
+        line-height: 1.6;
+        padding-bottom: var(--content-padding-bottom);
+    }
+
     .confirmation-container {
         max-width: 600px;
         margin: 2rem auto;
         padding: 2rem;
-        background: white;
-        border-radius: 1rem;
-        box-shadow: 0 8px 32px rgba(103, 151, 255, 0.15);
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        position: relative;
+        overflow: hidden;
     }
-    
+
+    .confirmation-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(0, 213, 99, 0.1), transparent);
+        animation: shimmer 3s infinite;
+    }
+
+    @keyframes shimmer {
+        0% { left: -100%; }
+        100% { left: 100%; }
+    }
+
     .success-icon {
         width: 80px;
         height: 80px;
-        background: linear-gradient(135deg, #10b981, #059669);
+        background: linear-gradient(135deg, #00D563, #00B853);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         margin: 0 auto 1.5rem;
-        color: white;
+        color: #000;
         font-size: 2rem;
+        font-weight: bold;
+        box-shadow: 0 15px 40px rgba(0, 213, 99, 0.4);
+        animation: icon-pulse 3s ease-in-out infinite;
+        position: relative;
+        z-index: 2;
     }
-    
+
+    @keyframes icon-pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+
+    .text-center {
+        text-align: center;
+        position: relative;
+        z-index: 2;
+    }
+
+    .mb-4 {
+        margin-bottom: 1.5rem;
+    }
+
+    .mb-2 {
+        margin-bottom: 0.5rem;
+    }
+
+    .mb-3 {
+        margin-bottom: 1rem;
+    }
+
+    .h3 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #fff;
+        text-shadow: 0 0 20px rgba(0, 213, 99, 0.3);
+    }
+
+    .text-muted {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 1.1rem;
+    }
+
     .bank-details {
-        background: #f8fafc;
-        border: 2px solid #e2e8f0;
-        border-radius: 0.75rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
         padding: 1.5rem;
         margin: 1.5rem 0;
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
     }
-    
+
+    .bank-details::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        animation: shimmer 4s infinite;
+    }
+
+    .bank-details h4 {
+        color: #00D563;
+        text-align: center;
+        margin-bottom: 1.5rem;
+        position: relative;
+        z-index: 2;
+        text-shadow: 0 0 20px rgba(0, 213, 99, 0.3);
+    }
+
     .bank-row {
         display: flex;
         justify-content: space-between;
-        padding: 0.5rem 0;
-        border-bottom: 1px solid #e2e8f0;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        position: relative;
+        z-index: 2;
     }
-    
+
     .bank-row:last-child {
         border-bottom: none;
         font-weight: bold;
-        color: #6767ff;
+        color: #00D563;
+        font-size: 1.1rem;
+        background: rgba(0, 213, 99, 0.1);
+        margin: 0.5rem -1.5rem -1.5rem -1.5rem;
+        padding: 1rem 1.5rem;
+        border-radius: 0 0 16px 16px;
     }
-    
+
     .bank-label {
-        color: #64748b;
+        color: rgba(255, 255, 255, 0.8);
         font-weight: 500;
     }
-    
+
     .bank-value {
-        color: #1e293b;
+        color: #fff;
         font-weight: 600;
+        text-align: right;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
     }
-    
+
     .copy-btn {
-        background: #6767ff;
-        color: white;
+        background: linear-gradient(135deg, #00D563, #00B853);
+        color: #000;
         border: none;
-        padding: 0.25rem 0.5rem;
-        border-radius: 0.375rem;
+        padding: 0.4rem 0.8rem;
+        border-radius: 8px;
         font-size: 0.75rem;
         cursor: pointer;
-        margin-left: 0.5rem;
-    }
-    
-    .copy-btn:hover {
-        background: #5a5af0;
-    }
-    
-    .instructions {
-        background: #fef3c7;
-        border: 1px solid #f59e0b;
-        border-radius: 0.5rem;
-        padding: 1rem;
-        margin: 1.5rem 0;
-    }
-    
-    .btn-dashboard {
-        background: linear-gradient(135deg, #6767ff, #5a5af0);
-        color: white;
-        padding: 0.75rem 2rem;
-        border: none;
-        border-radius: 0.5rem;
         font-weight: 600;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 15px rgba(0, 213, 99, 0.3);
+    }
+
+    .copy-btn:hover {
+        background: linear-gradient(135deg, #00B853, #00D563);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 213, 99, 0.4);
+    }
+
+    .instructions {
+        background: linear-gradient(135deg, rgba(255, 170, 0, 0.2), rgba(245, 158, 11, 0.1));
+        border: 1px solid rgba(255, 170, 0, 0.3);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .instructions::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 170, 0, 0.1), transparent);
+        animation: shimmer 5s infinite;
+    }
+
+    .instructions h5 {
+        color: #FFAA00;
+        margin-bottom: 1rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .instructions ol {
+        color: rgba(255, 255, 255, 0.9);
+        position: relative;
+        z-index: 2;
+        padding-left: 1.5rem;
+    }
+
+    .instructions li {
+        margin-bottom: 0.5rem;
+        line-height: 1.5;
+    }
+
+    .instructions strong {
+        color: #FFAA00;
+    }
+
+    .service-summary {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .service-summary::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        animation: shimmer 6s infinite;
+    }
+
+    .service-summary h5 {
+        color: #00D563;
+        margin-bottom: 1rem;
+        position: relative;
+        z-index: 2;
+        text-align: center;
+    }
+
+    .service-summary p {
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 0.5rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .service-summary strong {
+        color: #fff;
+    }
+
+    .btn-dashboard {
+        background: linear-gradient(135deg, #00D563 0%, #00B853 100%);
+        color: #000;
+        padding: 1rem 2rem;
+        border: none;
+        border-radius: 16px;
+        font-weight: 700;
         text-decoration: none;
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
         margin-top: 1rem;
         transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        z-index: 2;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 8px 25px rgba(0, 213, 99, 0.3);
     }
-    
+
+    .btn-dashboard::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        animation: shimmer 3s infinite;
+    }
+
     .btn-dashboard:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 24px rgba(103, 151, 255, 0.3);
-        color: white;
+        background: linear-gradient(135deg, #00B853 0%, #00D563 100%);
+        transform: translateY(-4px);
+        box-shadow: 0 15px 40px rgba(0, 213, 99, 0.4);
+        color: #000;
         text-decoration: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .confirmation-container {
+            margin: 1rem;
+            padding: 1.5rem;
+        }
+
+        .bank-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .bank-value {
+            text-align: left;
+            width: 100%;
+        }
+
+        .copy-btn {
+            margin-left: 0;
+            margin-top: 0.25rem;
+        }
     }
 </style>
 {% endblock %}
@@ -105,16 +346,24 @@
 {% block content %}
 <div class="confirmation-container">
     <div class="success-icon">
-        💳
+        <i class="fas fa-university"></i>
     </div>
     
     <div class="text-center mb-4">
-        <h2 class="h3 mb-2">¡Solicitud Registrada!</h2>
-        <p class="text-muted">Solicitud #{{ solicitud.numero_orden }}</p>
+        <h2 class="h3 mb-2">
+        {% if solicitud.tipo_servicio_categoria == 'asistencia' %}
+            ¡Asistencia Mecánica Registrada!
+        {% elif solicitud.tipo_servicio_categoria == 'bateria' %}
+            ¡Servicio de Batería Registrado!
+        {% else %}
+            ¡Solicitud de Grúa Registrada!
+        {% endif %}
+    </h2>
+            <p class="text-muted">Solicitud #{{ solicitud.numero_orden }}</p>
     </div>
     
     <div class="bank-details">
-        <h4 class="mb-3 text-center">Datos para Transferencia</h4>
+        <h4 class="mb-3">Datos para Transferencia</h4>
         
         <div class="bank-row">
             <span class="bank-label">Banco:</span>
@@ -154,26 +403,40 @@
     </div>
     
     <div class="instructions">
-        <h5>📋 Instrucciones:</h5>
+        <h5>Instrucciones:</h5>
         <ol>
             <li>Realiza la transferencia por el monto exacto</li>
-            <li>En el concepto incluye: "Grúa #{{ solicitud.numero_orden }}"</li>
+            <li>En el concepto incluye: "
+            {% if solicitud.tipo_servicio_categoria == 'asistencia' %}
+                Asistencia #{{ solicitud.numero_orden }}"
+            {% elif solicitud.tipo_servicio_categoria == 'bateria' %}
+                Batería #{{ solicitud.numero_orden }}"
+            {% else %}
+                Grúa #{{ solicitud.numero_orden }}"
+            {% endif %}
+        </li>
             <li>Envía el comprobante a: <strong>{{ datos_bancarios.email_confirmacion }}</strong></li>
             <li>Confirmaremos tu pago y programaremos el servicio</li>
         </ol>
     </div>
     
-    <div class="text-center">
-        <h5>📍 Resumen del Servicio</h5>
+    <div class="service-summary text-center">
+        <h5>Resumen del Servicio</h5>
         <p><strong>Origen:</strong> {{ solicitud.direccion_origen }}</p>
         <p><strong>Destino:</strong> {{ solicitud.direccion_destino }}</p>
-        <p><strong>Fecha:</strong> {{ solicitud.fecha_servicio|date:"d/m/Y H:i" }}</p>
+        <p><strong>Fecha:</strong> {{ solicitud.fecha_servicio_formateada }}</p>
         <p><strong>Total:</strong> ${{ solicitud.costo_total|floatformat:0 }}</p>
     </div>
     
     <div class="text-center">
         <a href="{% url 'dashboard' %}" class="btn-dashboard">
+            {% if solicitud.tipo_servicio_categoria == 'asistencia' %}
+            Ver mis Asistencias
+        {% elif solicitud.tipo_servicio_categoria == 'bateria' %}
+            Ver mis Servicios
+        {% else %}
             Ver mis Solicitudes
+        {% endif %}
         </a>
     </div>
 </div>
@@ -183,11 +446,11 @@ function copyToClipboard(text) {
     navigator.clipboard.writeText(text).then(function() {
         // Mostrar feedback visual
         event.target.textContent = '¡Copiado!';
-        event.target.style.background = '#10b981';
+        event.target.style.background = 'linear-gradient(135deg, #10b981, #059669)';
         
         setTimeout(() => {
             event.target.textContent = 'Copiar';
-            event.target.style.background = '#6767ff';
+            event.target.style.background = 'linear-gradient(135deg, #00D563, #00B853)';
         }, 2000);
     });
 }

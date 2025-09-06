@@ -5,15 +5,34 @@
 
 {% block extra_css %}
 <style>
-    /* SOLO CSS PARA EL CONTENIDO - FOOTER INTACTO */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+        color: #ffffff;
+        min-height: 100vh;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+    }
+    
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+    
+    /* Hero Section con glassmorphism - IGUAL A SERVICIOS.HTML */
     .hero-section {
         background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
-        min-height: 60vh;
-        display: flex;
-        align-items: center;
+        padding: 80px 0;
+        text-align: center;
         position: relative;
         overflow: hidden;
-        padding: 120px 0 80px 0;
     }
     
     .hero-section::before {
@@ -29,36 +48,79 @@
     .hero-content {
         position: relative;
         z-index: 2;
-        text-align: center;
         max-width: 800px;
         margin: 0 auto;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        padding: 60px 40px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+    }
+    
+    .hero-content::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(0, 213, 99, 0.1),
+            transparent
+        );
+        animation: shimmer 5s infinite;
+    }
+    
+    .hero-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #00D563, #00B853);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 30px auto;
+        font-size: 2.5rem;
+        color: #000;
+        box-shadow: 0 15px 40px rgba(0, 213, 99, 0.4);
+        animation: icon-pulse 3s ease-in-out infinite;
     }
     
     .hero-title {
-        font-size: clamp(2.5rem, 5vw, 4rem);
+        font-size: clamp(2rem, 4vw, 3rem);
         font-weight: 700;
-        margin-bottom: 24px;
-        line-height: 1.1;
-        text-shadow: 0 0 20px rgba(0, 213, 99, 0.6);
-        animation: glow-pulse 4s ease-in-out infinite alternate;
-    }
-    
-    @keyframes glow-pulse {
-        0% { text-shadow: 0 0 20px rgba(0, 213, 99, 0.6); }
-        100% { text-shadow: 0 0 25px rgba(0, 213, 99, 0.8); }
+        margin-bottom: 20px;
+        line-height: 1.2;
+        text-shadow: 0 0 20px rgba(0, 213, 99, 0.3);
+        color: #ffffff;
     }
     
     .hero-subtitle {
-        font-size: 1.25rem;
-        color: #ccc;
-        margin-bottom: 40px;
+        font-size: 1.125rem;
+        color: rgba(255, 255, 255, 0.8);
         line-height: 1.6;
+        margin: 0;
     }
     
+    /* WhatsApp CTA Section con glassmorphism */
     .whatsapp-cta {
         background: #000;
-        padding: 80px 0;
-        text-align: center;
+        padding: 120px 0;
+        position: relative;
+    }
+    
+    .whatsapp-cta::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 70% 50%, rgba(0, 213, 99, 0.05) 0%, transparent 50%);
     }
     
     .whatsapp-card {
@@ -69,6 +131,27 @@
         max-width: 600px;
         margin: 0 auto;
         backdrop-filter: blur(10px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        z-index: 2;
+    }
+    
+    .whatsapp-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(37, 211, 102, 0.1),
+            transparent
+        );
+        animation: shimmer 4s infinite;
     }
     
     .whatsapp-icon {
@@ -80,12 +163,21 @@
         align-items: center;
         justify-content: center;
         margin: 0 auto 30px auto;
-        animation: whatsapp-pulse 2s ease-in-out infinite;
+        animation: whatsapp-pulse 3s ease-in-out infinite;
+        box-shadow: 0 15px 40px rgba(37, 211, 102, 0.4);
+        position: relative;
+        z-index: 2;
     }
     
     @keyframes whatsapp-pulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.05); }
+        0%, 100% {
+            transform: scale(1);
+            box-shadow: 0 15px 40px rgba(37, 211, 102, 0.4);
+        }
+        50% {
+            transform: scale(1.05);
+            box-shadow: 0 20px 50px rgba(37, 211, 102, 0.6);
+        }
     }
     
     .whatsapp-icon i {
@@ -98,13 +190,18 @@
         font-weight: 700;
         color: #25D366;
         margin-bottom: 20px;
+        text-shadow: 0 0 15px rgba(37, 211, 102, 0.3);
+        position: relative;
+        z-index: 2;
     }
     
     .whatsapp-subtitle {
         font-size: 1.2rem;
-        color: #ccc;
+        color: rgba(255, 255, 255, 0.8);
         margin-bottom: 30px;
         line-height: 1.6;
+        position: relative;
+        z-index: 2;
     }
     
     .whatsapp-btn {
@@ -115,17 +212,41 @@
         background: linear-gradient(135deg, #25D366, #128C7E);
         color: #fff;
         text-decoration: none;
-        border-radius: 50px;
+        border-radius: 16px;
         font-size: 1.2rem;
-        font-weight: 600;
+        font-weight: 700;
         transition: all 0.3s ease;
         min-width: 250px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 8px 25px rgba(37, 211, 102, 0.3);
+        position: relative;
+        overflow: hidden;
+        z-index: 2;
+    }
+    
+    .whatsapp-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.2),
+            transparent
+        );
+        animation: shimmer 3s infinite;
     }
     
     .whatsapp-btn:hover {
-        transform: translateY(-3px);
+        transform: translateY(-4px);
         color: #fff;
         text-decoration: none;
+        box-shadow: 0 15px 40px rgba(37, 211, 102, 0.4);
+        background: linear-gradient(135deg, #128C7E, #25D366);
     }
     
     .whatsapp-btn i {
@@ -137,19 +258,63 @@
         margin-top: 30px;
         padding-top: 20px;
         border-top: 1px solid rgba(255, 255, 255, 0.1);
-        color: #999;
+        color: rgba(255, 255, 255, 0.7);
         font-size: 0.9rem;
+        position: relative;
+        z-index: 2;
     }
     
+    .whatsapp-info strong {
+        color: #25D366;
+        text-shadow: 0 0 8px rgba(37, 211, 102, 0.2);
+    }
+    
+    /* Contact Information Section con glassmorphism */
     .contact-info-section {
         background: #0a0a0a;
-        padding: 80px 0;
+        padding: 120px 0;
+        position: relative;
+    }
+    
+    .contact-info-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 30% 50%, rgba(0, 213, 99, 0.05) 0%, transparent 50%);
     }
     
     .section-header {
         text-align: center;
         max-width: 600px;
-        margin: 0 auto 60px auto;
+        margin: 0 auto 80px auto;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        padding: 40px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+        z-index: 2;
+    }
+    
+    .section-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(0, 213, 99, 0.1),
+            transparent
+        );
+        animation: shimmer 5s infinite;
     }
     
     .section-title {
@@ -157,41 +322,84 @@
         font-weight: 700;
         margin-bottom: 20px;
         line-height: 1.2;
+        text-shadow: 0 0 20px rgba(0, 213, 99, 0.3);
+        color: #ffffff;
+        position: relative;
+        z-index: 2;
     }
     
     .section-subtitle {
         font-size: 1.125rem;
-        color: #999;
+        color: rgba(255, 255, 255, 0.8);
         line-height: 1.6;
+        position: relative;
+        z-index: 2;
     }
     
     .contact-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 40px;
+        gap: 32px;
         max-width: 1000px;
         margin: 0 auto;
+        position: relative;
+        z-index: 2;
     }
     
     .page-contact-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        padding: 40px 32px;
         text-align: center;
-        padding: 30px 20px;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .page-contact-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(0, 213, 99, 0.1),
+            transparent
+        );
+        animation: shimmer 6s infinite;
+    }
+    
+    .page-contact-card:hover {
+        transform: translateY(-8px);
+        border-color: rgba(0, 213, 99, 0.3);
+        box-shadow: 0 20px 40px rgba(0, 213, 99, 0.15);
     }
     
     .page-contact-icon {
-        width: 60px;
-        height: 60px;
+        width: 64px;
+        height: 64px;
         background: linear-gradient(135deg, #00D563, #00B853);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin: 0 auto 20px auto;
+        margin: 0 auto 24px auto;
         transition: all 0.3s ease;
+        box-shadow: 0 10px 30px rgba(0, 213, 99, 0.3);
+        animation: icon-pulse 3s ease-in-out infinite;
+        position: relative;
+        z-index: 2;
     }
     
     .page-contact-card:hover .page-contact-icon {
         transform: scale(1.1);
+        box-shadow: 0 15px 40px rgba(0, 213, 99, 0.5);
     }
     
     .page-contact-icon i {
@@ -201,77 +409,99 @@
     
     .page-contact-title {
         font-size: 1.3rem;
-        font-weight: 600;
-        margin-bottom: 15px;
-        color: #fff;
+        font-weight: 700;
+        margin-bottom: 16px;
+        color: #00D563;
+        text-shadow: 0 0 10px rgba(0, 213, 99, 0.2);
+        position: relative;
+        z-index: 2;
     }
     
     .page-contact-detail {
-        color: #ccc;
+        color: rgba(255, 255, 255, 0.8);
         margin-bottom: 8px;
         line-height: 1.6;
         font-size: 0.95rem;
+        position: relative;
+        z-index: 2;
     }
     
     .page-contact-link {
         color: #00D563;
         text-decoration: none;
-        transition: color 0.3s ease;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        text-shadow: 0 0 8px rgba(0, 213, 99, 0.2);
     }
     
     .page-contact-link:hover {
         color: #00B853;
         text-decoration: underline;
+        text-shadow: 0 0 12px rgba(0, 213, 99, 0.4);
     }
     
+    /* CTA Section con glassmorphism - IGUAL A SERVICIOS.HTML */
     .cta-section {
-        background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
-        padding: 80px 0;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        padding: 60px 40px;
+        text-align: center;
+        margin: 80px auto;
+        max-width: 800px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
         position: relative;
+        overflow: hidden;
     }
     
     .cta-section::before {
         content: '';
         position: absolute;
         top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: radial-gradient(circle at 70% 50%, rgba(0, 213, 99, 0.1) 0%, transparent 50%);
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(0, 213, 99, 0.1),
+            transparent
+        );
+        animation: shimmer 4s infinite;
     }
     
     .cta-content {
-        text-align: center;
-        max-width: 600px;
-        margin: 0 auto;
         position: relative;
         z-index: 2;
     }
     
     .cta-title {
-        font-size: clamp(2rem, 4vw, 2.5rem);
+        font-size: clamp(1.5rem, 3vw, 2.5rem);
         font-weight: 700;
         margin-bottom: 20px;
+        color: #00D563;
+        text-shadow: 0 0 15px rgba(0, 213, 99, 0.4);
         line-height: 1.2;
     }
     
     .cta-subtitle {
         font-size: 1.125rem;
-        color: #ccc;
+        color: rgba(255, 255, 255, 0.8);
         margin-bottom: 40px;
         line-height: 1.6;
     }
     
     .cta-buttons {
         display: flex;
-        gap: 16px;
+        gap: 20px;
         justify-content: center;
         flex-wrap: wrap;
     }
     
     .btn-uber {
-        padding: 16px 32px;
-        border-radius: 12px;
+        padding: 18px 32px;
+        border-radius: 16px;
         font-size: 1rem;
         font-weight: 600;
         text-decoration: none;
@@ -281,37 +511,181 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        min-width: 180px;
+        min-width: 200px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .btn-uber::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.2),
+            transparent
+        );
+        animation: shimmer 3s infinite;
     }
     
     .btn-primary {
-        background: #00D563;
+        background: linear-gradient(135deg, #00D563 0%, #00ff75 100%);
         color: #000;
+        box-shadow: 0 8px 25px rgba(0, 213, 99, 0.3);
     }
     
     .btn-primary:hover {
-        background: #00B853;
-        transform: translateY(-2px);
+        background: linear-gradient(135deg, #00B853 0%, #00D563 100%);
+        transform: translateY(-4px);
+        box-shadow: 0 15px 40px rgba(0, 213, 99, 0.4);
         color: #000;
         text-decoration: none;
     }
     
     .btn-secondary {
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.05);
         color: #fff;
         border: 1px solid rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
     }
     
     .btn-secondary:hover {
-        background: rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.15);
         color: #fff;
         text-decoration: none;
         transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(255, 255, 255, 0.1);
     }
     
     .btn-icon {
-        margin-right: 8px;
+        margin-right: 12px;
         font-size: 1.1rem;
+    }
+    
+    /* Animaciones glassmorphism */
+    @keyframes shimmer {
+        0% {
+            left: -100%;
+        }
+        100% {
+            left: 100%;
+        }
+    }
+    
+    @keyframes icon-pulse {
+        0%, 100% {
+            transform: scale(1);
+            box-shadow: 0 10px 30px rgba(0, 213, 99, 0.3);
+        }
+        50% {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(0, 213, 99, 0.5);
+        }
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .page-contact-card {
+        animation: fadeInUp 0.6s ease forwards;
+    }
+    
+    .page-contact-card:nth-child(1) { animation-delay: 0.1s; }
+    .page-contact-card:nth-child(2) { animation-delay: 0.2s; }
+    .page-contact-card:nth-child(3) { animation-delay: 0.3s; }
+    
+    /* Responsive glassmorphism */
+    @media (max-width: 968px) {
+        .contact-grid {
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .container {
+            padding: 0 16px;
+        }
+        
+        .hero-section {
+            padding: 60px 0;
+        }
+        
+        .hero-content {
+            padding: 40px 24px;
+        }
+        
+        .whatsapp-cta,
+        .contact-info-section {
+            padding: 80px 0;
+        }
+        
+        .whatsapp-card {
+            padding: 40px 24px;
+        }
+        
+        .section-header {
+            padding: 32px 24px;
+        }
+        
+        .page-contact-card {
+            padding: 32px 24px;
+        }
+        
+        .cta-content {
+            padding: 32px 24px;
+        }
+        
+        .cta-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .btn-uber {
+            width: 100%;
+            max-width: 280px;
+        }
+        
+        .cta-section {
+            margin: 60px 16px;
+            padding: 40px 24px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .container {
+            padding: 0 16px;
+        }
+        
+        .hero-content {
+            padding: 32px 20px;
+        }
+        
+        .whatsapp-card {
+            padding: 32px 20px;
+        }
+        
+        .page-contact-card {
+            padding: 24px 20px;
+        }
+        
+        .cta-section {
+            padding: 32px 20px;
+        }
     }
 </style>
 {% endblock %}
@@ -331,32 +705,31 @@
         </div>
     </section>
 
-    <!-- WhatsApp CTA Section -->
-    <section class="whatsapp-cta">
-        <div class="container">
-            <div class="whatsapp-card">
-                <div class="whatsapp-icon">
-                    <i class="fab fa-whatsapp"></i>
-                </div>
-                <h2 class="whatsapp-title">¡Contáctanos por WhatsApp!</h2>
-                <p class="whatsapp-subtitle">
-                    La forma más rápida de solicitar tu grúa. Respuesta inmediata 
-                    y atención personalizada las 24 horas.
-                </p>
-                <a href="https://wa.me/56956066375?text=Hola,%20necesito%20solicitar%20un%20servicio%20de%20grúa" 
-                   target="_blank" 
-                   class="whatsapp-btn">
-                    <i class="fab fa-whatsapp"></i>
-                    Escribir por WhatsApp
-                </a>
-                <div class="whatsapp-info">
-                    <strong>+56 9 5606 6375</strong><br>
-                    Disponible 24/7 • Respuesta inmediata
-                </div>
+   <!-- WhatsApp CTA Section -->
+<section class="whatsapp-cta">
+    <div class="container">
+        <div class="whatsapp-card">
+            <div class="whatsapp-icon">
+                <i class="fas fa-comments"></i>
+            </div>
+            <h2 class="whatsapp-title">¡Contáctanos por WhatsApp!</h2>
+            <p class="whatsapp-subtitle">
+                La forma más rápida de solicitar tu grúa. Respuesta inmediata 
+                y atención personalizada las 24 horas.
+            </p>
+            <a href="https://wa.me/+56989085315?text=Hola,%20necesito%20solicitar%20un%20servicio%20de%20grúa" 
+               target="_blank" 
+               class="whatsapp-btn">
+                <i class="fas fa-comments"></i>
+                Escribir por WhatsApp
+            </a>
+            <div class="whatsapp-info">
+                <strong>+56 9 8908 5315</strong><br>
+                Disponible 24/7 • Respuesta inmediata
             </div>
         </div>
-    </section>
-
+    </div>
+</section>
     <!-- Contact Information -->
     <section class="contact-info-section">
         <div class="container">
@@ -374,7 +747,7 @@
                     </div>
                     <h3 class="page-contact-title">Teléfono</h3>
                     <div class="page-contact-detail">
-                        <a href="tel:+56956066375" class="page-contact-link">+56 9 5606 6375</a>
+                        <a href="tel:+56989085315" class="page-contact-link">+56 9 8908 5315</a>
                     </div>
                     <div class="page-contact-detail">Línea directa 24/7</div>
                     <div class="page-contact-detail">Llamadas y SMS</div>
@@ -416,13 +789,11 @@
                 
                 <div class="cta-buttons">
                     <a href="{% url 'solicitar_servicio' %}" class="btn-uber btn-primary">
-                        <span class="btn-icon">🚚</span>
                         Solicitar Grúa Ahora
                     </a>
-                    <a href="https://wa.me/56956066375?text=Hola,%20necesito%20información%20sobre%20sus%20servicios" 
+                    <a href="https://wa.me/56989085315?text=Hola,%20necesito%20información%20sobre%20sus%20servicios" 
                        target="_blank" 
                        class="btn-uber btn-secondary">
-                        <span class="btn-icon">💬</span>
                         WhatsApp
                     </a>
                 </div>

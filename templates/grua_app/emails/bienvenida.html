@@ -3,149 +3,529 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>¡Bienvenido a GrúaExpress!</title>
+    <title>¡Bienvenido a Grúa Style!</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             line-height: 1.6;
-            color: #333;
+            color: #fff;
+            background: linear-gradient(135deg, #000 0%, #0a0a0a 50%, #111 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .email-container {
             max-width: 600px;
             margin: 0 auto;
-            padding: 20px;
-            background-color: #f8fafc;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 0;
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+            position: relative;
         }
-        .container {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        
+        .email-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 213, 99, 0.1), transparent);
+            animation: shimmer 4s infinite;
         }
+        
         .header {
+            background: linear-gradient(135deg, rgba(0, 213, 99, 0.1), rgba(0, 213, 99, 0.05));
+            border-bottom: 1px solid rgba(0, 213, 99, 0.2);
+            padding: 40px 30px;
             text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #6767ff;
+            position: relative;
+            z-index: 2;
         }
+        
         .logo {
-            font-size: 2.5rem;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #00D563, #00B853);
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 213, 99, 0.3);
+        }
+        
+        .company-name {
+            color: #fff;
+            font-size: 2.2rem;
+            font-weight: 700;
             margin-bottom: 10px;
-        }
-        .title {
-            color: #6767ff;
-            font-size: 1.8rem;
-            margin: 0;
-        }
-        .welcome-message {
-            background: linear-gradient(135deg, #6767ff, #5a5af0);
-            color: white;
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-            margin: 20px 0;
-        }
-        .features {
-            margin: 30px 0;
-        }
-        .feature {
+            text-shadow: 0 0 20px rgba(0, 213, 99, 0.3);
             display: flex;
             align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .tagline {
+            color: #ccc;
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px 30px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .welcome-message {
+            background: linear-gradient(135deg, rgba(0, 213, 99, 0.15), rgba(0, 213, 99, 0.1));
+            border: 1px solid rgba(0, 213, 99, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .welcome-message::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 213, 99, 0.1), transparent);
+            animation: shimmer 3s infinite;
+        }
+        
+        .welcome-message h2 {
+            color: #00D563;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .welcome-message p {
+            color: #ccc;
+            font-size: 1.1rem;
+            margin: 0;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .intro-text {
+            color: #ccc;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            text-align: center;
+            line-height: 1.6;
+        }
+        
+        .features-section {
+            margin: 30px 0;
+        }
+        
+        .features-title {
+            color: #00D563;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-shadow: 0 0 15px rgba(0, 213, 99, 0.3);
+        }
+        
+        .features-title::before {
+            content: '';
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, #00D563, #00B853);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+        
+        .feature {
+            display: flex;
+            align-items: flex-start;
             margin: 15px 0;
-            padding: 10px;
-            background: #f8fafc;
-            border-radius: 6px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
         }
+        
+        .feature:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(0, 213, 99, 0.3);
+            transform: translateY(-2px);
+        }
+        
         .feature-icon {
-            font-size: 1.5rem;
-            margin-right: 15px;
-            width: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #00D563, #00B853);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-size: 1.3rem;
+            margin-right: 20px;
+            flex-shrink: 0;
+            box-shadow: 0 3px 10px rgba(0, 213, 99, 0.3);
         }
-        .button {
+        
+        .feature-content {
+            flex: 1;
+        }
+        
+        .feature-title {
+            color: #fff;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+        
+        .feature-description {
+            color: #ccc;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .cta-section {
+            text-align: center;
+            margin: 40px 0;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .cta-button {
             display: inline-block;
-            background: linear-gradient(135deg, #6767ff, #5a5af0);
-            color: white;
-            padding: 12px 30px;
+            background: linear-gradient(135deg, #00D563, #00B853);
+            color: #000;
+            padding: 16px 40px;
             text-decoration: none;
-            border-radius: 6px;
-            font-weight: bold;
-            text-align: center;
-            margin: 20px auto;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 213, 99, 0.3);
+            margin: 10px;
         }
+        
+        .cta-button:hover {
+            background: linear-gradient(135deg, #00B853, #009642);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 213, 99, 0.4);
+            color: #000;
+            text-decoration: none;
+        }
+        
+        .contact-info {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.05));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+        
+        .contact-title {
+            color: #00D563;
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .contact-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 10px 0;
+            color: #ccc;
+            padding: 8px 0;
+        }
+        
+        .contact-icon {
+            width: 35px;
+            height: 35px;
+            background: rgba(0, 213, 99, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #00D563;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .contact-link {
+            color: #00D563;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .contact-link:hover {
+            color: #00B853;
+            text-decoration: underline;
+        }
+        
         .footer {
+            background: rgba(0, 0, 0, 0.3);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px;
             text-align: center;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #e2e8f0;
-            color: #64748b;
+            color: #666;
             font-size: 0.9rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .footer p {
+            margin: 8px 0;
+        }
+        
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .footer-logo-icon {
+            width: 25px;
+            height: 25px;
+            background: linear-gradient(135deg, #00D563, #00B853);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-size: 0.8rem;
+        }
+        
+        .footer-company {
+            color: #00D563;
+            font-weight: 600;
+        }
+        
+        /* Animaciones */
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .email-container {
+                border-radius: 15px;
+            }
+            
+            .header, .content {
+                padding: 25px 20px;
+            }
+            
+            .company-name {
+                font-size: 1.8rem;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .welcome-message {
+                padding: 25px 20px;
+            }
+            
+            .welcome-message h2 {
+                font-size: 1.5rem;
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .feature {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .feature-icon {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .cta-section {
+                padding: 20px 15px;
+            }
+            
+            .cta-button {
+                padding: 14px 30px;
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="email-container">
         <div class="header">
-            <div class="logo">🚛</div>
-            <h1 class="title">GrúaExpress</h1>
+            <div class="logo">👑</div>
+            <h1 class="company-name">
+                Grúa Style
+            </h1>
+            <p class="tagline">Servicio Premium 24/7</p>
         </div>
         
-        <div class="welcome-message">
-            <h2>¡Bienvenido {{ nombre }}!</h2>
-            <p>Tu cuenta ha sido creada exitosamente</p>
-        </div>
-        
-        <p>Nos alegra que te hayas unido a GrúaExpress, la plataforma líder en servicios de grúa en Chile.</p>
-        
-        <div class="features">
-            <h3>Con tu cuenta podrás:</h3>
+        <div class="content">
+            <div class="welcome-message">
+                <h2>
+                    🎉 ¡Bienvenido {{ nombre }}!
+                </h2>
+                <p>Tu cuenta ha sido creada exitosamente</p>
+            </div>
             
-            <div class="feature">
-                <span class="feature-icon">🗺️</span>
-                <div>
-                    <strong>Solicitar servicios fácilmente</strong><br>
-                    Ubica tu vehículo en el mapa y solicita ayuda al instante
+            <p class="intro-text">
+                Nos alegra que te hayas unido a <strong style="color: #00D563;">Grúa Style</strong>, 
+                la plataforma premium en servicios de grúa en la Región Metropolitana.
+            </p>
+            
+            <div class="features-section">
+                <h3 class="features-title">
+                    ⭐ Con tu cuenta podrás:
+                </h3>
+                
+                <div class="feature">
+                    <div class="feature-icon">🗺️</div>
+                    <div class="feature-content">
+                        <div class="feature-title">Solicitar servicios fácilmente</div>
+                        <div class="feature-description">
+                            Ubica tu vehículo en el mapa y solicita ayuda al instante con nuestra tecnología avanzada
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="feature">
+                    <div class="feature-icon">💳</div>
+                    <div class="feature-content">
+                        <div class="feature-title">Múltiples métodos de pago</div>
+                        <div class="feature-description">
+                            Paga con Webpay, transferencia bancaria o efectivo según tu preferencia
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="feature">
+                    <div class="feature-icon">📱</div>
+                    <div class="feature-content">
+                        <div class="feature-title">Seguimiento en tiempo real</div>
+                        <div class="feature-description">
+                            Monitorea el estado de tu solicitud desde tu dashboard personalizado
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="feature">
+                    <div class="feature-icon">🚚</div>
+                    <div class="feature-content">
+                        <div class="feature-title">Servicio Premium 24/7</div>
+                        <div class="feature-description">
+                            Estamos disponibles las 24 horas, los 7 días de la semana cuando nos necesites
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="feature">
+                    <div class="feature-icon">⭐</div>
+                    <div class="feature-content">
+                        <div class="feature-title">Calidad garantizada</div>
+                        <div class="feature-description">
+                            Operadores certificados y vehículos de última tecnología para tu tranquilidad
+                        </div>
+                    </div>
                 </div>
             </div>
             
-            <div class="feature">
-                <span class="feature-icon">💳</span>
-                <div>
-                    <strong>Múltiples métodos de pago</strong><br>
-                    Paga con Webpay, transferencia o efectivo
-                </div>
+            <div class="cta-section">
+                <h3 style="color: #00D563; margin-bottom: 20px; font-size: 1.3rem;">
+                    🚀 ¡Comienza ahora!
+                </h3>
+                <a href="http://www.gruastyle.com/login/" class="cta-button">
+                    🔑 Acceder a mi cuenta
+                </a>
             </div>
             
-            <div class="feature">
-                <span class="feature-icon">📱</span>
-                <div>
-                    <strong>Seguimiento en tiempo real</strong><br>
-                    Monitorea el estado de tu solicitud desde tu dashboard
-                </div>
-            </div>
-            
-            <div class="feature">
-                <span class="feature-icon">🚚</span>
-                <div>
-                    <strong>Servicio 24/7</strong><br>
-                    Estamos disponibles cuando nos necesites
-                </div>
+            <div class="contact-info">
+                <h3 class="contact-title">
+                    📞 ¿Necesitas ayuda?
+                </h3>
+                <p style="color: #ccc; margin-bottom: 20px;">
+                    Si tienes alguna pregunta o necesitas asistencia, estamos aquí para ayudarte:
+                </p>
+                <ul class="contact-list">
+                    <li class="contact-item">
+                        <div class="contact-icon">📧</div>
+                        <span>Email: <a href="mailto:contacto@gruastyle.com" class="contact-link">contacto@gruastyle.com</a></span>
+                    </li>
+                    <li class="contact-item">
+                        <div class="contact-icon">📞</div>
+                        <span>Teléfono: <a href="tel:+56989085315" class="contact-link">+56 9 8908 5315</a></span>
+                    </li>
+                    <li class="contact-item">
+                        <div class="contact-icon">💬</div>
+                        <span>WhatsApp: <a href="https://wa.me/56989085315" class="contact-link">+56 9 8908 5315</a></span>
+                    </li>
+                    <li class="contact-item">
+                        <div class="contact-icon">🌐</div>
+                        <span>Web: <a href="http://www.gruastyle.com" class="contact-link">www.gruastyle.com</a></span>
+                    </li>
+                </ul>
             </div>
         </div>
-        
-        <div style="text-align: center;">
-            <a href="http://127.0.0.1:8000/login/" class="button">
-                Acceder a mi cuenta
-            </a>
-        </div>
-        
-        <p>Si tienes alguna pregunta o necesitas ayuda, no dudes en contactarnos:</p>
-        <ul>
-            <li>📧 Email: soporte@gruaexpress.cl</li>
-            <li>📞 Teléfono: +56 9 1234 5678</li>
-            <li>🌐 Web: www.gruaexpress.cl</li>
-        </ul>
         
         <div class="footer">
+            <div class="footer-logo">
+                <div class="footer-logo-icon">👑</div>
+                <span class="footer-company">Grúa Style</span>
+            </div>
             <p>Este email fue enviado automáticamente. Por favor no responder a este mensaje.</p>
-            <p>&copy; 2025 GrúaExpress. Todos los derechos reservados.</p>
+            <p>&copy; 2025 Grúa Style. Todos los derechos reservados.</p>
+            <p style="color: #00D563; font-weight: 500;">Servicio Premium 24/7 en la Región Metropolitana</p>
         </div>
     </div>
 </body>

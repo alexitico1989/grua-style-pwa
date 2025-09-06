@@ -3,6 +3,11 @@ from django.template.loader import get_template
 from django.utils import timezone
 import io
 
+def format_local_datetime_pdf(dt):
+    """Convierte datetime a zona horaria local y formatea para PDF"""
+    from django.utils import timezone
+    return timezone.localtime(dt).strftime('%d/%m/%Y %H:%M')
+
 # DEBUG: Verificar que el archivo se está cargando
 print("🔍 DEBUG: pdf_utils.py se está cargando...")
 
@@ -42,7 +47,7 @@ def generar_pdf_solicitud(solicitud):
             parent=styles['Heading1'],
             fontSize=24,
             spaceAfter=30,
-            textColor=colors.HexColor('#1a365d'),
+            textColor=colors.HexColor('#00D563'),
             alignment=1  # Center
         )
         
@@ -51,7 +56,7 @@ def generar_pdf_solicitud(solicitud):
             parent=styles['Heading2'],
             fontSize=14,
             spaceAfter=12,
-            textColor=colors.HexColor('#1a365d'),
+            textColor=colors.HexColor('#00D563'),
             backColor=colors.HexColor('#f8fafc'),
             borderPadding=8
         )
@@ -74,7 +79,7 @@ def generar_pdf_solicitud(solicitud):
             ['ID Solicitud:', f'#{solicitud.id}'],
             ['Cliente:', f'{solicitud.cliente.first_name} {solicitud.cliente.last_name}'],
             ['Email:', solicitud.cliente.email],
-            ['Fecha Solicitud:', solicitud.fecha_solicitud.strftime('%d/%m/%Y %H:%M')],
+            ['Fecha Solicitud:', format_local_datetime_pdf(solicitud.fecha_solicitud)],
             ['Estado:', solicitud.get_estado_display()],
         ]
         
@@ -115,10 +120,10 @@ def generar_pdf_solicitud(solicitud):
         except:
             pass
         
-        # Estilo de tabla
-        table = Table(data, colWidths=[4*cm, 12*cm])
+        # Estilo de tabla estandarizado
+        table = Table(data, colWidths=[5*cm, 11*cm])
         table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#1a365d')),
+            ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#00D563')),
             ('TEXTCOLOR', (0, 0), (0, -1), colors.whitesmoke),
             ('BACKGROUND', (1, 0), (1, -1), colors.HexColor('#f8fafc')),
             ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
@@ -127,7 +132,6 @@ def generar_pdf_solicitud(solicitud):
             ('FONTSIZE', (0, 0), (-1, -1), 10),
             ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#e2e8f0')),
             ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-            ('ROWBACKGROUNDS', (0, 0), (-1, -1), [colors.white, colors.HexColor('#f8fafc')])
         ]))
         
         story.append(table)
@@ -135,16 +139,16 @@ def generar_pdf_solicitud(solicitud):
         
         # Información adicional
         story.append(Paragraph("INFORMACIÓN DEL SERVICIO", heading_style))
-        story.append(Paragraph(f"Esta solicitud fue generada el {timezone.now().strftime('%d/%m/%Y a las %H:%M')}.", normal_style))
+        story.append(Paragraph(f"Esta solicitud fue generada el {format_local_datetime_pdf(timezone.now())}.", normal_style))
         story.append(Spacer(1, 12))
         story.append(Paragraph("Para cualquier consulta, contáctenos:", normal_style))
-        story.append(Paragraph("📧 Email: contacto@gruastyle.cl", normal_style))
-        story.append(Paragraph("📱 Teléfono: +56 9 1234 5678", normal_style))
-        story.append(Paragraph("🌐 Web: www.gruastyle.cl", normal_style))
+        story.append(Paragraph("📧 Email: contacto@gruastyle.com", normal_style))
+        story.append(Paragraph("📱 Teléfono: +56 9 8908 5315", normal_style))
+        story.append(Paragraph("🌐 Web: www.gruastyle.com", normal_style))
         
         # Línea separadora
         story.append(Spacer(1, 20))
-        story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor('#1a365d')))
+        story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor('#00D563')))
         story.append(Spacer(1, 12))
         
         # Footer
@@ -198,7 +202,7 @@ def generar_pdf_comprobante(solicitud):
             parent=styles['Heading1'],
             fontSize=28,
             spaceAfter=30,
-            textColor=colors.HexColor('#1a365d'),
+            textColor=colors.HexColor('#00D563'),
             alignment=1  # Center
         )
         
@@ -207,7 +211,7 @@ def generar_pdf_comprobante(solicitud):
             parent=styles['Heading2'],
             fontSize=20,
             spaceAfter=20,
-            textColor=colors.HexColor('#1a365d'),
+            textColor=colors.HexColor('#00D563'),
             alignment=1
         )
         
@@ -216,7 +220,7 @@ def generar_pdf_comprobante(solicitud):
             parent=styles['Heading2'],
             fontSize=14,
             spaceAfter=12,
-            textColor=colors.HexColor('#1a365d'),
+            textColor=colors.HexColor('#00D563'),
             backColor=colors.HexColor('#f8fafc'),
             borderPadding=8
         )
@@ -239,8 +243,8 @@ def generar_pdf_comprobante(solicitud):
             ['Comprobante N°:', f'COMP-{solicitud.id:04d}'],
             ['Cliente:', f'{solicitud.cliente.first_name} {solicitud.cliente.last_name}'],
             ['Email:', solicitud.cliente.email],
-            ['Fecha Servicio:', solicitud.fecha_solicitud.strftime('%d/%m/%Y')],
-            ['Hora Servicio:', solicitud.fecha_solicitud.strftime('%H:%M')],
+            ['Fecha Servicio:', format_local_datetime_pdf(solicitud.fecha_servicio).split(' ')[0]],
+            ['Hora Servicio:', format_local_datetime_pdf(solicitud.fecha_servicio).split(' ')[1]],
             ['Estado:', solicitud.get_estado_display()],
         ]
         
@@ -272,7 +276,7 @@ def generar_pdf_comprobante(solicitud):
         # Estilo de tabla
         table = Table(data, colWidths=[5*cm, 11*cm])
         table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#1a365d')),
+            ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#00D563')),
             ('TEXTCOLOR', (0, 0), (0, -1), colors.whitesmoke),
             ('BACKGROUND', (1, 0), (1, -1), colors.HexColor('#f8fafc')),
             ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
@@ -298,9 +302,9 @@ def generar_pdf_comprobante(solicitud):
                 
                 total_table = Table(total_data, colWidths=[10*cm, 6*cm])
                 total_table.setStyle(TableStyle([
-                    ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1a365d')),
+                    ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#00D563')),
                     ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-                    ('BACKGROUND', (0, 1), (-1, 1), colors.HexColor('#1a365d')),
+                    ('BACKGROUND', (0, 1), (-1, 1), colors.HexColor('#00D563')),
                     ('TEXTCOLOR', (0, 1), (-1, 1), colors.whitesmoke),
                     ('ALIGN', (0, 0), (-1, -1), 'RIGHT'),
                     ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
@@ -316,16 +320,16 @@ def generar_pdf_comprobante(solicitud):
         
         # Información adicional
         story.append(Paragraph("INFORMACIÓN ADICIONAL", heading_style))
-        story.append(Paragraph(f"Comprobante generado el {timezone.now().strftime('%d/%m/%Y a las %H:%M')}.", normal_style))
+        story.append(Paragraph(f"Comprobante generado el {format_local_datetime_pdf(timezone.now())}.", normal_style))
         story.append(Spacer(1, 12))
         story.append(Paragraph("Este documento es válido como comprobante de servicio.", normal_style))
         story.append(Spacer(1, 12))
         story.append(Paragraph("Contacto:", normal_style))
-        story.append(Paragraph("📧 contacto@gruastyle.cl | 📱 +56 9 1234 5678", normal_style))
+        story.append(Paragraph("📧 contacto@gruastyle.com | 📱 +56 9 8908 5315", normal_style))
         
         # Línea separadora
         story.append(Spacer(1, 20))
-        story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor('#1a365d')))
+        story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor('#00D563')))
         story.append(Spacer(1, 12))
         
         # Footer

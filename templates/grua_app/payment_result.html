@@ -1,0 +1,501 @@
+{% extends 'grua_app/base.html' %}
+{% load static %}
+
+{% block title %}
+{% if success %}
+    ✅ Pago Exitoso - Grúa Style
+{% elif pending %}
+    ⏳ Pago Pendiente - Grúa Style
+{% else %}
+    ❌ Error en Pago - Grúa Style
+{% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .result-container {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 30px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        text-align: center;
+    }
+    
+    .result-icon {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        animation: pulse 2s infinite;
+    }
+    
+    .result-icon.success {
+        color: #00D563;
+        text-shadow: 0 0 20px rgba(0, 213, 99, 0.6);
+    }
+    
+    .result-icon.pending {
+        color: #FFD700;
+        text-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+    }
+    
+    .result-icon.failed {
+        color: #EF4444;
+        text-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
+    }
+    
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+    }
+    
+    .result-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+        color: #fff;
+    }
+    
+    .result-title.success {
+        color: #00D563;
+    }
+    
+    .result-title.pending {
+        color: #FFD700;
+    }
+    
+    .result-title.failed {
+        color: #EF4444;
+    }
+    
+    .result-message {
+        font-size: 1.1rem;
+        color: #ccc;
+        margin-bottom: 30px;
+        line-height: 1.5;
+    }
+    
+    .payment-details {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 20px;
+        margin: 25px 0;
+        text-align: left;
+        backdrop-filter: blur(10px);
+    }
+    
+    .payment-details h4 {
+        color: #00D563;
+        margin-bottom: 15px;
+        font-size: 1.2rem;
+        text-align: center;
+    }
+    
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        color: #fff;
+    }
+    
+    .detail-row:last-child {
+        border-bottom: none;
+    }
+    
+    .detail-label {
+        color: #ccc;
+        font-weight: 500;
+    }
+    
+    .detail-value {
+        color: #fff;
+        font-weight: 600;
+    }
+    
+    .status-indicator {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    
+    .status-approved {
+        background: rgba(0, 213, 99, 0.2);
+        color: #00D563;
+        border: 1px solid rgba(0, 213, 99, 0.3);
+    }
+    
+    .status-pending {
+        background: rgba(255, 193, 7, 0.2);
+        color: #FFD700;
+        border: 1px solid rgba(255, 193, 7, 0.3);
+    }
+    
+    .status-failed {
+        background: rgba(239, 68, 68, 0.2);
+        color: #EF4444;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    
+    .next-steps {
+        background: rgba(59, 130, 246, 0.1);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        border-radius: 12px;
+        padding: 20px;
+        margin: 25px 0;
+        text-align: left;
+        backdrop-filter: blur(10px);
+    }
+    
+    .next-steps h4 {
+        color: #60A5FA;
+        margin-bottom: 15px;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+    
+    .next-steps ul {
+        color: #93C5FD;
+        margin: 0;
+        padding-left: 20px;
+    }
+    
+    .next-steps li {
+        margin-bottom: 8px;
+        line-height: 1.4;
+    }
+    
+    .actions {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 30px;
+    }
+    
+    .btn {
+        padding: 12px 25px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #00D563, #00B853);
+        color: #000;
+        box-shadow: 0 8px 25px rgba(0, 213, 99, 0.3);
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 35px rgba(0, 213, 99, 0.4);
+    }
+    
+    .btn-secondary {
+        background: rgba(108, 117, 125, 0.2);
+        color: #ccc;
+        border: 1px solid rgba(108, 117, 125, 0.3);
+    }
+    
+    .btn-secondary:hover {
+        background: rgba(108, 117, 125, 0.3);
+        color: #fff;
+    }
+    
+    .btn-danger {
+        background: rgba(239, 68, 68, 0.2);
+        color: #EF4444;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    
+    .btn-danger:hover {
+        background: rgba(239, 68, 68, 0.3);
+    }
+    
+    .eta-info {
+        background: rgba(0, 213, 99, 0.1);
+        border: 1px solid rgba(0, 213, 99, 0.3);
+        border-radius: 12px;
+        padding: 20px;
+        margin: 25px 0;
+        text-align: center;
+        backdrop-filter: blur(10px);
+    }
+    
+    .eta-info h4 {
+        color: #00D563;
+        margin-bottom: 10px;
+        font-size: 1.3rem;
+    }
+    
+    .eta-time {
+        font-size: 2rem;
+        color: #00D563;
+        font-weight: bold;
+        margin: 10px 0;
+    }
+    
+    .contact-emergency {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        border-radius: 12px;
+        padding: 15px;
+        margin: 20px 0;
+        text-align: center;
+        backdrop-filter: blur(10px);
+    }
+    
+    .contact-emergency h4 {
+        color: #EF4444;
+        margin-bottom: 10px;
+    }
+    
+    .contact-emergency p {
+        color: #FCA5A5;
+        margin: 5px 0;
+        font-size: 0.9rem;
+    }
+    
+    .contact-emergency a {
+        color: #00D563;
+        text-decoration: none;
+        font-weight: 600;
+    }
+    
+    @media (max-width: 768px) {
+        .result-container {
+            margin: 10px;
+            padding: 20px;
+        }
+        
+        .result-icon {
+            font-size: 3rem;
+        }
+        
+        .result-title {
+            font-size: 1.5rem;
+        }
+        
+        .actions {
+            flex-direction: column;
+        }
+        
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .detail-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 5px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="result-container">
+    {% if success %}
+        <!-- Pago Exitoso -->
+        <div class="result-icon success">✅</div>
+        <h2 class="result-title success">¡Pago Exitoso!</h2>
+        <p class="result-message">
+            Tu pago ha sido procesado correctamente.<br>
+            Tu servicio de grúa está confirmado y en camino.
+        </p>
+        
+        <div class="eta-info">
+            <h4>🚛 Tu grúa está en camino</h4>
+            <div class="eta-time">15-30 min</div>
+            <p style="color: #93C5FD; margin: 0;">Tiempo estimado de llegada</p>
+        </div>
+        
+    {% elif pending %}
+        <!-- Pago Pendiente -->
+        <div class="result-icon pending">⏳</div>
+        <h2 class="result-title pending">Pago en Verificación</h2>
+        <p class="result-message">
+            Tu pago está siendo verificado por el banco.<br>
+            Te confirmaremos el estado en unos minutos.
+        </p>
+        
+    {% else %}
+        <!-- Pago Fallido -->
+        <div class="result-icon failed">❌</div>
+        <h2 class="result-title failed">Error en el Pago</h2>
+        <p class="result-message">
+            No pudimos procesar tu pago.<br>
+            Intenta nuevamente con otro método de pago.
+        </p>
+        
+        <div class="contact-emergency">
+            <h4>🚨 ¿Es una emergencia?</h4>
+            <p>Si necesitas el servicio urgentemente:</p>
+            <p>📞 Llama al <a href="tel:+56912345678">+56 9 1234 5678</a></p>
+            <p>Podemos confirmar tu pago por teléfono</p>
+        </div>
+    {% endif %}
+    
+    <!-- Detalles del Pago -->
+    <div class="payment-details">
+        <h4>💳 Detalles del Pago</h4>
+        
+        <div class="detail-row">
+            <span class="detail-label">ID de Pago:</span>
+            <span class="detail-value">{{ payment.mercadopago_id|default:"N/A" }}</span>
+        </div>
+        
+        <div class="detail-row">
+            <span class="detail-label">Monto:</span>
+            <span class="detail-value">${{ payment.transaction_amount|floatformat:0 }} CLP</span>
+        </div>
+        
+        <div class="detail-row">
+            <span class="detail-label">Método de Pago:</span>
+            <span class="detail-value">{{ payment.get_payment_method_type_display }}</span>
+        </div>
+        
+        <div class="detail-row">
+            <span class="detail-label">Estado:</span>
+            <span class="detail-value">
+                {% if success %}
+                    <span class="status-indicator status-approved">Aprobado</span>
+                {% elif pending %}
+                    <span class="status-indicator status-pending">Pendiente</span>
+                {% else %}
+                    <span class="status-indicator status-failed">Rechazado</span>
+                {% endif %}
+            </span>
+        </div>
+        
+        {% if solicitud %}
+        <div class="detail-row">
+            <span class="detail-label">Orden de Servicio:</span>
+            <span class="detail-value">#{{ solicitud.numero_orden }}</span>
+        </div>
+        {% endif %}
+        
+        <div class="detail-row">
+            <span class="detail-label">Fecha:</span>
+            <span class="detail-value">{{ payment.created_at|date:"d/m/Y H:i" }}</span>
+        </div>
+    </div>
+    
+    <!-- Próximos Pasos -->
+    <div class="next-steps">
+        {% if success %}
+            <h4>🎯 Próximos pasos</h4>
+            <ul>
+                <li><strong>Tu grúa está en camino</strong> - ETA: 15-30 minutos</li>
+                <li><strong>Recibirás una llamada</strong> del conductor cuando esté cerca</li>
+                <li><strong>Ten tu celular a mano</strong> para coordinar la ubicación exacta</li>
+                <li><strong>Prepara tu documentación</strong> del vehículo si es necesaria</li>
+                <li><strong>Puedes seguir el progreso</strong> desde tu dashboard</li>
+            </ul>
+        {% elif pending %}
+            <h4>⏳ Mientras verificamos tu pago</h4>
+            <ul>
+                <li><strong>No cierres esta página</strong> - te actualizaremos automáticamente</li>
+                <li><strong>Verificación típica:</strong> 2-5 minutos</li>
+                <li><strong>Si demora más de 10 minutos</strong> contacta soporte</li>
+                <li><strong>Tu solicitud está guardada</strong> y se procesará al confirmar</li>
+            </ul>
+        {% else %}
+            <h4>🔄 Opciones disponibles</h4>
+            <ul>
+                <li><strong>Intenta con otra tarjeta</strong> - diferentes bancos, diferentes resultados</li>
+                <li><strong>Prueba transferencia bancaria</strong> - método alternativo seguro</li>
+                <li><strong>Verifica saldo disponible</strong> en tu tarjeta</li>
+                <li><strong>Contacta tu banco</strong> si el problema persiste</li>
+            </ul>
+        {% endif %}
+    </div>
+    
+    <!-- Acciones -->
+    <div class="actions">
+        {% if success %}
+            <a href="{% url 'dashboard' %}" class="btn btn-primary">
+                📊 Ver Dashboard
+            </a>
+            <a href="{% url 'tracking_servicio' solicitud.id %}" class="btn btn-secondary">
+                📍 Seguir Grúa
+            </a>
+        {% elif pending %}
+            <button onclick="checkPaymentStatus()" class="btn btn-primary" id="checkStatusBtn">
+                🔄 Verificar Estado
+            </button>
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+                📊 Ir al Dashboard
+            </a>
+        {% else %}
+            <a href="{% url 'payment_selection' solicitud.id %}" class="btn btn-primary">
+                🔄 Intentar Nuevamente
+            </a>
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+                📊 Ir al Dashboard
+            </a>
+            <a href="tel:+56912345678" class="btn btn-danger">
+                📞 Llamar Soporte
+            </a>
+        {% endif %}
+    </div>
+</div>
+
+{% if pending %}
+<script>
+let checkInterval;
+
+function checkPaymentStatus() {
+    const btn = document.getElementById('checkStatusBtn');
+    btn.disabled = true;
+    btn.innerHTML = '⏳ Verificando...';
+    
+    fetch(`/api/payment-status/{{ payment.id }}/`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'approved') {
+                location.reload(); // Recargar para mostrar estado actualizado
+            } else if (data.status === 'rejected') {
+                location.reload(); // Recargar para mostrar estado de error
+            } else {
+                // Sigue pendiente
+                btn.disabled = false;
+                btn.innerHTML = '🔄 Verificar Estado';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            btn.disabled = false;
+            btn.innerHTML = '🔄 Verificar Estado';
+        });
+}
+
+// Auto-verificar cada 30 segundos
+document.addEventListener('DOMContentLoaded', function() {
+    checkInterval = setInterval(checkPaymentStatus, 30000);
+    
+    // Detener verificación después de 10 minutos
+    setTimeout(() => {
+        clearInterval(checkInterval);
+    }, 600000);
+});
+</script>
+{% endif %}
+{% endblock %}

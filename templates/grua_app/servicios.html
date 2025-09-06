@@ -15,22 +15,33 @@
         }
     }
     
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
     body {
-        background: #000;
-        color: #fff;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+        color: #ffffff;
+        min-height: 100vh;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
     }
     
     /* Container principal */
     .servicios-container {
         max-width: 1200px;
         margin: 0 auto;
+        padding: 20px;
         padding-bottom: var(--content-padding-bottom);
     }
     
-    /* Hero section */
+    /* Hero section con efectos glassmorphism */
     .hero-section {
-        background: linear-gradient(135deg, #000 0%, #1a1a1a 50%, #000 100%);
-        padding: 4rem 2rem;
+        background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+        padding: 80px 0;
         text-align: center;
         position: relative;
         overflow: hidden;
@@ -43,62 +54,93 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: 
-            radial-gradient(circle at 20% 20%, rgba(0, 213, 99, 0.1) 0%, transparent 50%),
-            radial-gradient(circle at 80% 80%, rgba(0, 213, 99, 0.1) 0%, transparent 50%);
-        pointer-events: none;
+        background: radial-gradient(circle at 30% 50%, rgba(0, 213, 99, 0.1) 0%, transparent 50%);
     }
     
     .hero-content {
         position: relative;
         z-index: 2;
+        max-width: 800px;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        padding: 60px 40px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+    }
+    
+    .hero-content::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(0, 213, 99, 0.1),
+            transparent
+        );
+        animation: shimmer 5s infinite;
     }
     
     .hero-icon {
-        font-size: 4rem;
-        margin-bottom: 1.5rem;
+        width: 80px;
+        height: 80px;
         background: linear-gradient(135deg, #00D563, #00B853);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 30px auto;
+        font-size: 2.5rem;
+        color: #000;
+        box-shadow: 0 15px 40px rgba(0, 213, 99, 0.4);
+        animation: icon-pulse 3s ease-in-out infinite;
     }
     
     .hero-title {
-        font-size: 2.5rem;
+        font-size: clamp(2rem, 4vw, 3rem);
         font-weight: 700;
-        margin-bottom: 1rem;
-        background: linear-gradient(135deg, #fff, #ccc);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        margin-bottom: 20px;
+        line-height: 1.2;
+        text-shadow: 0 0 20px rgba(0, 213, 99, 0.3);
+        color: #ffffff;
     }
     
     .hero-subtitle {
-        font-size: 1.25rem;
-        color: #ccc;
-        max-width: 600px;
-        margin: 0 auto;
+        font-size: 1.125rem;
+        color: rgba(255, 255, 255, 0.8);
         line-height: 1.6;
+        margin: 0;
     }
     
-    /* Servicios grid */
+    /* Grid de servicios con glassmorphism */
     .servicios-grid {
-        padding: 3rem 2rem;
+        padding: 80px 0;
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-        gap: 2rem;
+        gap: 32px;
         max-width: 1200px;
         margin: 0 auto;
     }
     
     .servicio-card {
-        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
-        border: 1px solid #333;
-        border-radius: 20px;
-        padding: 2rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        padding: 32px;
         transition: all 0.3s ease;
         position: relative;
         overflow: hidden;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        display: flex;
+        flex-direction: column;
+        min-height: 500px;
     }
     
     .servicio-card::before {
@@ -108,158 +150,283 @@
         left: -100%;
         width: 100%;
         height: 100%;
-        background: linear-gradient(90deg, 
-            transparent, 
-            rgba(0, 213, 99, 0.1), 
-            transparent);
-        transition: left 0.6s ease;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(0, 213, 99, 0.1),
+            transparent
+        );
+        animation: shimmer 6s infinite;
     }
     
     .servicio-card:hover {
-        border-color: rgba(0, 213, 99, 0.5);
-        box-shadow: 0 10px 30px rgba(0, 213, 99, 0.2);
-        transform: translateY(-5px);
-    }
-    
-    .servicio-card:hover::before {
-        left: 100%;
+        transform: translateY(-8px);
+        border-color: rgba(0, 213, 99, 0.3);
+        box-shadow: 0 30px 60px rgba(0, 213, 99, 0.15);
     }
     
     .servicio-icon {
-        font-size: 3rem;
-        margin-bottom: 1.5rem;
-        color: #00D563;
-        display: block;
+        width: 64px;
+        height: 64px;
+        background: linear-gradient(135deg, #00D563, #00B853);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 24px;
+        font-size: 1.8rem;
+        color: #000;
+        box-shadow: 0 10px 30px rgba(0, 213, 99, 0.3);
+        transition: all 0.3s ease;
+    }
+    
+    .servicio-card:hover .servicio-icon {
+        transform: scale(1.1);
+        box-shadow: 0 15px 40px rgba(0, 213, 99, 0.5);
     }
     
     .servicio-title {
         font-size: 1.5rem;
         font-weight: 700;
-        margin-bottom: 1rem;
-        color: #fff;
+        margin-bottom: 16px;
+        color: #00D563;
+        text-shadow: 0 0 15px rgba(0, 213, 99, 0.3);
     }
     
     .servicio-description {
-        color: #ccc;
+        color: rgba(255, 255, 255, 0.8);
         line-height: 1.6;
-        margin-bottom: 1.5rem;
+        margin-bottom: 24px;
+        flex-grow: 1;
     }
     
     .servicio-features {
         list-style: none;
-        margin-bottom: 2rem;
+        margin-bottom: 24px;
+        padding: 0;
     }
     
     .servicio-features li {
         display: flex;
         align-items: center;
-        margin-bottom: 0.75rem;
-        color: #fff;
-        font-size: 0.9rem;
+        margin-bottom: 12px;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.95rem;
+        line-height: 1.4;
     }
     
     .servicio-features li::before {
-        content: '✓';
-        color: #00D563;
-        font-weight: 700;
-        margin-right: 0.75rem;
-        font-size: 1.1rem;
+        content: '';
+        width: 6px;
+        height: 6px;
+        background: #00D563;
+        border-radius: 50%;
+        margin-right: 12px;
+        box-shadow: 0 0 8px rgba(0, 213, 99, 0.5);
+        flex-shrink: 0;
     }
     
     .servicio-precio {
+        background: rgba(0, 213, 99, 0.08);
+        border: 1px solid rgba(0, 213, 99, 0.2);
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 24px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 1rem;
-        background: rgba(0, 213, 99, 0.1);
-        border-radius: 12px;
-        border: 1px solid rgba(0, 213, 99, 0.3);
-        margin-bottom: 1.5rem;
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .servicio-precio::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(0, 213, 99, 0.2),
+            transparent
+        );
+        animation: shimmer 4s infinite;
     }
     
     .precio-label {
-        color: #ccc;
-        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.95rem;
+        font-weight: 500;
     }
     
     .precio-value {
         color: #00D563;
-        font-size: 1.25rem;
+        font-size: 1.5rem;
         font-weight: 700;
+        text-shadow: 0 0 15px rgba(0, 213, 99, 0.4);
     }
     
     .servicio-btn {
-        width: 100%;
-        padding: 1rem 2rem;
-        background: linear-gradient(135deg, #00D563, #00B853);
+        background: linear-gradient(135deg, #00D563 0%, #00ff75 100%);
+        border: none;
+        border-radius: 16px;
+        padding: 18px 32px;
         color: #000;
         text-decoration: none;
-        border-radius: 12px;
         font-weight: 700;
         text-align: center;
         transition: all 0.3s ease;
-        display: block;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 8px 25px rgba(0, 213, 99, 0.3);
+        position: relative;
+        overflow: hidden;
+        margin-top: auto;
+    }
+    
+    .servicio-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.2),
+            transparent
+        );
+        animation: shimmer 3s infinite;
     }
     
     .servicio-btn:hover {
-        background: linear-gradient(135deg, #00E570, #00C760);
+        background: linear-gradient(135deg, #00B853 0%, #00D563 100%);
         color: #000;
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(0, 213, 99, 0.4);
+        transform: translateY(-4px);
+        box-shadow: 0 15px 40px rgba(0, 213, 99, 0.4);
+        text-decoration: none;
     }
     
-    /* Sección de características */
+    /* Sección de características con glassmorphism */
     .caracteristicas-section {
-        background: #0a0a0a;
-        padding: 4rem 2rem;
+        background: #000;
+        padding: 120px 0;
+        position: relative;
+    }
+    
+    .caracteristicas-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 70% 50%, rgba(0, 213, 99, 0.05) 0%, transparent 50%);
     }
     
     .section-title {
         text-align: center;
-        font-size: 2rem;
+        font-size: clamp(2rem, 4vw, 3rem);
         font-weight: 700;
-        margin-bottom: 3rem;
-        color: #fff;
+        margin-bottom: 80px;
+        color: #ffffff;
+        text-shadow: 0 0 20px rgba(0, 213, 99, 0.3);
+        position: relative;
+        z-index: 2;
     }
     
     .caracteristicas-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 2rem;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 32px;
         max-width: 1000px;
         margin: 0 auto;
+        position: relative;
+        z-index: 2;
     }
     
     .caracteristica-item {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        padding: 40px 32px;
         text-align: center;
-        padding: 2rem 1rem;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .caracteristica-item::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(0, 213, 99, 0.1),
+            transparent
+        );
+        animation: shimmer 6s infinite;
+    }
+    
+    .caracteristica-item:hover {
+        transform: translateY(-8px);
+        border-color: rgba(0, 213, 99, 0.3);
+        box-shadow: 0 20px 40px rgba(0, 213, 99, 0.15);
     }
     
     .caracteristica-icon {
-        font-size: 2.5rem;
-        color: #00D563;
-        margin-bottom: 1rem;
+        width: 64px;
+        height: 64px;
+        background: linear-gradient(135deg, #00D563, #00B853);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 24px auto;
+        font-size: 1.8rem;
+        color: #000;
+        box-shadow: 0 10px 30px rgba(0, 213, 99, 0.3);
+        animation: icon-pulse 3s ease-in-out infinite;
     }
     
     .caracteristica-title {
         font-size: 1.25rem;
         font-weight: 700;
-        margin-bottom: 1rem;
-        color: #fff;
+        margin-bottom: 16px;
+        color: #00D563;
+        text-shadow: 0 0 10px rgba(0, 213, 99, 0.2);
     }
     
     .caracteristica-text {
-        color: #ccc;
+        color: rgba(255, 255, 255, 0.8);
         line-height: 1.6;
     }
     
-    /* CTA Section */
+    /* CTA Section con glassmorphism */
     .cta-section {
-        background: linear-gradient(135deg, #00D563, #00B853);
-        padding: 4rem 2rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        padding: 60px 40px;
         text-align: center;
-        margin: 3rem 2rem;
-        border-radius: 20px;
+        margin: 80px auto;
+        max-width: 800px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
         position: relative;
         overflow: hidden;
     }
@@ -271,17 +438,13 @@
         left: -100%;
         width: 100%;
         height: 100%;
-        background: linear-gradient(90deg, 
-            transparent, 
-            rgba(255, 255, 255, 0.2), 
-            transparent);
-        animation: shine 3s infinite;
-    }
-    
-    @keyframes shine {
-        0% { left: -100%; }
-        50% { left: -100%; }
-        100% { left: 100%; }
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(0, 213, 99, 0.1),
+            transparent
+        );
+        animation: shimmer 4s infinite;
     }
     
     .cta-content {
@@ -290,73 +453,85 @@
     }
     
     .cta-title {
-        font-size: 2rem;
+        font-size: clamp(1.5rem, 3vw, 2.5rem);
         font-weight: 700;
-        margin-bottom: 1rem;
-        color: #000;
+        margin-bottom: 20px;
+        color: #00D563;
+        text-shadow: 0 0 15px rgba(0, 213, 99, 0.4);
     }
     
     .cta-text {
-        font-size: 1.1rem;
-        margin-bottom: 2rem;
-        color: #000;
-        opacity: 0.8;
+        font-size: 1.125rem;
+        margin-bottom: 40px;
+        color: rgba(255, 255, 255, 0.8);
+        line-height: 1.6;
     }
     
     .cta-btn {
-        display: inline-block;
-        padding: 1rem 2rem;
-        background: #000;
-        color: #00D563;
+        background: linear-gradient(135deg, #00D563 0%, #00ff75 100%);
+        border: none;
+        border-radius: 16px;
+        padding: 18px 36px;
+        color: #000;
         text-decoration: none;
-        border-radius: 12px;
         font-weight: 700;
         font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
         transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 25px rgba(0, 213, 99, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .cta-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.2),
+            transparent
+        );
+        animation: shimmer 3s infinite;
     }
     
     .cta-btn:hover {
-        background: #1a1a1a;
-        color: #00D563;
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-    }
-    
-    /* Responsive */
-    @media (max-width: 768px) {
-        .hero-section {
-            padding: 3rem 1rem;
-        }
-        
-        .hero-title {
-            font-size: 2rem;
-        }
-        
-        .servicios-grid {
-            grid-template-columns: 1fr;
-            padding: 2rem 1rem;
-            gap: 1.5rem;
-        }
-        
-        .servicio-card {
-            padding: 1.5rem;
-        }
-        
-        .caracteristicas-section {
-            padding: 3rem 1rem;
-        }
-        
-        .caracteristicas-grid {
-            grid-template-columns: 1fr;
-        }
-        
-        .cta-section {
-            margin: 2rem 1rem;
-            padding: 3rem 1rem;
-        }
+        background: linear-gradient(135deg, #00B853 0%, #00D563 100%);
+        color: #000;
+        transform: translateY(-4px);
+        box-shadow: 0 15px 40px rgba(0, 213, 99, 0.4);
+        text-decoration: none;
     }
     
     /* Animaciones */
+    @keyframes shimmer {
+        0% {
+            left: -100%;
+        }
+        100% {
+            left: 100%;
+        }
+    }
+    
+    @keyframes icon-pulse {
+        0%, 100% {
+            transform: scale(1);
+            box-shadow: 0 10px 30px rgba(0, 213, 99, 0.3);
+        }
+        50% {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(0, 213, 99, 0.5);
+        }
+    }
+    
     @keyframes fadeInUp {
         from {
             opacity: 0;
@@ -376,6 +551,82 @@
     .servicio-card:nth-child(2) { animation-delay: 0.2s; }
     .servicio-card:nth-child(3) { animation-delay: 0.3s; }
     .servicio-card:nth-child(4) { animation-delay: 0.4s; }
+    
+    /* Responsive */
+    @media (max-width: 968px) {
+        .servicios-grid {
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+        
+        .caracteristicas-grid {
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .servicios-container {
+            padding: 16px;
+        }
+        
+        .hero-section {
+            padding: 60px 0;
+        }
+        
+        .hero-content {
+            padding: 40px 24px;
+        }
+        
+        .servicios-grid {
+            padding: 60px 0;
+            gap: 20px;
+        }
+        
+        .servicio-card {
+            padding: 24px;
+            min-height: auto;
+        }
+        
+        .caracteristicas-section {
+            padding: 80px 0;
+        }
+        
+        .caracteristicas-grid {
+            gap: 20px;
+        }
+        
+        .caracteristica-item {
+            padding: 32px 24px;
+        }
+        
+        .cta-section {
+            margin: 60px 16px;
+            padding: 40px 24px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .hero-content {
+            padding: 32px 20px;
+        }
+        
+        .hero-title {
+            font-size: 2rem;
+        }
+        
+        .servicio-card {
+            padding: 20px;
+        }
+        
+        .caracteristica-item {
+            padding: 24px 20px;
+        }
+        
+        .cta-section {
+            padding: 32px 20px;
+        }
+    }
 </style>
 {% endblock %}
 
@@ -396,6 +647,9 @@
     <section class="servicios-grid">
         <!-- Grúa para Autos -->
         <div class="servicio-card">
+            <div class="servicio-icon">
+    <i class="fas fa-car"></i>
+</div>
             <h3 class="servicio-title">Grúa para Autos</h3>
             <p class="servicio-description">
                 Servicio especializado para vehículos livianos. Traslado seguro y rápido 
@@ -417,6 +671,9 @@
         
         <!-- Grúa para Camionetas -->
         <div class="servicio-card">
+            <div class="servicio-icon">
+    <i class="fas fa-truck-pickup"></i>
+</div>
             <h3 class="servicio-title">Grúa para Camionetas</h3>
             <p class="servicio-description">
                 Servicio especializado para vehículos medianos como camionetas, SUVs y 
@@ -439,6 +696,9 @@
         
         <!-- Servicio de Emergencia -->
         <div class="servicio-card">
+            <div class="servicio-icon">
+    <i class="fas fa-exclamation-triangle"></i>
+</div>
             <h3 class="servicio-title">Emergencias 24/7</h3>
             <p class="servicio-description">
                 Servicio de emergencia disponible las 24 horas. Para situaciones críticas 
@@ -464,7 +724,9 @@
         <h2 class="section-title">¿Por qué elegir Grúa Style?</h2>
         <div class="caracteristicas-grid">
             <div class="caracteristica-item">
-                <div class="caracteristica-icon">⚡</div>
+                <div class="caracteristica-icon">
+    <i class="fas fa-bolt"></i>
+</div>
                 <h3 class="caracteristica-title">Respuesta Rápida</h3>
                 <p class="caracteristica-text">
                     Tiempo promedio de respuesta de 15-30 minutos en toda la RM. 
@@ -472,7 +734,9 @@
                 </p>
             </div>
             <div class="caracteristica-item">
-                <div class="caracteristica-icon">🛡️</div>
+                <div class="caracteristica-icon">
+    <i class="fas fa-shield-alt"></i>
+</div>
                 <h3 class="caracteristica-title">100% Asegurado</h3>
                 <p class="caracteristica-text">
                     Todos nuestros servicios incluyen seguro de responsabilidad civil. 
@@ -480,7 +744,9 @@
                 </p>
             </div>
             <div class="caracteristica-item">
-                  <div class="caracteristica-icon">👨‍⚖️</div>
+                  <div class="caracteristica-icon">
+    <i class="fas fa-user-check"></i>
+</div>
                 <h3 class="caracteristica-title">Operadores Certificados</h3>
                 <p class="caracteristica-text">
                     Personal altamente capacitado y certificado. Años de experiencia 

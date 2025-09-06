@@ -1,0 +1,718 @@
+/* ============================================
+   GRÚA STYLE - ADMIN PERSONALIZADO
+   CSS moderno y responsive para Django Admin
+   ============================================ */
+
+/* Variables CSS para colores corporativos */
+:root {
+    --primary-color: #2563eb;
+    --primary-dark: #1d4ed8;
+    --secondary-color: #f59e0b;
+    --success-color: #10b981;
+    --danger-color: #ef4444;
+    --warning-color: #f59e0b;
+    --dark-color: #1f2937;
+    --light-color: #f8fafc;
+    --border-color: #e5e7eb;
+    --text-color: #374151;
+    --text-light: #6b7280;
+    --header-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --radius: 8px;
+}
+
+/* Reset y base */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    background: var(--light-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+/* ============================================
+   HEADER PRINCIPAL
+   ============================================ */
+
+#header {
+    background: var(--header-bg) !important;
+    color: white !important;
+    border-bottom: none !important;
+    box-shadow: var(--card-shadow);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    padding: 1rem 0;
+}
+
+#branding h1, #branding h1 a {
+    color: white !important;
+    font-weight: 700;
+    font-size: 1.8rem;
+    text-decoration: none;
+    margin: 0;
+}
+
+#branding h1 a:hover {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+#user-tools {
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-weight: 500;
+}
+
+#user-tools a {
+    color: white !important;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius);
+    transition: all 0.3s ease;
+    margin-left: 0.5rem;
+}
+
+#user-tools a:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    transform: translateY(-2px);
+}
+
+/* ============================================
+   NAVEGACIÓN PRINCIPAL
+   ============================================ */
+
+.module {
+    background: white !important;
+    border: none !important;
+    border-radius: var(--radius) !important;
+    box-shadow: var(--card-shadow) !important;
+    margin: 1rem 0 !important;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.module:hover {
+    box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.15) !important;
+    transform: translateY(-2px);
+}
+
+.module h2 {
+    background: var(--primary-color) !important;
+    color: white !important;
+    padding: 1rem !important;
+    margin: 0 !important;
+    font-size: 1.2rem !important;
+    font-weight: 600 !important;
+    border-radius: 0 !important;
+}
+
+.module table {
+    margin: 0 !important;
+}
+
+.module table th {
+    display: none; /* Ocultar headers de tabla en módulos */
+}
+
+.module table td {
+    padding: 1rem !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    border-left: none !important;
+}
+
+.module table td:last-child {
+    border-bottom: none !important;
+}
+
+.module table a {
+    color: var(--text-color) !important;
+    text-decoration: none !important;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0;
+    transition: all 0.3s ease;
+}
+
+.module table a:hover {
+    color: var(--primary-color) !important;
+    transform: translateX(8px);
+}
+
+/* ============================================
+   BOTONES Y ACCIONES
+   ============================================ */
+
+.button, input[type="submit"], .submit-row input, .addlink, .changelink {
+    background: var(--primary-color) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: var(--radius) !important;
+    padding: 0.75rem 1.5rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    text-decoration: none !important;
+    margin: 0.25rem !important;
+}
+
+.button:hover, input[type="submit"]:hover, .submit-row input:hover,
+.addlink:hover, .changelink:hover {
+    background: var(--primary-dark) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3) !important;
+}
+
+.button.default, .submit-row .default {
+    background: var(--success-color) !important;
+}
+
+.button.default:hover, .submit-row .default:hover {
+    background: #059669 !important;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
+}
+
+/* Botones de peligro */
+.deletelink, .button.deletelink {
+    background: var(--danger-color) !important;
+}
+
+.deletelink:hover, .button.deletelink:hover {
+    background: #dc2626 !important;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3) !important;
+}
+
+/* ============================================
+   FORMULARIOS
+   ============================================ */
+
+.form-row {
+    margin-bottom: 1.5rem !important;
+    background: white;
+    padding: 1rem;
+    border-radius: var(--radius);
+    box-shadow: var(--card-shadow);
+}
+
+.form-row label {
+    font-weight: 600 !important;
+    color: var(--text-color) !important;
+    margin-bottom: 0.5rem !important;
+    display: block !important;
+}
+
+input[type="text"], input[type="email"], input[type="password"], 
+input[type="url"], input[type="number"], input[type="tel"],
+textarea, select {
+    border: 2px solid var(--border-color) !important;
+    border-radius: var(--radius) !important;
+    padding: 0.75rem !important;
+    font-size: 1rem !important;
+    transition: all 0.3s ease !important;
+    width: 100% !important;
+    background: white !important;
+}
+
+input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus,
+input[type="url"]:focus, input[type="number"]:focus, input[type="tel"]:focus,
+textarea:focus, select:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1) !important;
+    outline: none !important;
+}
+
+/* ============================================
+   TABLAS DE DATOS
+   ============================================ */
+
+#changelist {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--card-shadow);
+    margin: 1rem 0;
+    overflow: hidden;
+}
+
+#changelist-search {
+    background: var(--light-color) !important;
+    padding: 1.5rem !important;
+    border-bottom: 1px solid var(--border-color);
+}
+
+#changelist-search input[type="text"] {
+    padding: 0.75rem 1rem !important;
+    border: 2px solid var(--border-color) !important;
+    border-radius: var(--radius) !important;
+    font-size: 1rem !important;
+    width: 300px !important;
+    max-width: 100% !important;
+}
+
+#changelist table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin: 0 !important;
+}
+
+#changelist table thead th {
+    background: var(--primary-color) !important;
+    color: white !important;
+    padding: 1rem !important;
+    font-weight: 600 !important;
+    border: none !important;
+    text-align: left !important;
+}
+
+#changelist table tbody td {
+    padding: 1rem !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    border-left: none !important;
+    border-right: none !important;
+}
+
+#changelist table tbody tr:hover {
+    background: rgba(37, 99, 235, 0.05) !important;
+}
+
+#changelist table tbody tr:nth-child(even) {
+    background: rgba(248, 250, 252, 0.8) !important;
+}
+
+/* ============================================
+   FILTROS LATERALES
+   ============================================ */
+
+#changelist-filter {
+    background: white !important;
+    border: none !important;
+    border-radius: var(--radius) !important;
+    box-shadow: var(--card-shadow) !important;
+    padding: 0 !important;
+    margin-left: 1rem;
+}
+
+#changelist-filter h2 {
+    background: var(--dark-color) !important;
+    color: white !important;
+    padding: 1rem !important;
+    margin: 0 !important;
+    font-size: 1.1rem !important;
+    font-weight: 600 !important;
+}
+
+#changelist-filter h3 {
+    background: var(--light-color) !important;
+    color: var(--text-color) !important;
+    padding: 0.75rem 1rem !important;
+    margin: 0 !important;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+#changelist-filter ul {
+    padding: 0.5rem 0 !important;
+    margin: 0 !important;
+}
+
+#changelist-filter li {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+#changelist-filter a {
+    display: block !important;
+    padding: 0.75rem 1rem !important;
+    color: var(--text-color) !important;
+    text-decoration: none !important;
+    transition: all 0.3s ease !important;
+}
+
+#changelist-filter a:hover {
+    background: var(--primary-color) !important;
+    color: white !important;
+}
+
+#changelist-filter a.selected {
+    background: var(--secondary-color) !important;
+    color: white !important;
+    font-weight: 600 !important;
+}
+
+/* ============================================
+   BREADCRUMBS
+   ============================================ */
+
+.breadcrumbs {
+    background: white !important;
+    border: none !important;
+    border-radius: var(--radius) !important;
+    box-shadow: var(--card-shadow) !important;
+    padding: 1rem !important;
+    margin: 1rem 0 !important;
+    font-weight: 500 !important;
+}
+
+.breadcrumbs a {
+    color: var(--primary-color) !important;
+    text-decoration: none !important;
+}
+
+.breadcrumbs a:hover {
+    text-decoration: underline !important;
+}
+
+/* ============================================
+   MENSAJES Y ALERTAS
+   ============================================ */
+
+.messagelist {
+    margin: 1rem 0 !important;
+    padding: 0 !important;
+    list-style: none !important;
+}
+
+.messagelist li {
+    padding: 1rem 1.5rem !important;
+    margin: 0.5rem 0 !important;
+    border-radius: var(--radius) !important;
+    font-weight: 500 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+}
+
+.messagelist .success {
+    background: #dcfce7 !important;
+    color: #166534 !important;
+    border-left: 4px solid var(--success-color) !important;
+}
+
+.messagelist .error {
+    background: #fee2e2 !important;
+    color: #991b1b !important;
+    border-left: 4px solid var(--danger-color) !important;
+}
+
+.messagelist .warning {
+    background: #fef3c7 !important;
+    color: #92400e !important;
+    border-left: 4px solid var(--warning-color) !important;
+}
+
+.messagelist .info {
+    background: #dbeafe !important;
+    color: #1e40af !important;
+    border-left: 4px solid var(--primary-color) !important;
+}
+
+/* ============================================
+   RESPONSIVE MOBILE
+   ============================================ */
+
+@media (max-width: 768px) {
+    /* Header responsive */
+    #header {
+        padding: 0.75rem 0;
+    }
+    
+    #branding h1 {
+        font-size: 1.4rem !important;
+    }
+    
+    #user-tools {
+        font-size: 0.9rem;
+    }
+    
+    /* Contenido principal */
+    .colM, .colMS, .colSM {
+        margin: 0.5rem !important;
+    }
+    
+    /* Formularios en móvil */
+    .form-row {
+        margin-bottom: 1rem !important;
+        padding: 0.75rem !important;
+    }
+    
+    input[type="text"], input[type="email"], input[type="password"],
+    input[type="url"], input[type="number"], input[type="tel"],
+    textarea, select {
+        padding: 1rem !important;
+        font-size: 16px !important; /* Evita zoom en iOS */
+    }
+    
+    /* Botones más grandes en móvil */
+    .button, input[type="submit"], .submit-row input,
+    .addlink, .changelink {
+        padding: 1rem 1.5rem !important;
+        font-size: 1rem !important;
+        width: 100% !important;
+        justify-content: center !important;
+        margin: 0.5rem 0 !important;
+    }
+    
+    /* Tablas responsive */
+    #changelist table {
+        font-size: 0.9rem;
+    }
+    
+    #changelist table thead th,
+    #changelist table tbody td {
+        padding: 0.75rem 0.5rem !important;
+    }
+    
+    /* Ocultar columnas menos importantes en móvil */
+    #changelist table th:nth-child(n+4),
+    #changelist table td:nth-child(n+4) {
+        display: none;
+    }
+    
+    /* Filtros en móvil */
+    #changelist-filter {
+        margin: 1rem 0 0 0 !important;
+        width: 100% !important;
+    }
+    
+    /* Navegación en móvil */
+    .module table a {
+        padding: 1rem 0 !important;
+        font-size: 1.1rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Ajustes para pantallas muy pequeñas */
+    #branding h1 {
+        font-size: 1.2rem !important;
+    }
+    
+    .breadcrumbs {
+        font-size: 0.9rem !important;
+        padding: 0.75rem !important;
+    }
+    
+    /* Solo mostrar columnas esenciales en pantallas pequeñas */
+    #changelist table th:nth-child(n+3),
+    #changelist table td:nth-child(n+3) {
+        display: none;
+    }
+    
+    /* Búsqueda full-width */
+    #changelist-search input[type="text"] {
+        width: 100% !important;
+    }
+}
+
+/* ============================================
+   MEJORAS ESPECÍFICAS POR MODELO
+   ============================================ */
+
+/* Solicitudes de servicio - colores por estado */
+#changelist table tbody td:has(.estado-pendiente) {
+    border-left: 4px solid var(--warning-color) !important;
+}
+
+#changelist table tbody td:has(.estado-confirmada) {
+    border-left: 4px solid var(--success-color) !important;
+}
+
+#changelist table tbody td:has(.estado-cancelada) {
+    border-left: 4px solid var(--danger-color) !important;
+}
+
+/* Badges para estados */
+.estado-badge {
+    padding: 0.25rem 0.75rem !important;
+    border-radius: 9999px !important;
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+}
+
+.estado-pendiente {
+    background: #fef3c7 !important;
+    color: #92400e !important;
+}
+
+.estado-confirmada {
+    background: #dcfce7 !important;
+    color: #166534 !important;
+}
+
+.estado-completada {
+    background: #dbeafe !important;
+    color: #1e40af !important;
+}
+
+.estado-cancelada {
+    background: #fee2e2 !important;
+    color: #991b1b !important;
+}
+
+/* ============================================
+   DASHBOARD ESPECÍFICO
+   ============================================ */
+
+#content-main {
+    padding: 1rem !important;
+}
+
+/* Estadísticas en dashboard */
+.dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    box-shadow: var(--card-shadow);
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.15);
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    color: var(--text-light);
+    font-weight: 500;
+}
+
+/* ============================================
+   ACCIONES EN LOTE
+   ============================================ */
+
+.actions {
+    background: var(--light-color) !important;
+    padding: 1rem !important;
+    border-radius: var(--radius) var(--radius) 0 0 !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+.actions select, .actions input {
+    margin: 0 0.5rem !important;
+    padding: 0.5rem !important;
+    border-radius: var(--radius) !important;
+    border: 2px solid var(--border-color) !important;
+}
+
+.actions button {
+    background: var(--primary-color) !important;
+    color: white !important;
+    border: none !important;
+    padding: 0.75rem 1.5rem !important;
+    border-radius: var(--radius) !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+}
+
+/* ============================================
+   FIELDSETS Y FORMULARIOS AVANZADOS
+   ============================================ */
+
+fieldset.module {
+    border: none !important;
+    border-radius: var(--radius) !important;
+    box-shadow: var(--card-shadow) !important;
+    margin: 1rem 0 !important;
+    padding: 0 !important;
+    background: white !important;
+}
+
+fieldset.module h2 {
+    background: var(--primary-color) !important;
+    color: white !important;
+    padding: 1rem 1.5rem !important;
+    margin: 0 !important;
+    font-size: 1.1rem !important;
+    font-weight: 600 !important;
+    border-radius: var(--radius) var(--radius) 0 0 !important;
+}
+
+fieldset.module .form-row {
+    margin: 0 !important;
+    padding: 1rem 1.5rem !important;
+    background: none !important;
+    box-shadow: none !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+fieldset.module .form-row:last-child {
+    border-bottom: none !important;
+    border-radius: 0 0 var(--radius) var(--radius) !important;
+}
+
+/* ============================================
+   CALENDARIO Y WIDGETS
+   ============================================ */
+
+.calendar, .calendarbox {
+    border: none !important;
+    border-radius: var(--radius) !important;
+    box-shadow: var(--card-shadow) !important;
+    background: white !important;
+}
+
+.calendar table th {
+    background: var(--primary-color) !important;
+    color: white !important;
+}
+
+.calendar a {
+    color: var(--primary-color) !important;
+}
+
+.calendar a:hover {
+    background: var(--primary-color) !important;
+    color: white !important;
+}
+
+/* ============================================
+   LOADING Y ESTADOS
+   ============================================ */
+
+.loading {
+    background: var(--light-color);
+    border-radius: var(--radius);
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-light);
+}
+
+/* ============================================
+   PRINT STYLES
+   ============================================ */
+
+@media print {
+    * {
+        box-shadow: none !important;
+        border-radius: 0 !important;
+    }
+    
+    #header, #changelist-filter, .breadcrumbs {
+        display: none !important;
+    }
+    
+    body {
+        background: white !important;
+    }
+}

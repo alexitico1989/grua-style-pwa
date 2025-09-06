@@ -7,13 +7,14 @@ from .models import Cliente, SolicitudServicio
 class CustomUserCreationForm(UserCreationForm):
     # CAMPOS DE USUARIO
     first_name = forms.CharField(
-        max_length=30,
+        max_length=15,
         required=True,
         label="Nombre",
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Tu nombre'
-        })
+            'placeholder': 'Nombre (solo uno)'
+        }),
+        help_text='Ingresa solo tu primer nombre (máximo 15)'
     )
     
     last_name = forms.CharField(
@@ -143,6 +144,25 @@ class CustomUserCreationForm(UserCreationForm):
                 )
 
         return telefono
+    
+    def clean_first_name(self):
+        """Validar que el nombre no tenga espacios y sea corto"""
+        first_name = self.cleaned_data.get('first_name')
+        
+        if first_name:
+            # Verificar que no tenga espacios (solo un nombre)
+            if ' ' in first_name:
+                raise forms.ValidationError(
+                    '❌ Ingresa solo un nombre, sin espacios.'
+                )
+            
+            # Verificar longitud
+            if len(first_name) > 15:
+                raise forms.ValidationError(
+                    '❌ El nombre no puede tener más de 15 caracteres.'
+                )
+        
+        return first_name
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -323,7 +343,8 @@ class EditarPerfilForm(forms.Form):
 METODOS_PAGO_CHOICES = [
     ('efectivo', 'Pago en Efectivo'),
     ('transferencia', 'Transferencia Bancaria'),
-    ('webpay', 'Tarjeta de Débito/Crédito'),
+    ('mercadopago_card', 'Tarjeta Débito/Crédito - Mercado Pago'),
+    ('mercadopago_transfer', 'Transferencia - Mercado Pago'),
 ]
 
 
@@ -347,6 +368,10 @@ class SolicitudServicioForm(forms.ModelForm):
             'direccion_destino',
             'fecha_servicio',
             'descripcion_problema',
+            'tipo_vehiculo',
+            'marca_vehiculo',
+            'modelo_vehiculo',
+            'placa_vehiculo',
             'distancia_km',
             'metodo_pago'  # AGREGADO
         ]
@@ -365,7 +390,7 @@ class SolicitudServicioForm(forms.ModelForm):
                 'class': 'form-control',
                 'type': 'datetime-local',
                 'required': True
-            }),
+            }, format='%Y-%m-%dT%H:%M'),
             'descripcion_problema': forms.Textarea(attrs={
                 'class': 'form-control',
                 'rows': 3,
@@ -377,6 +402,32 @@ class SolicitudServicioForm(forms.ModelForm):
                 'step': '0.1',
                 'placeholder': 'Distancia en kilómetros (opcional)',
                 'min': '0'
+            }),
+            'tipo_vehiculo': forms.Select(attrs={
+                'class': 'form-control',
+                'required': True
+            }, choices=[
+                ('', 'Selecciona tipo de vehículo'),
+                ('auto', 'Automóvil'),
+                ('camioneta', 'Camioneta'),
+                ('moto', 'Motocicleta'),
+                ('camion', 'Camión'),
+                ('otro', 'Otro')
+            ]),
+            'marca_vehiculo': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ej: Toyota, Chevrolet, Ford',
+                'required': True
+            }),
+            'modelo_vehiculo': forms.TextInput(attrs={
+                'class': 'form-control', 
+                'placeholder': 'Ej: Corolla, Spark, Focus',
+                'required': True
+            }),
+            'placa_vehiculo': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ej: ABCD12 o AB1234',
+                'required': True
             })
         }
         labels = {
@@ -384,8 +435,22 @@ class SolicitudServicioForm(forms.ModelForm):
             'direccion_destino': 'Dirección de Destino',
             'fecha_servicio': 'Fecha y Hora del Servicio',
             'descripcion_problema': 'Descripción del Problema',
+            'marca_vehiculo': 'Marca del Vehículo',        # 🆕 AGREGAR
+            'modelo_vehiculo': 'Modelo del Vehículo',      # 🆕 AGREGAR
+            'ano_vehiculo': 'Año del Vehículo',            # 🆕 AGREGAR
+            'color_vehiculo': 'Color del Vehículo',        # 🆕 AGREGAR
             'distancia_km': 'Distancia Estimada (km)'
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Configurar zona horaria para fecha_servicio
+        if self.instance and self.instance.pk:
+            from django.utils import timezone
+            if self.instance.fecha_servicio:
+                # Convertir a zona horaria local
+                fecha_local = timezone.localtime(self.instance.fecha_servicio)
+                self.fields['fecha_servicio'].initial = fecha_local
 
     def clean_fecha_servicio(self):
         """Validar que la fecha no sea muy en el pasado (permitir hasta 1 hora atrás)"""
@@ -393,6 +458,10 @@ class SolicitudServicioForm(forms.ModelForm):
         if fecha_servicio:
             from django.utils import timezone
             from datetime import timedelta
+
+            # CORRECCIÓN: Hacer la fecha timezone-aware en zona horaria de Chile
+            if fecha_servicio.tzinfo is None:
+                fecha_servicio = timezone.make_aware(fecha_servicio, timezone.get_current_timezone())
 
             # Permitir fechas hasta 1 hora en el pasado (para compensar diferencias de zona horaria)
             limite_pasado = timezone.now() - timedelta(hours=1)

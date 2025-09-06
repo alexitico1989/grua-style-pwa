@@ -54,8 +54,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="{% load static %}{% static 'css/base.css' %}">
-    <link rel="stylesheet" href="{% load static %}{% static 'css/mobile.css' %}">
+</head>
+
     
     <style>
         * {
@@ -109,8 +109,8 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 1.4rem;
-            font-weight: 700;
+            font-size: 1.4rem !important;
+            font-weight: 700 !important;
             color: #fff;
             text-decoration: none;
             transition: all 0.3s ease;
@@ -176,6 +176,8 @@
             background: #00D563;
             color: #000;
             box-shadow: 0 2px 10px rgba(0, 213, 99, 0.2);
+            font-size: 0.85rem !important;  /* ← AGREGAR !important */
+            padding: 10px 20px !important;  /* ← AGREGAR !important */
         }
         
         .nav-btn.primary:hover {
@@ -505,6 +507,24 @@
             opacity: 0.8;
         }
         
+        /* COBERTURA - ITEMS SIN ENLACES */
+        .footer-links li {
+            margin-bottom: 8px;
+            padding: 4px 0;
+            color: #ccc;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+        }
+
+        .footer-links li i {
+            width: 18px;
+            text-align: center;
+            opacity: 0.8;
+            color: #ccc;
+        }
+
         /* CONTACTO FOOTER - SIN BACKGROUND, COLORES CONSISTENTES */
         .contact-info {
             display: flex;
@@ -769,6 +789,236 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 12px;
         }
+
+        /* AGREGA ESTE CSS AL FINAL DE TU <style> EN base.html (después de la línea 660 aprox) */
+
+        /* ESTILOS PARA EL LOGO EN HEADER */
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            mix-blend-mode: screen; /* Elimina fondo gris */
+            filter: brightness(1.1) contrast(1.1);
+        }
+
+        .logo-icon:hover {
+            transform: scale(1.05);
+            filter: brightness(1.3) contrast(1.2) drop-shadow(0 0 10px rgba(255, 215, 0, 0.6));
+        }
+
+        /* Ajuste del nav-logo para mejor alineación */
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.4rem !important;
+            font-weight: 700 !important;
+            color: #fff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .nav-logo:hover {
+            color: #fff;
+            text-decoration: none;
+            transform: translateY(-1px);
+        }
+
+        /* Responsive para el logo */
+        @media (max-width: 768px) {
+            .logo-icon {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .nav-logo {
+                font-size: 1.2rem;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 768px) {
+    .nav-user-dropdown {
+        position: fixed !important;
+        bottom: 70px !important;
+        top: auto !important;
+        right: 10px !important;
+        left: 10px !important;
+        width: auto !important;
+        max-width: none !important;
+        background: rgba(0, 0, 0, 0.98) !important;
+        max-height: calc(100vh - 140px) !important;
+        overflow-y: auto !important;
+        border-radius: 12px !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        transform: translateY(10px) !important;
+    }
+    
+    .nav-user-dropdown.show {
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: translateY(0) !important;
+    }
+}
+
+/* Mejorar animación en desktop */
+@media (min-width: 769px) {
+    .nav-user-dropdown {
+        transform-origin: top right;
+    }
+    
+    .nav-user-dropdown.show {
+        animation: dropdownSlideDown 0.3s ease;
+    }
+}
+
+@keyframes dropdownSlideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Indicador de disponibilidad - VERSIÓN LLAMATIVA */
+.service-status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    border-radius: 25px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: default;
+}
+
+/* Estado DISPONIBLE - Verde brillante */
+.service-status-indicator:has(.status-dot.active) {
+    background: linear-gradient(135deg, #00D563 0%, #00B853 100%);
+    border: 2px solid #00FF6B;
+    box-shadow: 0 0 20px rgba(0, 213, 99, 0.6), 
+                0 0 40px rgba(0, 213, 99, 0.3);
+    animation: availableGlow 2s ease-in-out infinite alternate;
+}
+
+/* Estado NO DISPONIBLE - Rojo llamativo */
+.service-status-indicator:has(.status-dot.inactive) {
+    background: linear-gradient(135deg, #ff4757 0%, #ff3838 100%);
+    border: 2px solid #ff6b7a;
+    box-shadow: 0 0 20px rgba(255, 71, 87, 0.6),
+                0 0 40px rgba(255, 71, 87, 0.3);
+    animation: unavailableGlow 1.5s ease-in-out infinite alternate;
+}
+
+.status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    position: relative;
+}
+
+.status-dot.active {
+    background: #fff;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+    animation: activePulse 1.5s infinite;
+}
+
+.status-dot.inactive {
+    background: #fff;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+    animation: inactivePulse 1s infinite;
+}
+
+.status-text {
+    color: #fff;
+    font-size: 0.75rem;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    font-weight: 800;
+}
+
+/* Animaciones llamativas */
+@keyframes availableGlow {
+    0% { 
+        box-shadow: 0 0 20px rgba(0, 213, 99, 0.6), 
+                    0 0 40px rgba(0, 213, 99, 0.3);
+    }
+    100% { 
+        box-shadow: 0 0 30px rgba(0, 213, 99, 0.8), 
+                    0 0 60px rgba(0, 213, 99, 0.4);
+    }
+}
+
+@keyframes unavailableGlow {
+    0% { 
+        box-shadow: 0 0 20px rgba(255, 71, 87, 0.6),
+                    0 0 40px rgba(255, 71, 87, 0.3);
+    }
+    100% { 
+        box-shadow: 0 0 30px rgba(255, 71, 87, 0.8),
+                    0 0 60px rgba(255, 71, 87, 0.4);
+    }
+}
+
+@keyframes activePulse {
+    0%, 100% { 
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% { 
+        transform: scale(1.2);
+        opacity: 0.8;
+    }
+}
+
+@keyframes inactivePulse {
+    0%, 100% { 
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% { 
+        transform: scale(1.3);
+        opacity: 0.6;
+    }
+}
+
+/* Efecto hover para más interactividad */
+.service-status-indicator:hover {
+    transform: scale(1.05);
+}
+
+/* Responsive mejorado - VERSIÓN MINIMALISTA */
+@media (max-width: 768px) {
+    .service-status-indicator {
+        position: absolute;
+        left: 160px; /* Justo después del logo */
+        top: 50%;
+        transform: translateY(-50%);
+        padding: 3px 8px;
+        font-size: 0.6rem;
+        gap: 4px;
+        border-radius: 10px;
+    }
+    
+    .status-dot {
+        width: 6px;
+        height: 6px;
+    }
+    
+    .status-text {
+        font-size: 0.55rem;
+    }
+}
     </style>
     
     {% block extra_css %}{% endblock %}
@@ -778,10 +1028,14 @@
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="{% url 'home' %}" class="nav-logo">
-                <i class="fas fa-truck"></i>
+               <i class="fas fa-crown" style="color: #FFD700; font-size: 2rem; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);"></i>
                 <span>Grúa Style</span>
             </a>
-            
+            <div class="service-status-indicator">
+    <div class="status-dot {{ clase_estado }}"></div>
+    <span class="status-text">{{ estado_servicio_texto }}</span>
+</div>
+
             <div class="nav-menu" id="navMenu">
                 <a href="{% url 'home' %}" class="nav-link">
                     <i class="fas fa-home"></i>
@@ -799,6 +1053,8 @@
                     <i class="fas fa-phone"></i>
                     Contacto
                 </a>
+
+                
                 
                 {% if user.is_authenticated %}
                     <a href="{% url 'dashboard' %}" class="nav-link">
@@ -806,13 +1062,12 @@
                         Dashboard
                     </a>
                     <a href="{% url 'solicitar_servicio' %}" class="nav-btn primary">
-                        <i class="fas fa-truck"></i>
                         Solicitar Grúa
                     </a>
                     <div class="nav-user-menu">
                         <button class="nav-user-btn" id="userMenuBtn">
                             <i class="fas fa-user"></i>
-                            <span>{{ user.first_name|default:user.username }}</span>
+                            <span style="max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ user.first_name|default:user.username|truncatechars:12 }}</span>
                             <i class="fas fa-chevron-down"></i>
                         </button>
                         <div class="nav-user-dropdown" id="userDropdown">
@@ -887,7 +1142,7 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <div class="footer-logo">
-                        <i class="fas fa-truck"></i>
+                        <i class="fas fa-crown" style="color: #FFD700; font-size: 2rem; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);"></i>
                         <span>Grúa Style</span>
                     </div>
                     <p class="footer-description">
@@ -917,43 +1172,49 @@
                             <i class="fas fa-tools"></i>
                             Asistencia Mecánica
                         </a></li>
-                        <li><a href="{% url 'carga_bateria' %}">
-                            <i class="fas fa-battery-half"></i>
-                            Carga de Batería
-                        </a></li>
                     </ul>
                 </div>
                 
+                <!-- REEMPLAZA LA SECCIÓN DE COBERTURA EN EL FOOTER -->
+
                 <div class="footer-section">
                     <h4>
                         <i class="fas fa-map-marker-alt"></i>
                         Cobertura
                     </h4>
                     <ul class="footer-links">
-                        <li><a href="#">
+                        <li>
                             <i class="fas fa-building"></i>
                             Santiago Centro
-                        </a></li>
-                        <li><a href="#">
+                        </li>
+                        <li>
                             <i class="fas fa-mountain"></i>
                             Las Condes
-                        </a></li>
-                        <li><a href="#">
+                        </li>
+                        <li>
                             <i class="fas fa-home"></i>
                             Providencia
-                        </a></li>
-                        <li><a href="#">
+                        </li>
+                        <li>
                             <i class="fas fa-tree"></i>
                             Ñuñoa
-                        </a></li>
-                        <li><a href="#">
+                        </li>
+                        <li>
                             <i class="fas fa-crown"></i>
                             La Reina
-                        </a></li>
-                        <li><a href="#">
-                            <i class="fas fa-plus"></i>
-                            Ver todas las comunas
-                        </a></li>
+                        </li>
+                        <li>
+                            <i class="fas fa-city"></i>
+                            Vitacura
+                        </li>
+                        <li>
+                            <i class="fas fa-leaf"></i>
+                            San Miguel
+                        </li>
+                        <li>
+                            <i class="fas fa-university"></i>
+                            Maipú
+                        </li>
                     </ul>
                 </div>
                 
@@ -965,7 +1226,7 @@
                     <div class="contact-info">
                         <div class="contact-item">
                             <i class="fas fa-phone"></i>
-                            <span>+56 9 1234 5678</span>
+                            <span>+56 9 8908 5315</span>
                         </div>
                         <div class="contact-item">
                             <i class="fas fa-envelope"></i>
@@ -988,28 +1249,28 @@
                         <div style="display: flex; justify-content: center; gap: 15px; margin-top: 25px; flex-wrap: wrap;">
                             <!-- Facebook -->
                             <div style="width: 50px; height: 50px; border-radius: 50%; background: #4a4a4a; border: 2px solid #666; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.background='#3b5998'; this.style.borderColor='#3b5998';" onmouseout="this.style.background='#4a4a4a'; this.style.borderColor='#666';">
-                                <a href="#" style="color: white; font-size: 1.2rem; text-decoration: none; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;" title="Facebook">
+                                <a href="https://www.facebook.com/profile.php?id=61574917096045" style="color: white; font-size: 1.2rem; text-decoration: none; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;" title="Facebook">
                                     <i class="fa-brands fa-facebook-f"></i>
                                 </a>
                             </div>
                             
                             <!-- Instagram -->
                             <div style="width: 50px; height: 50px; border-radius: 50%; background: #4a4a4a; border: 2px solid #666; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.background='#e4405f'; this.style.borderColor='#e4405f';" onmouseout="this.style.background='#4a4a4a'; this.style.borderColor='#666';">
-                                <a href="#" style="color: white; font-size: 1.2rem; text-decoration: none; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;" title="Instagram">
+                                <a href="https://www.instagram.com/gruas.style" style="color: white; font-size: 1.2rem; text-decoration: none; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;" title="Instagram">
                                     <i class="fa-brands fa-instagram"></i>
                                 </a>
                             </div>
                             
                             <!-- WhatsApp -->
                             <div style="width: 50px; height: 50px; border-radius: 50%; background: #4a4a4a; border: 2px solid #666; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.background='#25d366'; this.style.borderColor='#25d366';" onmouseout="this.style.background='#4a4a4a'; this.style.borderColor='#666';">
-                                <a href="#" style="color: white; font-size: 1.2rem; text-decoration: none; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;" title="WhatsApp">
+                                <a href="https://wa.me/56989085315" style="color: white; font-size: 1.2rem; text-decoration: none; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;" title="WhatsApp">
                                     <i class="fa-brands fa-whatsapp"></i>
                                 </a>
                             </div>
                             
                             <!-- TikTok -->
                             <div style="width: 50px; height: 50px; border-radius: 50%; background: #4a4a4a; border: 2px solid #666; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.background='#ff0050'; this.style.borderColor='#ff0050';" onmouseout="this.style.background='#4a4a4a'; this.style.borderColor='#666';">
-                                <a href="#" style="color: white; font-size: 1.2rem; text-decoration: none; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;" title="TikTok">
+                                <a href="https://www.tiktok.com/@gruastyle?is_from_webapp=1&sender_device=pc" style="color: white; font-size: 1.2rem; text-decoration: none; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;" title="TikTok">
                                     <i class="fa-brands fa-tiktok"></i>
                                 </a>
                             </div>

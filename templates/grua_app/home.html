@@ -249,62 +249,117 @@
         font-size: 1.1rem;
     }
     
-    /* Stats glassmorphism */
+    /* REEMPLAZA LA SECCIÓN .hero-stats Y .stat-item EN TU CSS */
+
+/* Stats glassmorphism - OPTIMIZADO PARA CENTRADO PERFECTO */
+.hero-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 20px;
+    text-align: center; /* Forzar centrado */
+    margin-top: 40px;
+}
+
+.stat-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 24px 16px; /* Más padding arriba y abajo */
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    text-align: center; /* Centrado forzado */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centrado horizontal */
+    justify-content: center; /* Centrado vertical */
+    min-height: 100px; /* Altura mínima consistente */
+}
+
+.stat-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(0, 213, 99, 0.1),
+        transparent
+    );
+    animation: shimmer 4s infinite;
+}
+
+.stat-item:hover {
+    transform: translateY(-4px);
+    border-color: rgba(0, 213, 99, 0.3);
+    box-shadow: 0 12px 40px rgba(0, 213, 99, 0.15);
+}
+
+.stat-number {
+    font-size: 1.6rem; /* Ligeramente más grande */
+    font-weight: 700;
+    color: #00D563;
+    display: block;
+    text-shadow: 0 0 10px rgba(0, 213, 99, 0.3);
+    margin-bottom: 6px; /* Espaciado consistente */
+    line-height: 1.2;
+    text-align: center;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #999;
+    margin: 0; /* Eliminar margen */
+    line-height: 1.3;
+    text-align: center;
+}
+
+/* RESPONSIVE MEJORADO PARA STATS */
+@media (max-width: 768px) {
     .hero-stats {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        gap: 20px;
-        text-align: left;
-        margin-top: 40px;
+        grid-template-columns: repeat(3, 1fr); /* Mantener 3 columnas en móvil */
+        gap: 16px;
+        text-align: center;
     }
     
     .stat-item {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 16px;
-        padding: 20px 16px;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .stat-item::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(
-            90deg,
-            transparent,
-            rgba(0, 213, 99, 0.1),
-            transparent
-        );
-        animation: shimmer 4s infinite;
-    }
-    
-    .stat-item:hover {
-        transform: translateY(-4px);
-        border-color: rgba(0, 213, 99, 0.3);
-        box-shadow: 0 12px 40px rgba(0, 213, 99, 0.15);
+        padding: 20px 12px;
+        min-height: 90px;
     }
     
     .stat-number {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: #00D563;
-        display: block;
-        text-shadow: 0 0 10px rgba(0, 213, 99, 0.3);
+        font-size: 1.4rem;
     }
     
     .stat-label {
-        font-size: 0.9rem;
-        color: #999;
-        margin-top: 4px;
+        font-size: 0.85rem;
     }
+}
+
+@media (max-width: 480px) {
+    .hero-stats {
+        grid-template-columns: repeat(3, 1fr); /* Mantener 3 columnas */
+        gap: 12px;
+    }
+    
+    .stat-item {
+        padding: 16px 8px;
+        min-height: 80px;
+    }
+    
+    .stat-number {
+        font-size: 1.2rem;
+    }
+    
+    .stat-label {
+        font-size: 0.8rem;
+    }
+}
     
     /* Galería de Imágenes con glassmorphism */
     .hero-images {
@@ -873,308 +928,684 @@
         margin-bottom: 40px;
         line-height: 1.6;
     }
+
+    /* REEMPLAZA LA SECCIÓN .cta-buttons EN TU CSS */
+
+.cta-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columnas iguales */
+    gap: 20px; /* Mismo gap que los recuadros de abajo */
+    justify-content: center;
+    margin-bottom: 40px; /* Separación con los recuadros de abajo */
+    max-width: 100%; /* Usar todo el ancho disponible */
+}
+
+/* ASEGURAR QUE LOS BOTONES TENGAN EL MISMO TAMAÑO */
+.cta-content .btn-uber {
+    background: linear-gradient(135deg, 
+        rgba(5, 150, 105, 0.1) 0%, 
+        rgba(5, 150, 105, 0.05) 50%, 
+        rgba(5, 150, 105, 0.1) 100%);
+    border: 1px solid rgba(5, 150, 105, 0.3);
+    border-radius: 16px;
+    padding: 18px 24px; /* Padding consistente */
+    font-size: 1rem; /* Tamaño de fuente igual */
+    font-weight: 600; /* Peso de fuente igual */
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 56px; /* Altura mínima fija */
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(5, 150, 105, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    color: #fff;
+    text-shadow: 
+        0 0 8px rgba(5, 150, 105, 0.2),
+        0 0 15px rgba(5, 150, 105, 0.1);
+    gap: 12px;
+    width: 100%; /* Ocupar todo el ancho de la columna */
+}
+
+.cta-content .btn-uber::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(5, 150, 105, 0.3),
+        transparent
+    );
+    animation: shimmer 3s infinite;
+}
+
+.cta-content .btn-primary {
+    background: linear-gradient(135deg, 
+        rgba(5, 150, 105, 0.2) 0%, 
+        rgba(5, 150, 105, 0.15) 50%, 
+        rgba(5, 150, 105, 0.2) 100%);
+    border: 1px solid rgba(5, 150, 105, 0.5);
+    color: #fff;
+    font-weight: 700;
+    text-shadow: 
+        0 0 12px rgba(5, 150, 105, 0.3),
+        0 0 20px rgba(5, 150, 105, 0.2);
+}
+
+.cta-content .btn-primary:hover {
+    background: linear-gradient(135deg, 
+        rgba(5, 150, 105, 0.3) 0%, 
+        rgba(5, 150, 105, 0.25) 50%, 
+        rgba(5, 150, 105, 0.3) 100%);
+    border-color: rgba(5, 150, 105, 0.7);
+    transform: translateY(-4px);
+    box-shadow: 
+        0 12px 40px rgba(5, 150, 105, 0.25),
+        0 0 25px rgba(5, 150, 105, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    color: #fff;
+    text-decoration: none;
+    text-shadow: 
+        0 0 15px rgba(5, 150, 105, 0.4),
+        0 0 25px rgba(5, 150, 105, 0.25);
+}
+
+.cta-content .btn-secondary {
+    background: linear-gradient(135deg, 
+        rgba(5, 150, 105, 0.08) 0%, 
+        rgba(5, 150, 105, 0.04) 50%, 
+        rgba(5, 150, 105, 0.08) 100%);
+    border: 1px solid rgba(5, 150, 105, 0.25);
+    color: #fff;
+    font-weight: 600; /* Mismo peso que el primario */
+}
+
+.cta-content .btn-secondary:hover {
+    background: linear-gradient(135deg, 
+        rgba(5, 150, 105, 0.15) 0%, 
+        rgba(5, 150, 105, 0.1) 50%, 
+        rgba(5, 150, 105, 0.15) 100%);
+    border-color: rgba(5, 150, 105, 0.4);
+    color: #fff;
+    text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: 
+        0 8px 20px rgba(5, 150, 105, 0.15),
+        0 0 15px rgba(5, 150, 105, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.cta-content .btn-icon {
+    font-size: 1.1rem;
+}
+
+/* RESPONSIVE PARA LOS BOTONES CTA */
+@media (max-width: 768px) {
+    .cta-buttons {
+        grid-template-columns: 1fr; /* 1 columna en móvil */
+        gap: 16px;
+        max-width: 320px; /* Ancho máximo en móvil */
+        margin: 0 auto 40px auto; /* Centrar en móvil */
+    }
+}
+
+@media (max-width: 480px) {
+    .cta-content .btn-uber {
+        padding: 16px 20px;
+        font-size: 0.95rem;
+        min-height: 52px;
+    }
+}
     
+    /* REEMPLAZA LA SECCIÓN .cta-stats Y .cta-stat EN TU CSS */
+
+/* REEMPLAZA SOLO LA SECCIÓN .cta-stats EN TU CSS */
+
+.cta-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* FORZAR 4 columnas exactas */
+    gap: 20px; /* Reducir gap para que quepan mejor */
+    margin-top: 60px;
+}
+
+/* RESPONSIVE MEJORADO PARA CTA STATS */
+@media (max-width: 968px) {
     .cta-stats {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-        gap: 32px;
-        margin-top: 60px;
+        grid-template-columns: repeat(4, 1fr); /* Mantener 4 columnas en tablet */
+        gap: 16px;
+    }
+}
+
+@media (max-width: 768px) {
+    .cta-stats {
+        grid-template-columns: repeat(2, 1fr); /* 2 columnas en móvil */
+        gap: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .cta-stats {
+        grid-template-columns: repeat(2, 1fr); /* Mantener 2 columnas en móvil pequeño */
+        gap: 16px;
+    }
+}
+
+.cta-stat {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 24px 16px; /* Más padding arriba y abajo */
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centrado horizontal */
+    justify-content: center; /* Centrado vertical */
+    min-height: 100px; /* Altura mínima consistente */
+}
+
+.cta-stat::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(0, 213, 99, 0.1),
+        transparent
+    );
+    animation: shimmer 6s infinite;
+}
+
+.cta-stat:hover {
+    transform: translateY(-4px);
+    border-color: rgba(0, 213, 99, 0.3);
+    box-shadow: 0 12px 40px rgba(0, 213, 99, 0.15);
+}
+
+.cta-stat-value {
+    font-size: 1.6rem; /* Ligeramente más grande */
+    font-weight: 700;
+    color: #00D563;
+    display: block;
+    text-shadow: 0 0 10px rgba(0, 213, 99, 0.3);
+    margin-bottom: 6px; /* Espaciado consistente */
+    line-height: 1.2;
+    text-align: center;
+}
+
+.cta-stat-label {
+    font-size: 0.9rem;
+    color: #999;
+    margin: 0; /* Eliminar margen */
+    line-height: 1.3;
+    text-align: center;
+}
+
+/* RESPONSIVE MEJORADO PARA CTA STATS */
+@media (max-width: 768px) {
+    .cta-stats {
+        grid-template-columns: repeat(2, 1fr); /* 2 columnas en tablet */
+        gap: 20px;
     }
     
     .cta-stat {
-        text-align: center;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 16px;
-        padding: 20px 16px;
-        backdrop-filter: blur(10px);
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .cta-stat::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(
-            90deg,
-            transparent,
-            rgba(0, 213, 99, 0.1),
-            transparent
-        );
-        animation: shimmer 6s infinite;
-    }
-    
-    .cta-stat:hover {
-        transform: translateY(-4px);
-        border-color: rgba(0, 213, 99, 0.3);
-        box-shadow: 0 12px 40px rgba(0, 213, 99, 0.15);
+        padding: 20px 12px;
+        min-height: 90px;
     }
     
     .cta-stat-value {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: #00D563;
-        display: block;
-        text-shadow: 0 0 10px rgba(0, 213, 99, 0.3);
+        font-size: 1.4rem;
     }
     
     .cta-stat-label {
-        font-size: 0.875rem;
-        color: #999;
-        margin-top: 4px;
+        font-size: 0.85rem;
     }
+}
 
-    /* MODAL CSS */
-    .modal-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.8);
-        backdrop-filter: blur(10px);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 10000;
-        opacity: 0;
-        visibility: hidden;
-        transition: all 0.3s ease;
+@media (max-width: 480px) {
+    .cta-stats {
+        grid-template-columns: repeat(2, 1fr); /* Mantener 2 columnas en móvil */
+        gap: 16px;
     }
-
-    .modal-overlay.active {
-        opacity: 1;
-        visibility: visible;
+    
+    .cta-stat {
+        padding: 16px 8px;
+        min-height: 80px;
     }
-
-    .modal-container {
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 20px;
-        backdrop-filter: blur(20px);
-        max-width: 900px;
-        width: 90%;
-        max-height: 90vh;
-        overflow-y: auto;
-        position: relative;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        transform: scale(0.8) translateY(50px);
-        transition: all 0.3s ease;
-    }
-
-    .modal-overlay.active .modal-container {
-        transform: scale(1) translateY(0);
-    }
-
-    .modal-header {
-        padding: 30px 40px 20px;
-        text-align: center;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        position: relative;
-    }
-
-    .modal-title {
-        color: white;
-        font-size: 2.2rem;
-        font-weight: 700;
-        margin: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 15px;
-    }
-
-    .modal-title i {
-        color: #FFD700;
-        font-size: 2.5rem;
-    }
-
-    .modal-close {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
+    
+    .cta-stat-value {
         font-size: 1.2rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
     }
-
-    .modal-close:hover {
-        background: rgba(255, 255, 255, 0.2);
-        transform: scale(1.1);
+    
+    .cta-stat-label {
+        font-size: 0.8rem;
     }
+}
 
+    /* MODAL CSS OPTIMIZADO - REEMPLAZA DESDE LA LÍNEA DEL MODAL EXISTENTE */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-container {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    backdrop-filter: blur(20px);
+    max-width: 1100px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    transform: scale(0.8) translateY(50px);
+    transition: all 0.3s ease;
+}
+
+.modal-overlay.active .modal-container {
+    transform: scale(1) translateY(0);
+}
+
+.modal-header {
+    padding: 30px 40px 20px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+}
+
+.modal-title {
+    color: white;
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.modal-title i {
+    color: #FFD700;
+    font-size: 2.5rem;
+}
+
+.modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.modal-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+.modal-body {
+    padding: 20px 40px 40px;
+}
+
+.modal-subtitle {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.1rem;
+    text-align: center;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+/* Selector de duración */
+.duration-selector {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+}
+
+.duration-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 25px;
+    padding: 10px 20px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.duration-btn:hover,
+.duration-btn.active {
+    background: #00D563;
+    border-color: #00D563;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 213, 99, 0.3);
+}
+
+/* GRID DE PLANES OPTIMIZADO */
+.plans-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin-bottom: 30px;
+    align-items: stretch; /* Asegurar que todas las cards tengan la misma altura */
+}
+
+/* PLAN CARD COMPLETAMENTE REDISEÑADO */
+.plan-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    padding: 0; /* Eliminar padding general */
+    text-align: center;
+    position: relative;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    min-height: 480px; /* Altura mínima fija para consistencia */
+}
+
+.plan-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(0, 213, 99, 0.5);
+    box-shadow: 0 10px 30px rgba(0, 213, 99, 0.2);
+}
+
+/* BADGE "MÁS POPULAR" REPOSICIONADO */
+.plan-card.featured {
+    border: 2px solid #00D563;
+    background: linear-gradient(135deg, rgba(0, 213, 99, 0.15), rgba(0, 213, 99, 0.05));
+    transform: scale(1);
+}
+
+.plan-card.featured::before {
+    content: "⭐ MÁS POPULAR";
+    position: absolute;
+    top: -15px; /* Más separación del borde */
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #00D563, #00B454);
+    color: white;
+    padding: 8px 20px; /* Más padding */
+    border-radius: 20px;
+    font-size: 0.75rem; /* Texto más pequeño */
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(0, 213, 99, 0.4);
+    z-index: 10;
+}
+
+/* CONTENIDO DEL PLAN */
+.plan-content {
+    padding: 30px 25px 0 25px; /* Padding superior y lateral */
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.plan-header {
+    margin-bottom: 25px;
+}
+
+.plan-name {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 10px 0;
+    text-transform: capitalize;
+}
+
+.plan-card.featured .plan-name {
+    margin-top: 20px; /* Más espacio para el badge */
+}
+
+.plan-price {
+    color: #00D563;
+    font-size: 2.4rem;
+    font-weight: 800;
+    margin-bottom: 5px;
+    text-shadow: 0 0 10px rgba(0, 213, 99, 0.3);
+}
+
+.plan-period {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.95rem;
+    margin-bottom: 25px;
+}
+
+/* FEATURES LIST OPTIMIZADA */
+.plan-features {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+    flex-grow: 1; /* Tomar todo el espacio disponible */
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.plan-features li {
+    color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    padding: 4px 0;
+}
+
+.plan-features li i {
+    color: #00D563;
+    font-size: 0.9rem;
+    width: 16px;
+    text-align: center;
+    margin-top: 3px;
+    flex-shrink: 0;
+}
+
+/* BOTÓN SIEMPRE AL FINAL */
+.plan-footer {
+    padding: 25px;
+    margin-top: auto; /* Empujar al final */
+}
+
+.plan-button {
+    width: 100%;
+    padding: 14px 20px;
+    border: 2px solid #00D563;
+    border-radius: 12px;
+    background: transparent;
+    color: #00D563;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.plan-button:hover {
+    background: #00D563;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 213, 99, 0.4);
+}
+
+.plan-card.featured .plan-button {
+    background: #00D563;
+    color: white;
+    font-weight: 700;
+}
+
+.plan-card.featured .plan-button:hover {
+    background: #00B454;
+    transform: translateY(-2px) scale(1.02);
+}
+
+/* FOOTER DEL MODAL */
+.modal-footer {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-info {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+}
+
+.modal-secondary-button {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.8);
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.modal-secondary-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    text-decoration: none;
+}
+
+/* RESPONSIVE OPTIMIZADO */
+@media (max-width: 768px) {
+    .modal-container {
+        width: 95%;
+        margin: 20px;
+    }
+    
+    .modal-header {
+        padding: 25px 20px 15px;
+    }
+    
     .modal-body {
-        padding: 20px 40px 40px;
+        padding: 15px 20px 25px;
     }
-
-    .modal-subtitle {
-        color: rgba(255, 255, 255, 0.9);
-        font-size: 1.1rem;
-        text-align: center;
-        margin-bottom: 30px;
-        line-height: 1.6;
+    
+    .modal-title {
+        font-size: 1.8rem;
     }
-
+    
     .plans-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        grid-template-columns: 1fr;
         gap: 20px;
-        margin-bottom: 30px;
+    }
+    
+    .plan-card {
+        min-height: auto; /* Altura automática en móvil */
+    }
+    
+    .plan-card.featured {
+        transform: none;
+    }
+    
+    .plan-card.featured::before {
+        font-size: 0.7rem;
+        padding: 6px 16px;
+        top: -12px;
+    }
+    
+    .plan-price {
+        font-size: 2rem;
+    }
+
+    .duration-selector {
+        gap: 8px;
+    }
+
+    .duration-btn {
+        padding: 8px 16px;
+        font-size: 0.85rem;
+    }
+    
+    .plan-content {
+        padding: 25px 20px 0 20px;
+    }
+    
+    .plan-footer {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .plans-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .duration-selector {
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
     }
 
     .plan-card {
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 16px;
-        padding: 25px 20px;
-        text-align: center;
-        position: relative;
-        transition: all 0.3s ease;
-        backdrop-filter: blur(10px);
+        min-height: auto;
     }
-
-    .plan-card:hover {
-        transform: translateY(-5px);
-        border-color: rgba(0, 213, 99, 0.5);
-        box-shadow: 0 10px 30px rgba(0, 213, 99, 0.2);
+    
+    .plan-content {
+        padding: 20px 15px 0 15px;
     }
-
-    .plan-card.featured {
-        border: 2px solid #00D563;
-        background: linear-gradient(135deg, rgba(0, 213, 99, 0.15), rgba(0, 213, 99, 0.05));
-        transform: scale(1.05);
+    
+    .plan-footer {
+        padding: 15px;
     }
-
-    .plan-card.featured::before {
-        content: "⭐ MÁS POPULAR";
-        position: absolute;
-        top: -12px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: linear-gradient(135deg, #00D563, #00B454);
-        color: white;
-        padding: 6px 16px;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        letter-spacing: 0.5px;
-    }
-
-    .plan-name {
-        color: white;
-        font-size: 1.4rem;
-        font-weight: 700;
-        margin-bottom: 10px;
-    }
-
-    .plan-price {
-        color: #00D563;
-        font-size: 2.5rem;
-        font-weight: 800;
-        margin-bottom: 5px;
-    }
-
-    .plan-period {
-        color: rgba(255, 255, 255, 0.7);
-        font-size: 0.9rem;
-        margin-bottom: 20px;
-    }
-
-    .plan-features {
-        list-style: none;
-        padding: 0;
-        margin: 0 0 25px 0;
-    }
-
-    .plan-features li {
-        color: rgba(255, 255, 255, 0.9);
-        padding: 8px 0;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-size: 0.95rem;
-    }
-
-    .plan-features li i {
-        color: #00D563;
-        font-size: 1rem;
-        width: 16px;
-        text-align: center;
-    }
-
-    .plan-button {
-        width: 100%;
-        padding: 12px 20px;
-        border: 2px solid #00D563;
-        border-radius: 10px;
-        background: transparent;
-        color: #00D563;
-        font-weight: 600;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .plan-button:hover {
-        background: #00D563;
-        color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0, 213, 99, 0.4);
-    }
-
-    .plan-card.featured .plan-button {
-        background: #00D563;
-        color: white;
-    }
-
-    .plan-card.featured .plan-button:hover {
-        background: #00B454;
-        transform: translateY(-2px) scale(1.05);
-    }
-
-    .modal-footer {
-        text-align: center;
-        padding-top: 20px;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .modal-info {
-        color: rgba(255, 255, 255, 0.7);
-        font-size: 0.9rem;
-        margin-bottom: 15px;
-    }
-
-    .modal-secondary-button {
-        background: transparent;
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        color: rgba(255, 255, 255, 0.8);
-        padding: 10px 20px;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-size: 0.9rem;
-    }
-
-    .modal-secondary-button:hover {
-        background: rgba(255, 255, 255, 0.1);
-        color: white;
-    }
+}
     
     /* Animaciones */
     @keyframes slide-from-left {
@@ -1388,6 +1819,15 @@
         .plan-price {
             font-size: 2rem;
         }
+
+        .duration-selector {
+            gap: 8px;
+        }
+
+        .duration-btn {
+            padding: 8px 16px;
+            font-size: 0.85rem;
+        }
     }
     
     @media (max-width: 480px) {
@@ -1422,92 +1862,22 @@
             min-width: 160px;
             padding: 15px;
         }
+
+        .plans-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .duration-selector {
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .plan-card {
+            padding: 20px 15px;
+        }
     }
 </style>
-
-<!-- MODAL HTML -->
-<div id="membresiaModal" class="modal-overlay">
-    <div class="modal-container">
-        <div class="modal-header">
-            <h2 class="modal-title">
-                <i class="fas fa-crown"></i>
-                ¡Únete a Grúa Style Premium!
-            </h2>
-            <button class="modal-close" id="closeModal">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        
-        <div class="modal-body">
-            <p class="modal-subtitle">
-                Accede a servicios prioritarios, descuentos exclusivos y beneficios únicos. 
-                Elige el plan que mejor se adapte a tus necesidades.
-            </p>
-            
-            <div class="plans-grid">
-                <!-- Plan Básico -->
-                <div class="plan-card">
-                    <h3 class="plan-name">Básico</h3>
-                    <div class="plan-price">$19.990</div>
-                    <div class="plan-period">por mes</div>
-                    <ul class="plan-features">
-                        <li><i class="fas fa-check"></i> Servicio 24/7</li>
-                        <li><i class="fas fa-check"></i> 2 servicios incluidos</li>
-                        <li><i class="fas fa-check"></i> Descuento 10%</li>
-                        <li><i class="fas fa-check"></i> Soporte básico</li>
-                    </ul>
-                    <button class="plan-button" onclick="selectPlan('basico')">
-                        Seleccionar Plan
-                    </button>
-                </div>
-                
-                <!-- Plan Premium -->
-                <div class="plan-card featured">
-                    <h3 class="plan-name">Premium</h3>
-                    <div class="plan-price">$29.990</div>
-                    <div class="plan-period">por mes</div>
-                    <ul class="plan-features">
-                        <li><i class="fas fa-check"></i> Servicio 24/7 prioritario</li>
-                        <li><i class="fas fa-check"></i> 5 servicios incluidos</li>
-                        <li><i class="fas fa-check"></i> Descuento 20%</li>
-                        <li><i class="fas fa-check"></i> Soporte premium</li>
-                        <li><i class="fas fa-check"></i> Servicios adicionales</li>
-                    </ul>
-                    <button class="plan-button" onclick="selectPlan('premium')">
-                        Seleccionar Plan
-                    </button>
-                </div>
-                
-                <!-- Plan VIP -->
-                <div class="plan-card">
-                    <h3 class="plan-name">VIP</h3>
-                    <div class="plan-price">$49.990</div>
-                    <div class="plan-period">por mes</div>
-                    <ul class="plan-features">
-                        <li><i class="fas fa-check"></i> Servicio exclusivo 24/7</li>
-                        <li><i class="fas fa-check"></i> Servicios ilimitados</li>
-                        <li><i class="fas fa-check"></i> Descuento 30%</li>
-                        <li><i class="fas fa-check"></i> Soporte VIP dedicado</li>
-                        <li><i class="fas fa-check"></i> Beneficios exclusivos</li>
-                        <li><i class="fas fa-check"></i> Seguimiento GPS</li>
-                    </ul>
-                    <button class="plan-button" onclick="selectPlan('vip')">
-                        Seleccionar Plan
-                    </button>
-                </div>
-            </div>
-            
-            <div class="modal-footer">
-                <p class="modal-info">
-                    * Precios en pesos chilenos. Puedes cancelar en cualquier momento.
-                </p>
-                <button class="modal-secondary-button" onclick="closeModal()">
-                    Ver más información
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
 {% endblock %}
 
 {% block content %}
@@ -1534,20 +1904,16 @@
                 <div class="cta-buttons">
                     {% if user.is_authenticated %}
                     <a href="{% url 'solicitar_servicio' %}" class="btn-uber btn-primary">
-                        <i class="fas fa-truck btn-icon"></i>
                         Solicitar Grúa Ahora
                     </a>
                     <a href="{% url 'dashboard' %}" class="btn-uber btn-secondary">
-                        <i class="fas fa-tachometer-alt btn-icon"></i>
                         Mi Dashboard
                     </a>
                     {% else %}
                     <a href="{% url 'registro' %}" class="btn-uber btn-primary">
-                        <i class="fas fa-user-plus btn-icon"></i>
                         Crear Cuenta Gratis
                     </a>
                     <a href="{% url 'login' %}" class="btn-uber btn-secondary">
-                        <i class="fas fa-sign-in-alt btn-icon"></i>
                         Iniciar Sesión
                     </a>
                     {% endif %}
@@ -1730,7 +2096,7 @@
                 </div>
                 <h3 class="feature-title">Pago Seguro</h3>
                 <p class="feature-description">
-                    Paga de forma segura con Webpay, transferencia bancaria 
+                    Paga de forma segura con mercado pago, transferencia bancaria 
                     o efectivo. Máxima comodidad y seguridad.
                 </p>
             </div>
@@ -1788,21 +2154,21 @@
             
             <div class="pricing-grid">
                 <div class="price-item">
-                    <div class="price-icon">🚀</div>
+                    <div class="price-icon"><i class="fas fa-rocket"></i></div>
                     <div class="price-label">Tarifa Base</div>
-                    <div class="price-value">$20.000</div>
+                    <div class="price-value">$30.000</div>
                     <div class="price-description">Costo inicial del servicio</div>
                 </div>
                 
                 <div class="price-item">
-                    <div class="price-icon">📏</div>
+                    <div class="price-icon"><i class="fas fa-route"></i></div>
                     <div class="price-label">Por Kilómetro</div>
-                    <div class="price-value">$1.400</div>
+                    <div class="price-value">$1.500</div>
                     <div class="price-description">Cada kilómetro recorrido</div>
                 </div>
                 
                 <div class="price-item">
-                    <div class="price-icon">💎</div>
+                    <div class="price-icon"><i class="fas fa-gem"></i></div>
                     <div class="price-label">Tarifa Mínima</div>
                     <div class="price-value">$30.000</div>
                     <div class="price-description">Costo mínimo garantizado</div>
@@ -1810,7 +2176,7 @@
             </div>
             
             <div class="pricing-example">
-                <strong>Ejemplo:</strong> Un viaje de 8 km = $30.000 + (8 × $1.400) = <strong>$41.200</strong>
+                <strong>Ejemplo:</strong> Un viaje de 8 km = $30.000 + (8 × $1.500) = <strong>$42.000</strong>
             </div>
         </div>
     </div>
@@ -1828,17 +2194,14 @@
             <div class="cta-buttons">
                 {% if user.is_authenticated %}
                 <a href="{% url 'solicitar_servicio' %}" class="btn-uber btn-primary">
-                    <i class="fas fa-truck btn-icon"></i>
                     Solicitar Grúa Ahora
                 </a>
                 {% else %}
                 <a href="{% url 'registro' %}" class="btn-uber btn-primary">
-                    <i class="fas fa-user-plus btn-icon"></i>
                     Crear Cuenta Gratis
                 </a>
                 {% endif %}
                 <a href="{% url 'servicios' %}" class="btn-uber btn-secondary">
-                    <i class="fas fa-info-circle btn-icon"></i>
                     Ver Servicios
                 </a>
             </div>
@@ -1865,7 +2228,58 @@
     </div>
 </section>
 
+<!-- MODAL HTML ACTUALIZADO CON DATOS DINÁMICOS -->
+<div id="membresiaModal" class="modal-overlay">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h2 class="modal-title">
+                <i class="fas fa-crown"></i>
+                ¡Únete a Grúa Style Premium!
+            </h2>
+            <button class="modal-close" id="closeModal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="modal-body">
+            <p class="modal-subtitle">
+                Accede a servicios prioritarios, descuentos exclusivos y beneficios únicos. 
+                Elige el plan y duración que mejor se adapte a tus necesidades.
+            </p>
+            
+            <!-- Selector de duración -->
+            <div class="duration-selector">
+                <button class="duration-btn active" data-duration="3">3 Meses</button>
+                <button class="duration-btn" data-duration="6">6 Meses</button>
+                <button class="duration-btn" data-duration="12">1 Año</button>
+            </div>
+            
+            <div class="plans-grid" id="plansContainer">
+                <!-- Los planes se cargarán dinámicamente aquí -->
+            </div>
+            
+            <div class="modal-footer">
+                <p class="modal-info">
+                    * Precios en pesos chilenos. Puedes cancelar en cualquier momento.
+                </p>
+                <a href="{% url 'membresias' %}" class="modal-secondary-button">
+                    Ver más información
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+// 📊 DATOS DE PLANES DESDE EL BACKEND (DINÁMICOS)
+const planesData = {{ planes_data|safe }};
+const userAuthenticated = {% if user.is_authenticated %}true{% else %}false{% endif %};
+const hasActiveMembresia = {% if membresia_activa %}true{% else %}false{% endif %};
+
+console.log('📊 Datos de planes cargados:', planesData);
+console.log('👤 Usuario autenticado:', userAuthenticated);
+console.log('💎 Membresía activa:', hasActiveMembresia);
+
 document.addEventListener('DOMContentLoaded', function() {
     // Slider automático de imágenes
     const slides = document.querySelectorAll('.slide');
@@ -1937,13 +2351,18 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // ============================================
-    // MODAL - CONFIGURADO PARA APARECER SIEMPRE
+    // MODAL DINÁMICO - CONFIGURADO CON DATOS REALES
     // ============================================
+    
+    let currentDuration = '3'; // Duración por defecto
     
     // 🎯 MOSTRAR MODAL SIEMPRE (cada recarga/inicio)
     setTimeout(function() {
-        showModal();
-    }, 3000); // Aparece después de 3 segundos SIEMPRE
+        // Solo mostrar si el usuario no tiene membresía activa
+        if (!hasActiveMembresia) {
+            showModal();
+        }
+    }, 3000); // Aparece después de 3 segundos
     
     // Event listeners para el modal
     document.getElementById('closeModal').addEventListener('click', closeModal);
@@ -1960,8 +2379,25 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
+    // Event listeners para botones de duración
+    document.querySelectorAll('.duration-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Remover clase active de todos los botones
+            document.querySelectorAll('.duration-btn').forEach(b => b.classList.remove('active'));
+            // Agregar clase active al botón clickeado
+            this.classList.add('active');
+            // Actualizar duración actual
+            currentDuration = this.getAttribute('data-duration');
+            // Recargar planes con nueva duración
+            loadPlans(currentDuration);
+        });
+    });
+    
+    // Cargar planes iniciales
+    loadPlans(currentDuration);
+    
     console.log('✅ Home glassmorphism effects loaded');
-    console.log('🎯 Modal configurado para aparecer SIEMPRE');
+    console.log('🎯 Modal configurado con datos dinámicos');
     console.log('🚛 Partners carousel loaded');
 });
 
@@ -1976,25 +2412,88 @@ function closeModal() {
     const modal = document.getElementById('membresiaModal');
     modal.classList.remove('active');
     document.body.style.overflow = 'auto'; // Restaurar scroll
-    
-    // ❌ LÍNEA ELIMINADA - Ya no guarda en sessionStorage para que aparezca siempre
-    // sessionStorage.setItem('modalShown', 'true'); // ESTA LÍNEA FUE ELIMINADA
-    
     console.log('❌ Modal cerrado');
 }
 
-function selectPlan(planType) {
-    // Aquí puedes redirigir a tu página de suscripción
-    // o manejar la selección del plan
-    console.log('Plan seleccionado:', planType);
+// REEMPLAZA LA FUNCIÓN loadPlans EN TU JAVASCRIPT
+
+function loadPlans(duration) {
+    const container = document.getElementById('plansContainer');
+    container.innerHTML = ''; // Limpiar contenido anterior
     
-    // Ejemplo de redirección (cambia por tu URL real)
-    // window.location.href = `/suscripcion/?plan=${planType}`;
+    // Definir qué plan es featured para cada duración
+    const featuredPlans = {
+        '3': 'pro',      // 3 meses: Pro es el más popular
+        '6': 'pro',      // 6 meses: Pro sigue siendo popular
+        '12': 'premium'  // 1 año: Premium es mejor valor a largo plazo
+    };
     
-    // Por ahora, mostrar alert y cerrar modal
-    alert(`¡Excelente elección! Has seleccionado el plan ${planType.toUpperCase()}. Te redirigiremos para completar la suscripción.`);
+    const featured = featuredPlans[duration];
+    
+    // Crear cards para cada plan
+    Object.keys(planesData).forEach(planKey => {
+        const plan = planesData[planKey];
+        const planDuration = plan.duraciones[duration];
+        
+        if (!planDuration) return; // Skip si no hay datos para esta duración
+        
+        const isFeatured = planKey === featured;
+        
+        // Crear HTML del plan con estructura optimizada
+        const planCard = document.createElement('div');
+        planCard.className = `plan-card ${isFeatured ? 'featured' : ''}`;
+        
+        // Crear lista de características
+        const featuresList = planDuration.detalles.map(detalle => 
+            `<li><i class="fas fa-check"></i> ${detalle}</li>`
+        ).join('');
+        
+        planCard.innerHTML = `
+            <div class="plan-content">
+                <div class="plan-header">
+                    <h3 class="plan-name">${plan.nombre}</h3>
+                    <div class="plan-price">$${planDuration.precio_mensual.toLocaleString('es-CL')}</div>
+                    <div class="plan-period">por mes (${planDuration.periodo})</div>
+                </div>
+                <ul class="plan-features">
+                    ${featuresList}
+                </ul>
+            </div>
+            <div class="plan-footer">
+                <button class="plan-button" onclick="selectPlan('${planKey}', '${duration}')">
+                    Seleccionar Plan
+                </button>
+            </div>
+        `;
+        
+        container.appendChild(planCard);
+    });
+    
+    console.log(`📊 Planes cargados para duración: ${duration} meses`);
+}
+
+function selectPlan(planType, duration) {
+    console.log('Plan seleccionado:', planType, 'duración:', duration);
+    
+    // Verificar si el usuario está autenticado
+    if (!userAuthenticated) {
+        alert('Para contratar una membresía debes estar registrado. Te redirigiremos al registro.');
+        window.location.href = '/registro/';
+        return;
+    }
+    
+    // Verificar si ya tiene membresía activa
+    if (hasActiveMembresia) {
+        alert('Ya tienes una membresía activa. Ve a tu perfil para gestionarla.');
+        window.location.href = '/perfil/';
+        return;
+    }
+    
+    // Redirigir a la página de pago con los parámetros
+    const url = `/pago-membresia/?plan=${planType}&duration=${duration}`;
+    window.location.href = url;
+    
     closeModal();
 }
 </script>
-
 {% endblock %}

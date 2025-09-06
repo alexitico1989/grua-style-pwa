@@ -1,0 +1,362 @@
+{% extends 'grua_app/base.html' %}
+{% load static %}
+
+{% block title %}Transferencia Mercado Pago - Grúa Style{% endblock %}
+
+{% block extra_css %}
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        background: #000;
+        color: #fff;
+        line-height: 1.4;
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+    }
+    
+    .transfer-container {
+        max-width: 700px;
+        margin: 0 auto;
+        padding: 20px;
+        min-height: 100vh;
+    }
+    
+    /* Hero Header */
+    .transfer-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        background: linear-gradient(135deg, #009EE3 0%, #0071BC 100%);
+        padding: 3rem 2rem;
+        border-radius: 24px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .transfer-header h1 {
+        font-size: clamp(2rem, 4vw, 2.5rem);
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: #fff;
+    }
+    
+    .transfer-header p {
+        font-size: 1.1rem;
+        color: #E3F2FD;
+    }
+    
+    /* Transfer Info */
+    .transfer-info {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    }
+    
+    .info-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        color: #009EE3;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .transfer-data {
+        background: rgba(0, 158, 227, 0.1);
+        border: 1px solid rgba(0, 158, 227, 0.3);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .data-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding: 0.8rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .data-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+    
+    .data-label {
+        font-weight: 600;
+        color: #ccc;
+    }
+    
+    .data-value {
+        font-family: 'Courier New', monospace;
+        font-weight: 700;
+        color: #fff;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        position: relative;
+        cursor: pointer;
+    }
+    
+    .copy-button {
+        background: rgba(0, 158, 227, 0.2);
+        border: 1px solid rgba(0, 158, 227, 0.5);
+        color: #009EE3;
+        border-radius: 6px;
+        padding: 0.3rem 0.8rem;
+        font-size: 0.8rem;
+        cursor: pointer;
+        margin-left: 0.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .copy-button:hover {
+        background: rgba(0, 158, 227, 0.3);
+        border-color: #009EE3;
+    }
+    
+    /* Instructions */
+    .instructions {
+        background: rgba(255, 193, 7, 0.1);
+        border: 1px solid rgba(255, 193, 7, 0.3);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .instructions h3 {
+        color: #FFD700;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .instructions ol {
+        color: #ccc;
+        padding-left: 1.5rem;
+    }
+    
+    .instructions li {
+        margin-bottom: 0.8rem;
+        line-height: 1.6;
+    }
+    
+    /* Amount Section */
+    .amount-section {
+        background: rgba(0, 213, 99, 0.1);
+        border: 1px solid rgba(0, 213, 99, 0.3);
+        border-radius: 16px;
+        padding: 1.5rem;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .amount-label {
+        font-size: 1rem;
+        color: #ccc;
+        margin-bottom: 0.5rem;
+    }
+    
+    .amount-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #00D563;
+        margin-bottom: 0.5rem;
+    }
+    
+    .amount-reference {
+        font-size: 0.9rem;
+        color: #00D563;
+        font-weight: 600;
+    }
+    
+    /* Action Buttons */
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .btn {
+        padding: 12px 24px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 600;
+        text-align: center;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        flex: 1;
+        min-width: 140px;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #009EE3, #0071BC);
+        color: #fff;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 158, 227, 0.3);
+        color: #fff;
+        text-decoration: none;
+    }
+    
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.15);
+        color: #fff;
+        text-decoration: none;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .transfer-container {
+            padding: 16px;
+        }
+        
+        .transfer-header {
+            padding: 2rem 1rem;
+        }
+        
+        .transfer-info,
+        .instructions,
+        .amount-section {
+            padding: 1.5rem;
+        }
+        
+        .data-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        
+        .amount-value {
+            font-size: 2rem;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="transfer-container">
+    <div class="transfer-header">
+        <h1>🏦 Transferencia Mercado Pago</h1>
+        <p>Realiza tu transferencia de forma rápida y segura</p>
+    </div>
+    
+    <!-- Monto a Transferir -->
+    <div class="amount-section">
+        <div class="amount-label">Monto a transferir:</div>
+        <div class="amount-value">${{ precio_total|floatformat:0 }}</div>
+        <div class="amount-reference">Referencia: {{ solicitud.numero_orden }}</div>
+    </div>
+    
+    <!-- Datos de Transferencia -->
+    <div class="transfer-info">
+        <h2 class="info-title">💳 Datos para Transferencia</h2>
+        
+        <div class="transfer-data">
+            <div class="data-item">
+                <span class="data-label">CVU:</span>
+                <span class="data-value" onclick="copyToClipboard('{{ datos_transfer.cvu }}', this)">
+                    {{ datos_transfer.cvu }}
+                    <button class="copy-button">📋 Copiar</button>
+                </span>
+            </div>
+            
+            <div class="data-item">
+                <span class="data-label">Alias:</span>
+                <span class="data-value" onclick="copyToClipboard('{{ datos_transfer.alias }}', this)">
+                    {{ datos_transfer.alias }}
+                    <button class="copy-button">📋 Copiar</button>
+                </span>
+            </div>
+            
+            <div class="data-item">
+                <span class="data-label">Titular:</span>
+                <span class="data-value">{{ datos_transfer.titular }}</span>
+            </div>
+            
+            <div class="data-item">
+                <span class="data-label">CUIT:</span>
+                <span class="data-value">{{ datos_transfer.cuit }}</span>
+            </div>
+            
+            <div class="data-item">
+                <span class="data-label">Banco:</span>
+                <span class="data-value">{{ datos_transfer.banco }}</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Instrucciones -->
+    <div class="instructions">
+        <h3>📋 Instrucciones de Transferencia</h3>
+        <ol>
+            <li><strong>Abre tu app de Mercado Pago</strong> o tu homebanking</li>
+            <li><strong>Selecciona "Transferir dinero"</strong> o "Enviar dinero"</li>
+            <li><strong>Ingresa el CVU o Alias</strong> que aparece arriba</li>
+            <li><strong>Monto:</strong> ${{ precio_total|floatformat:0 }}</li>
+            <li><strong>Concepto/Referencia:</strong> {{ solicitud.numero_orden }}</li>
+            <li><strong>Confirma la transferencia</strong></li>
+            <li><strong>Envíanos el comprobante</strong> por WhatsApp o email</li>
+        </ol>
+    </div>
+    
+    <!-- Botones de Acción -->
+    <div class="action-buttons">
+        <a href="{% url 'dashboard' %}" class="btn btn-primary">
+            ✅ Transferencia Realizada
+        </a>
+        <a href="{% url 'payment_selection' solicitud.id %}" class="btn btn-secondary">
+            ← Cambiar Método
+        </a>
+    </div>
+</div>
+
+<script>
+function copyToClipboard(text, element) {
+    navigator.clipboard.writeText(text).then(function() {
+        // Cambiar texto del botón temporalmente
+        const button = element.querySelector('.copy-button');
+        const originalText = button.textContent;
+        button.textContent = '✅ Copiado';
+        button.style.background = 'rgba(0, 213, 99, 0.3)';
+        button.style.borderColor = '#00D563';
+        button.style.color = '#00D563';
+        
+        setTimeout(() => {
+            button.textContent = originalText;
+            button.style.background = 'rgba(0, 158, 227, 0.2)';
+            button.style.borderColor = 'rgba(0, 158, 227, 0.5)';
+            button.style.color = '#009EE3';
+        }, 2000);
+    }).catch(function(err) {
+        console.error('Error copiando al portapapeles: ', err);
+        alert('Texto copiado: ' + text);
+    });
+}
+</script>
+{% endblock %}

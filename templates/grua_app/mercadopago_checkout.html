@@ -1,0 +1,455 @@
+{% extends 'grua_app/base.html' %}
+{% load static %}
+
+{% block title %}Pago con Tarjeta - Grúa Style{% endblock %}
+
+{% block extra_css %}
+<style>
+    .checkout-container {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 30px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    }
+    
+    .checkout-header {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #fff;
+    }
+    
+    .checkout-header h2 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: #00D563;
+        text-shadow: 0 0 20px rgba(0, 213, 99, 0.6);
+    }
+    
+    .amount-display {
+        background: rgba(0, 213, 99, 0.1);
+        border: 1px solid rgba(0, 213, 99, 0.3);
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        margin: 20px 0;
+        backdrop-filter: blur(10px);
+    }
+    
+    .amount-display .amount {
+        font-size: 2.2rem;
+        color: #00D563;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    
+    .amount-display .description {
+        color: #93C5FD;
+        font-size: 0.9rem;
+    }
+    
+    #cardPaymentBrick_container {
+        margin: 25px 0;
+        background: rgba(255, 255, 255, 0.02);
+        border-radius: 12px;
+        padding: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .security-info {
+        background: rgba(59, 130, 246, 0.1);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        border-radius: 12px;
+        padding: 15px;
+        text-align: center;
+        margin-top: 20px;
+    }
+    
+    .security-info h4 {
+        color: #60A5FA;
+        margin-bottom: 8px;
+        font-size: 1rem;
+    }
+    
+    .security-info p {
+        color: #93C5FD;
+        font-size: 0.85rem;
+        margin: 0;
+        line-height: 1.4;
+    }
+    
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #ccc;
+        text-decoration: none;
+        margin-bottom: 20px;
+        padding: 10px 15px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .back-link:hover {
+        color: #00D563;
+        background: rgba(0, 213, 99, 0.1);
+        border-color: rgba(0, 213, 99, 0.3);
+    }
+    
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        backdrop-filter: blur(5px);
+    }
+    
+    .loading-content {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 40px;
+        border-radius: 16px;
+        text-align: center;
+        max-width: 320px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid rgba(0, 213, 99, 0.3);
+        border-top: 4px solid #00D563;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 20px;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    .loading-text {
+        color: #fff;
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+    
+    .loading-description {
+        color: #ccc;
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+    
+    .payment-tips {
+        background: rgba(255, 193, 7, 0.1);
+        border: 1px solid rgba(255, 193, 7, 0.3);
+        border-radius: 12px;
+        padding: 15px;
+        margin: 20px 0;
+    }
+    
+    .payment-tips h4 {
+        color: #FFD700;
+        margin-bottom: 10px;
+        font-size: 0.95rem;
+    }
+    
+    .payment-tips ul {
+        color: #FBBF24;
+        font-size: 0.85rem;
+        margin: 0;
+        padding-left: 20px;
+    }
+    
+    .payment-tips li {
+        margin-bottom: 5px;
+    }
+    
+    @media (max-width: 768px) {
+        .checkout-container {
+            margin: 10px;
+            padding: 20px;
+        }
+        
+        .amount-display .amount {
+            font-size: 1.8rem;
+        }
+        
+        .loading-content {
+            margin: 20px;
+            padding: 30px 20px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="checkout-container">
+    <a href="{% url 'payment_selection' solicitud.id %}" class="back-link">
+        ← Volver a métodos de pago
+    </a>
+    
+    <div class="checkout-header">
+        <h2>💳 Pago con Tarjeta</h2>
+        <p>Completa los datos de tu tarjeta de forma segura</p>
+    </div>
+    
+    <div class="amount-display">
+        <div class="amount">${{ amount|floatformat:0 }} CLP</div>
+        <div class="description">Servicio de grúa - Orden #{{ solicitud.numero_orden }}</div>
+    </div>
+    
+    <div class="payment-tips">
+        <h4>💡 Consejos para tu pago:</h4>
+        <ul>
+            <li>Puedes pagar hasta en {{ max_installments }} cuotas sin interés</li>
+            <li>Aceptamos Visa, Mastercard y American Express</li>
+            <li>Tu pago está protegido por Mercado Pago</li>
+            <li>La confirmación es inmediata</li>
+        </ul>
+    </div>
+    
+    <!-- Container del Brick de Mercado Pago -->
+    <div id="cardPaymentBrick_container"></div>
+    
+    <!-- Información de seguridad -->
+    <div class="security-info">
+        <h4>🔒 Transacción 100% Segura</h4>
+        <p>
+            Tus datos están protegidos con encriptación de grado bancario.<br>
+            Certificación PCI DSS y cumplimiento normativo chileno.
+        </p>
+    </div>
+</div>
+
+<!-- Loading overlay -->
+<div id="loading-overlay" class="loading-overlay">
+    <div class="loading-content">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Procesando pago...</div>
+        <div class="loading-description">
+            Validando con tu banco<br>
+            Por favor no cierres esta ventana
+        </div>
+    </div>
+</div>
+
+<!-- SDK de Mercado Pago -->
+<script src="https://sdk.mercadopago.com/js/v2"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 Iniciando checkout de Mercado Pago...');
+    
+    // Inicializar Mercado Pago
+    const mp = new MercadoPago("{{ public_key }}", {
+        locale: "es-CL"
+    });
+    
+    const bricksBuilder = mp.bricks();
+    
+    // Función para renderizar el brick de pago
+    const renderCardPaymentBrick = async (bricksBuilder) => {
+        try {
+            const settings = {
+                initialization: {
+                    amount: {{ amount }},
+                },
+                customization: {
+                    visual: {
+                        style: {
+                            theme: "dark",
+                            customVariables: {
+                                baseColor: "#00D563",
+                                textPrimaryColor: "#ffffff",
+                                textSecondaryColor: "#cccccc",
+                                inputBackgroundColor: "rgba(255, 255, 255, 0.1)",
+                                inputFocusedBackgroundColor: "rgba(255, 255, 255, 0.15)",
+                                inputBorderColor: "rgba(255, 255, 255, 0.2)",
+                                inputFocusedBorderColor: "#00D563",
+                                formBackgroundColor: "transparent"
+                            }
+                        }
+                    },
+                    paymentMethods: {
+                        maxInstallments: {{ max_installments }},
+                        creditCard: "all",
+                        debitCard: "all"
+                    }
+                },
+                callbacks: {
+                    onSubmit: (formData) => {
+                        return new Promise((resolve, reject) => {
+                            console.log('📤 Enviando datos de pago...', formData);
+                            
+                            // Mostrar loading
+                            showLoading();
+                            
+                            // Agregar datos específicos del servicio
+                            formData.service_id = {{ solicitud.id }};
+                            formData.service_type = "grua";
+                            
+                            // Enviar al backend
+                            fetch("{% url 'mercadopago_checkout' solicitud.id %}", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    "X-CSRFToken": "{{ csrf_token }}"
+                                },
+                                body: JSON.stringify(formData)
+                            })
+                            .then(response => response.json())
+                            .then(result => {
+                                hideLoading();
+                                console.log('📥 Respuesta del servidor:', result);
+                                
+                                if (result.status === "success") {
+                                    // Pago exitoso
+                                    showSuccessMessage(result.message);
+                                    
+                                    // Redirigir después de 2 segundos
+                                    setTimeout(() => {
+                                        if (result.redirect_url) {
+                                            window.location.href = result.redirect_url;
+                                        } else {
+                                            window.location.href = "{% url 'dashboard' %}";
+                                        }
+                                    }, 2000);
+                                } else {
+                                    // Error en el pago
+                                    showErrorMessage(result.message || "Error procesando el pago");
+                                }
+                                resolve();
+                            })
+                            .catch(error => {
+                                hideLoading();
+                                console.error('❌ Error:', error);
+                                showErrorMessage("Error de conexión. Verifica tu internet e intenta nuevamente.");
+                                reject();
+                            });
+                        });
+                    },
+                    onError: (error) => {
+                        console.error('❌ Error en el brick:', error);
+                        showErrorMessage("Error en el formulario. Verifica los datos e intenta nuevamente.");
+                    },
+                    onReady: () => {
+                        console.log('✅ Checkout listo');
+                    }
+                }
+            };
+            
+            // Crear el brick
+            window.cardPaymentBrickController = await bricksBuilder.create(
+                "payment", 
+                "cardPaymentBrick_container", 
+                settings
+            );
+            
+            console.log('✅ Brick de pago creado exitosamente');
+            
+        } catch (error) {
+            console.error('❌ Error creando brick:', error);
+            showErrorMessage("Error inicializando el checkout. Recarga la página.");
+        }
+    };
+    
+    // Funciones auxiliares
+    function showLoading() {
+        document.getElementById('loading-overlay').style.display = 'flex';
+    }
+    
+    function hideLoading() {
+        document.getElementById('loading-overlay').style.display = 'none';
+    }
+    
+    function showSuccessMessage(message) {
+        // Crear alerta de éxito
+        const alert = createAlert('success', '✅ ' + message);
+        document.body.appendChild(alert);
+        
+        setTimeout(() => {
+            alert.remove();
+        }, 5000);
+    }
+    
+    function showErrorMessage(message) {
+        // Crear alerta de error
+        const alert = createAlert('error', '❌ ' + message);
+        document.body.appendChild(alert);
+        
+        setTimeout(() => {
+            alert.remove();
+        }, 8000);
+    }
+    
+    function createAlert(type, message) {
+        const alert = document.createElement('div');
+        alert.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            max-width: 400px;
+            backdrop-filter: blur(10px);
+            animation: slideIn 0.3s ease;
+        `;
+        
+        if (type === 'success') {
+            alert.style.background = 'rgba(34, 197, 94, 0.9)';
+            alert.style.border = '1px solid rgba(34, 197, 94, 0.3)';
+        } else {
+            alert.style.background = 'rgba(239, 68, 68, 0.9)';
+            alert.style.border = '1px solid rgba(239, 68, 68, 0.3)';
+        }
+        
+        alert.textContent = message;
+        return alert;
+    }
+    
+    // CSS para animación
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Inicializar el checkout
+    renderCardPaymentBrick(bricksBuilder);
+    
+    // Auto-focus para accesibilidad
+    setTimeout(() => {
+        const firstInput = document.querySelector('#cardPaymentBrick_container input');
+        if (firstInput) {
+            firstInput.focus();
+        }
+    }, 1500);
+});
+</script>
+{% endblock %}

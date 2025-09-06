@@ -1,0 +1,458 @@
+{% extends 'grua_app/base.html' %}
+
+{% block title %}Detalles de Solicitud - {{ solicitud.numero_orden }}{% endblock %}
+
+{% block extra_css %}
+<style>
+body {
+    background: #000;
+    color: #fff;
+    line-height: 1.6;
+}
+
+.details-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.details-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 2rem;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    margin-bottom: 2rem;
+}
+
+.header-section {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.order-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #00D563;
+    margin-bottom: 0.5rem;
+    font-family: 'Courier New', monospace;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    backdrop-filter: blur(10px);
+}
+
+.status-pendiente { 
+    background: linear-gradient(135deg, rgba(255, 133, 0, 0.2), rgba(255, 107, 0, 0.3));
+    color: #FF8500; 
+    border: 1px solid rgba(255, 133, 0, 0.4);
+}
+.status-confirmada { 
+    background: linear-gradient(135deg, rgba(0, 213, 99, 0.2), rgba(0, 184, 83, 0.3));
+    color: #00D563; 
+    border: 1px solid rgba(0, 213, 99, 0.4);
+}
+.status-procesando_pago { 
+    background: linear-gradient(135deg, rgba(31, 182, 255, 0.2), rgba(14, 165, 233, 0.3));
+    color: #1FB6FF; 
+    border: 1px solid rgba(31, 182, 255, 0.4);
+}
+.status-pendiente_confirmacion { 
+    background: linear-gradient(135deg, rgba(255, 170, 0, 0.2), rgba(245, 158, 11, 0.3));
+    color: #FFAA00; 
+    border: 1px solid rgba(255, 170, 0, 0.4);
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.info-section {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 16px;
+    padding: 1.5rem;
+}
+
+.section-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #00D563;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.info-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.info-label {
+    color: #ccc;
+    font-size: 0.875rem;
+}
+
+.info-value {
+    color: #fff;
+    font-weight: 500;
+    text-align: right;
+    max-width: 60%;
+}
+
+.route-section {
+    background: rgba(0, 213, 99, 0.05);
+    border: 1px solid rgba(0, 213, 99, 0.2);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.route-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.route-item:last-child {
+    margin-bottom: 0;
+}
+
+.route-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 213, 99, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #00D563;
+    font-size: 0.875rem;
+    flex-shrink: 0;
+}
+
+.route-details h4 {
+    color: #00D563;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.route-details p {
+    color: #fff;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.cost-section {
+    background: linear-gradient(135deg, rgba(0, 213, 99, 0.1), rgba(0, 184, 83, 0.05));
+    border: 1px solid rgba(0, 213, 99, 0.3);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.cost-breakdown {
+    margin-bottom: 1rem;
+}
+
+.cost-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    color: #ccc;
+}
+
+.cost-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #00D563;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(0, 213, 99, 0.3);
+}
+
+.actions-section {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    flex: 1;
+    min-width: 160px;
+    padding: 1rem 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    text-decoration: none;
+    color: #fff;
+    text-align: center;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    backdrop-filter: blur(10px);
+}
+
+.action-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(0, 213, 99, 0.3);
+    color: #fff;
+    transform: translateY(-2px);
+    text-decoration: none;
+    box-shadow: 0 8px 20px rgba(0, 213, 99, 0.1);
+}
+
+.action-btn.primary {
+    background: rgba(0, 213, 99, 0.1);
+    color: #00D563;
+    border-color: rgba(0, 213, 99, 0.3);
+}
+
+.action-btn.primary:hover {
+    background: rgba(0, 213, 99, 0.2);
+    color: #00D563;
+    border-color: rgba(0, 213, 99, 0.5);
+}
+
+@media (max-width: 768px) {
+    .details-container {
+        padding: 1rem;
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .actions-section {
+        flex-direction: column;
+    }
+    
+    .action-btn {
+        flex: none;
+        min-width: auto;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="details-container">
+    <div class="details-card">
+        <!-- Header -->
+        <div class="header-section">
+            <div class="order-number">{{ solicitud.numero_orden }}</div>
+            <div class="status-badge status-{{ solicitud.estado }}">
+                {{ estado_texto }}
+            </div>
+        </div>
+
+        <!-- Route Information -->
+        <div class="route-section">
+            <h3 class="section-title">
+                <i class="fas fa-{% if solicitud.tipo_servicio_categoria == 'asistencia' %}wrench{% else %}route{% endif %}"></i>
+                {% if solicitud.tipo_servicio_categoria == 'asistencia' %}
+                    Ubicación del Servicio
+                {% else %}
+                    Ruta del Servicio
+                {% endif %}
+            </h3>
+            <div class="route-item">
+                <div class="route-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div class="route-details">
+                    <h4>Punto de Origen</h4>
+                    <p>{{ solicitud.direccion_origen }}</p>
+                </div>
+            </div>
+            <div class="route-item">
+                <div class="route-icon">
+                    <i class="fas fa-flag-checkered"></i>
+                </div>
+                <div class="route-details">
+                    {% if solicitud.tipo_servicio_categoria == 'asistencia' %}
+                        <h4>Servicio</h4>
+                        <p>Servicio en el lugar</p>
+                    {% else %}
+                        <h4>Destino</h4>
+                        <p>{{ solicitud.direccion_destino }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Information Grid -->
+        <div class="info-grid">
+            <!-- Service Details -->
+            <div class="info-section">
+                <h3 class="section-title">
+                    <i class="fas fa-info-circle"></i>
+                    Detalles del Servicio
+                </h3>
+                <div class="info-item">
+                    <span class="info-label">Fecha y Hora</span>
+                    <span class="info-value">{{ solicitud.fecha_servicio_formateada }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Tipo de Servicio</span>
+                    <span class="info-value">
+                    {% if solicitud.tipo_servicio_categoria == 'asistencia' %}
+                        Asistencia Mecánica
+                    {% elif solicitud.tipo_servicio_categoria == 'bateria' %}
+                        Carga de Batería
+                    {% else %}
+                        Servicio de Grúa
+                    {% endif %}
+                </span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Estado</span>
+                    <span class="info-value">{{ estado_texto }}</span>
+                </div>
+                {% if solicitud.distancia_km %}
+                <div class="info-item">
+                    <span class="info-label">Distancia</span>
+                    <span class="info-value">{{ solicitud.distancia_km }} km</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Vehicle Information -->
+            <div class="info-section">
+                <h3 class="section-title">
+                    <i class="fas fa-car"></i>
+                    Información del Vehículo
+                </h3>
+                <div class="info-item">
+                    <span class="info-label">Tipo de Vehículo</span>
+                    <span class="info-value">{{ solicitud.tipo_vehiculo|default:"No especificado" }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Marca</span>
+                    <span class="info-value">{{ solicitud.marca_vehiculo|default:"No especificado" }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Modelo</span>
+                    <span class="info-value">{{ solicitud.modelo_vehiculo|default:"No especificado" }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Patente</span>
+                    <span class="info-value">{{ solicitud.placa_vehiculo|default:"No especificado" }}</span>
+                </div>
+            </div>
+
+            <!-- Payment Information -->
+            <div class="info-section">
+                <h3 class="section-title">
+                    <i class="fas fa-credit-card"></i>
+                    Información de Pago
+                </h3>
+                <div class="info-item">
+                    <span class="info-label">Método de Pago</span>
+                    <span class="info-value">{{ metodo_pago_texto }}</span>
+                </div>
+                {% if solicitud.pagado %}
+                <div class="info-item">
+                    <span class="info-label">Estado del Pago</span>
+                    <span class="info-value" style="color: #00D563;">Pagado</span>
+                </div>
+                {% endif %}
+                {% if solicitud.fecha_solicitud %}
+                <div class="info-item">
+                    <span class="info-label">Fecha de Solicitud</span>
+                    <span class="info-value">{{ solicitud.fecha_solicitud_formateada }}</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Cost Breakdown -->
+        <div class="cost-section">
+            <h3 class="section-title">
+                <i class="fas fa-calculator"></i>
+                Desglose de Costos
+            </h3>
+            <div class="cost-breakdown">
+                <div class="cost-item">
+                    <span>Tarifa Base:</span>
+                    <span>${{ tarifa_base|floatformat:0 }}</span>
+                </div>
+                {% if costo_km > 0 %}
+                <div class="cost-item">
+                    <span>Costo por Kilómetro ({{ solicitud.distancia_km }} km):</span>
+                    <span>${{ costo_km|floatformat:0 }}</span>
+                </div>
+                {% endif %}
+            </div>
+            <div class="cost-total">
+                <span>Total:</span>
+                <span>${{ total|floatformat:0 }}</span>
+            </div>
+        </div>
+
+        <!-- Problem Description -->
+        {% if solicitud.descripcion_problema %}
+        <div class="info-section">
+            <h3 class="section-title">
+                <i class="fas fa-exclamation-triangle"></i>
+                Descripción del Problema
+            </h3>
+            <p style="color: #fff; line-height: 1.5; margin: 0;">{{ solicitud.descripcion_problema }}</p>
+        </div>
+        {% endif %}
+
+        <!-- Actions -->
+        <div class="actions-section">
+            <a href="{% url 'dashboard' %}" class="action-btn primary">
+                <i class="fas fa-arrow-left"></i>
+                Volver al Dashboard
+            </a>
+            <a href="{% url 'descargar_pdf_solicitud' solicitud.id %}" class="action-btn">
+                <i class="fas fa-file-pdf"></i>
+                Descargar PDF
+            </a>
+            {% if solicitud.estado == 'confirmada' or solicitud.estado == 'completada' or solicitud.pagado %}
+            <a href="{% url 'descargar_pdf_comprobante' solicitud.id %}" class="action-btn">
+                <i class="fas fa-receipt"></i>
+                Comprobante
+            </a>
+            {% endif %}
+            <a href="{% url 'reenviar_comprobante' solicitud.id %}" class="action-btn">
+                <i class="fas fa-envelope"></i>
+                Enviar por Email
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

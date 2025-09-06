@@ -1,0 +1,476 @@
+{% extends 'grua_app/base.html' %}
+
+{% block title %}Transferencia Bancaria Membresía - Grúa Style{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Variables para contexto web/app */
+    :root {
+        --content-padding-bottom: 40px;
+    }
+
+    @media (display-mode: standalone) {
+        :root {
+            --content-padding-bottom: 100px;
+        }
+    }
+
+    body {
+        background: #000;
+        color: #fff;
+        line-height: 1.6;
+        padding-bottom: var(--content-padding-bottom);
+    }
+
+    .confirmation-container {
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .confirmation-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(0, 213, 99, 0.1), transparent);
+        animation: shimmer 3s infinite;
+    }
+
+    @keyframes shimmer {
+        0% { left: -100%; }
+        100% { left: 100%; }
+    }
+
+    .success-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #00D563, #00B853);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        color: #000;
+        font-size: 2rem;
+        font-weight: bold;
+        box-shadow: 0 15px 40px rgba(0, 213, 99, 0.4);
+        animation: icon-pulse 3s ease-in-out infinite;
+        position: relative;
+        z-index: 2;
+    }
+
+    @keyframes icon-pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+
+    .text-center {
+        text-align: center;
+        position: relative;
+        z-index: 2;
+    }
+
+    .mb-4 {
+        margin-bottom: 1.5rem;
+    }
+
+    .mb-2 {
+        margin-bottom: 0.5rem;
+    }
+
+    .mb-3 {
+        margin-bottom: 1rem;
+    }
+
+    .h3 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #fff;
+        text-shadow: 0 0 20px rgba(0, 213, 99, 0.3);
+    }
+
+    .text-muted {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 1.1rem;
+    }
+
+    .membership-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #00D563, #00B454);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .bank-details {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .bank-details::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        animation: shimmer 4s infinite;
+    }
+
+    .bank-details h4 {
+        color: #00D563;
+        text-align: center;
+        margin-bottom: 1.5rem;
+        position: relative;
+        z-index: 2;
+        text-shadow: 0 0 20px rgba(0, 213, 99, 0.3);
+    }
+
+    .bank-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        position: relative;
+        z-index: 2;
+    }
+
+    .bank-row:last-child {
+        border-bottom: none;
+        font-weight: bold;
+        color: #00D563;
+        font-size: 1.1rem;
+        background: rgba(0, 213, 99, 0.1);
+        margin: 0.5rem -1.5rem -1.5rem -1.5rem;
+        padding: 1rem 1.5rem;
+        border-radius: 0 0 16px 16px;
+    }
+
+    .bank-label {
+        color: rgba(255, 255, 255, 0.8);
+        font-weight: 500;
+    }
+
+    .bank-value {
+        color: #fff;
+        font-weight: 600;
+        text-align: right;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .copy-btn {
+        background: linear-gradient(135deg, #00D563, #00B853);
+        color: #000;
+        border: none;
+        padding: 0.4rem 0.8rem;
+        border-radius: 8px;
+        font-size: 0.75rem;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 15px rgba(0, 213, 99, 0.3);
+    }
+
+    .copy-btn:hover {
+        background: linear-gradient(135deg, #00B853, #00D563);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 213, 99, 0.4);
+    }
+
+    .instructions {
+        background: linear-gradient(135deg, rgba(255, 170, 0, 0.2), rgba(245, 158, 11, 0.1));
+        border: 1px solid rgba(255, 170, 0, 0.3);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .instructions::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 170, 0, 0.1), transparent);
+        animation: shimmer 5s infinite;
+    }
+
+    .instructions h5 {
+        color: #FFAA00;
+        margin-bottom: 1rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .instructions ol {
+        color: rgba(255, 255, 255, 0.9);
+        position: relative;
+        z-index: 2;
+        padding-left: 1.5rem;
+    }
+
+    .instructions li {
+        margin-bottom: 0.5rem;
+        line-height: 1.5;
+    }
+
+    .instructions strong {
+        color: #FFAA00;
+    }
+
+    .membership-summary {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .membership-summary::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        animation: shimmer 6s infinite;
+    }
+
+    .membership-summary h5 {
+        color: #00D563;
+        margin-bottom: 1rem;
+        position: relative;
+        z-index: 2;
+        text-align: center;
+    }
+
+    .membership-summary p {
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 0.5rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .membership-summary strong {
+        color: #fff;
+    }
+
+    .premium-badge {
+        background: linear-gradient(135deg, #FFD700, #FFA500);
+        color: #000;
+        padding: 4px 12px;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        margin-left: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .btn-dashboard {
+        background: linear-gradient(135deg, #00D563 0%, #00B853 100%);
+        color: #000;
+        padding: 1rem 2rem;
+        border: none;
+        border-radius: 16px;
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 1rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        z-index: 2;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 8px 25px rgba(0, 213, 99, 0.3);
+    }
+
+    .btn-dashboard::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        animation: shimmer 3s infinite;
+    }
+
+    .btn-dashboard:hover {
+        background: linear-gradient(135deg, #00B853 0%, #00D563 100%);
+        transform: translateY(-4px);
+        box-shadow: 0 15px 40px rgba(0, 213, 99, 0.4);
+        color: #000;
+        text-decoration: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .confirmation-container {
+            margin: 1rem;
+            padding: 1.5rem;
+        }
+
+        .bank-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .bank-value {
+            text-align: left;
+            width: 100%;
+        }
+
+        .copy-btn {
+            margin-left: 0;
+            margin-top: 0.25rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="confirmation-container">
+    <div class="success-icon">
+        <i class="fas fa-crown"></i>
+    </div>
+    
+    <div class="text-center mb-4">
+        <div class="membership-badge">Membresía Registrada</div>
+        <h2 class="h3 mb-2">¡Suscripción Pendiente!</h2>
+        <p class="text-muted">Orden #{{ pago.orden_compra }}</p>
+    </div>
+    
+    <div class="bank-details">
+        <h4 class="mb-3">Datos para Transferencia</h4>
+        
+        <div class="bank-row">
+            <span class="bank-label">Banco:</span>
+            <span class="bank-value">{{ datos_bancarios.banco }}</span>
+        </div>
+        
+        <div class="bank-row">
+            <span class="bank-label">Tipo de Cuenta:</span>
+            <span class="bank-value">{{ datos_bancarios.tipo_cuenta }}</span>
+        </div>
+        
+        <div class="bank-row">
+            <span class="bank-label">Número de Cuenta:</span>
+            <span class="bank-value">
+                {{ datos_bancarios.numero_cuenta }}
+                <button class="copy-btn" onclick="copyToClipboard('{{ datos_bancarios.numero_cuenta }}')">Copiar</button>
+            </span>
+        </div>
+        
+        <div class="bank-row">
+            <span class="bank-label">RUT Titular:</span>
+            <span class="bank-value">{{ datos_bancarios.rut_titular }}</span>
+        </div>
+        
+        <div class="bank-row">
+            <span class="bank-label">Titular:</span>
+            <span class="bank-value">{{ datos_bancarios.nombre_titular }}</span>
+        </div>
+        
+        <div class="bank-row">
+            <span class="bank-label">Monto a Transferir:</span>
+            <span class="bank-value">
+                ${{ monto_total|floatformat:0 }}
+                <button class="copy-btn" onclick="copyToClipboard('{{ monto_total|floatformat:0 }}')">Copiar</button>
+            </span>
+        </div>
+    </div>
+    
+    <div class="instructions">
+        <h5>Instrucciones:</h5>
+        <ol>
+            <li>Realiza la transferencia por el monto exacto</li>
+            <li>En el concepto incluye: "Membresía #{{ pago.orden_compra }}"</li>
+            <li>Envía el comprobante a: <strong>{{ datos_bancarios.email_confirmacion }}</strong></li>
+            <li>Activaremos tu membresía al confirmar el pago (máximo 24 horas)</li>
+        </ol>
+    </div>
+    
+    <div class="membership-summary text-center">
+        <h5>Resumen de Membresía</h5>
+        <p><strong>Plan:</strong> 
+            {{ membresia.tipo_membresia.get_nombre_display|title }}
+            {% if membresia.tipo_membresia.nombre == 'premium' %}
+                <span class="premium-badge">Empresas</span>
+            {% endif %}
+        </p>
+        <p><strong>Duración:</strong> 
+            {% if membresia.fecha_vencimiento|timeuntil|slice:":2" == "3 " %}3 meses
+            {% elif membresia.fecha_vencimiento|timeuntil|slice:":2" == "6 " %}6 meses  
+            {% elif membresia.fecha_vencimiento|timeuntil|slice:":3" == "1 y" %}1 año
+            {% else %}{{ membresia.fecha_vencimiento|timeuntil }}
+            {% endif %}
+        </p>
+        <p><strong>Estado:</strong> 
+            <span style="color: #FFAA00;">Pendiente de Pago</span>
+        </p>
+        <p><strong>Total:</strong> ${{ monto_total|floatformat:0 }}</p>
+    </div>
+    
+    <div class="text-center">
+        <a href="{% url 'perfil' %}" class="btn-dashboard">
+            <i class="fas fa-user"></i>
+            Ver Mi Perfil
+        </a>
+    </div>
+</div>
+
+<script>
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(function() {
+        // Mostrar feedback visual
+        event.target.textContent = '¡Copiado!';
+        event.target.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+        
+        setTimeout(() => {
+            event.target.textContent = 'Copiar';
+            event.target.style.background = 'linear-gradient(135deg, #00D563, #00B853)';
+        }, 2000);
+    });
+}
+</script>
+{% endblock %}

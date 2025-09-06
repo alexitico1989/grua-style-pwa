@@ -12,12 +12,12 @@
     }
     
     body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        background: #000;
-        color: #fff;
-        line-height: 1.4;
-        -webkit-font-smoothing: antialiased;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+        color: #ffffff;
+        min-height: 100vh;
         overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
     }
     
     .container {
@@ -26,15 +26,13 @@
         padding: 0 20px;
     }
     
-    /* Hero Section */
+    /* Hero Section con glassmorphism - IGUAL A SERVICIOS.HTML */
     .hero-section {
         background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
-        min-height: 60vh;
-        display: flex;
-        align-items: center;
+        padding: 80px 0;
+        text-align: center;
         position: relative;
         overflow: hidden;
-        padding: 120px 0 80px 0;
     }
     
     .hero-section::before {
@@ -50,71 +48,122 @@
     .hero-content {
         position: relative;
         z-index: 2;
-        text-align: center;
         max-width: 800px;
         margin: 0 auto;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        padding: 60px 40px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+    }
+    
+    .hero-content::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(0, 213, 99, 0.1),
+            transparent
+        );
+        animation: shimmer 5s infinite;
+    }
+    
+    .hero-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #00D563, #00B853);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 30px auto;
+        font-size: 2.5rem;
+        color: #000;
+        box-shadow: 0 15px 40px rgba(0, 213, 99, 0.4);
+        animation: icon-pulse 3s ease-in-out infinite;
     }
     
     .hero-title {
-        font-size: clamp(2.5rem, 5vw, 4rem);
+        font-size: clamp(2rem, 4vw, 3rem);
         font-weight: 700;
-        margin-bottom: 24px;
-        line-height: 1.1;
-        text-shadow: 
-            0 0 20px rgba(0, 213, 99, 0.6),
-            0 0 40px rgba(0, 213, 99, 0.4),
-            0 0 80px rgba(0, 213, 99, 0.2);
-        animation: glow-pulse 4s ease-in-out infinite alternate;
-    }
-    
-    @keyframes glow-pulse {
-        0% {
-            text-shadow: 
-                0 0 20px rgba(0, 213, 99, 0.6),
-                0 0 40px rgba(0, 213, 99, 0.4),
-                0 0 80px rgba(0, 213, 99, 0.2);
-        }
-        100% {
-            text-shadow: 
-                0 0 25px rgba(0, 213, 99, 0.8),
-                0 0 50px rgba(0, 213, 99, 0.6),
-                0 0 100px rgba(0, 213, 99, 0.4);
-        }
+        margin-bottom: 20px;
+        line-height: 1.2;
+        text-shadow: 0 0 20px rgba(0, 213, 99, 0.3);
+        color: #ffffff;
     }
     
     .hero-subtitle {
-        font-size: 1.25rem;
-        color: #ccc;
-        margin-bottom: 40px;
+        font-size: 1.125rem;
+        color: rgba(255, 255, 255, 0.8);
         line-height: 1.6;
+        margin: 0;
     }
     
-    /* Pricing Cards with Images */
+    /* Pricing Cards con glassmorphism mejorado */
     .pricing-showcase {
         background: #000;
         padding: 80px 0;
+        position: relative;
+    }
+    
+    .pricing-showcase::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 70% 50%, rgba(0, 213, 99, 0.05) 0%, transparent 50%);
     }
     
     .pricing-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-        gap: 40px;
+        gap: 32px;
         margin-bottom: 80px;
+        position: relative;
+        z-index: 2;
     }
     
     .pricing-card {
         background: rgba(255, 255, 255, 0.05);
         border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 20px;
+        border-radius: 24px;
         overflow: hidden;
         transition: all 0.3s ease;
         backdrop-filter: blur(10px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        position: relative;
+    }
+    
+    .pricing-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(0, 213, 99, 0.1),
+            transparent
+        );
+        animation: shimmer 6s infinite;
+        z-index: 1;
     }
     
     .pricing-card:hover {
-        transform: translateY(-10px);
+        transform: translateY(-8px);
         border-color: rgba(0, 213, 99, 0.3);
-        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 30px 60px rgba(0, 213, 99, 0.15);
     }
     
     .card-image {
@@ -122,6 +171,7 @@
         height: 200px;
         overflow: hidden;
         position: relative;
+        z-index: 2;
     }
     
     .card-image img {
@@ -137,24 +187,28 @@
     }
     
     .card-content {
-        padding: 30px;
+        padding: 32px;
+        position: relative;
+        z-index: 2;
     }
     
     .card-title {
         font-size: 1.5rem;
         font-weight: 700;
         color: #00D563;
-        margin-bottom: 20px;
+        margin-bottom: 24px;
         text-align: center;
+        text-shadow: 0 0 15px rgba(0, 213, 99, 0.3);
     }
     
     .price-detail {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 12px 0;
+        padding: 16px 0;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         margin-bottom: 12px;
+        transition: all 0.3s ease;
     }
     
     .price-detail:last-child {
@@ -162,27 +216,74 @@
         margin-bottom: 0;
     }
     
+    .price-detail:hover {
+        background: rgba(0, 213, 99, 0.05);
+        padding-left: 16px;
+        padding-right: 16px;
+        border-radius: 8px;
+        margin-left: -16px;
+        margin-right: -16px;
+    }
+    
     .price-label {
         font-size: 1rem;
-        color: #ccc;
+        color: rgba(255, 255, 255, 0.8);
+        font-weight: 500;
     }
     
     .price-value {
         font-size: 1.1rem;
-        font-weight: 600;
+        font-weight: 700;
         color: #00D563;
+        text-shadow: 0 0 10px rgba(0, 213, 99, 0.3);
     }
     
-    /* Main Pricing Section */
+    /* Main Pricing Section con glassmorphism */
     .main-pricing {
         background: #0a0a0a;
-        padding: 80px 0;
+        padding: 120px 0;
+        position: relative;
+    }
+    
+    .main-pricing::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 30% 50%, rgba(0, 213, 99, 0.05) 0%, transparent 50%);
     }
     
     .section-header {
         text-align: center;
         max-width: 600px;
-        margin: 0 auto 60px auto;
+        margin: 0 auto 80px auto;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        padding: 40px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+        z-index: 2;
+    }
+    
+    .section-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(0, 213, 99, 0.1),
+            transparent
+        );
+        animation: shimmer 5s infinite;
     }
     
     .section-title {
@@ -190,11 +291,13 @@
         font-weight: 700;
         margin-bottom: 20px;
         line-height: 1.2;
+        text-shadow: 0 0 20px rgba(0, 213, 99, 0.3);
+        color: #ffffff;
     }
     
     .section-subtitle {
         font-size: 1.125rem;
-        color: #999;
+        color: rgba(255, 255, 255, 0.8);
         line-height: 1.6;
     }
     
@@ -206,6 +309,26 @@
         max-width: 900px;
         margin: 0 auto 60px auto;
         backdrop-filter: blur(10px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        position: relative;
+        overflow: hidden;
+        z-index: 2;
+    }
+    
+    .pricing-table::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(0, 213, 99, 0.1),
+            transparent
+        );
+        animation: shimmer 4s infinite;
     }
     
     .pricing-table-header {
@@ -213,65 +336,149 @@
         margin-bottom: 40px;
         padding-bottom: 24px;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        position: relative;
+        z-index: 2;
     }
     
     .table-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 30px;
-        margin-bottom: 30px;
+        gap: 32px;
+        margin-bottom: 32px;
+        position: relative;
+        z-index: 2;
     }
     
     .table-item {
         text-align: center;
-        padding: 30px 20px;
-        background: rgba(0, 213, 99, 0.1);
-        border-radius: 16px;
+        padding: 32px 24px;
+        background: rgba(0, 213, 99, 0.08);
+        border-radius: 20px;
         border: 1px solid rgba(0, 213, 99, 0.2);
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .table-item::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(0, 213, 99, 0.2),
+            transparent
+        );
+        animation: shimmer 5s infinite;
+    }
+    
+    .table-item:hover {
+        transform: translateY(-4px);
+        border-color: rgba(0, 213, 99, 0.4);
+        box-shadow: 0 12px 40px rgba(0, 213, 99, 0.2);
     }
     
     .table-icon {
-        font-size: 3rem;
-        color: #00D563;
-        margin-bottom: 20px;
+        width: 64px;
+        height: 64px;
+        background: linear-gradient(135deg, #00D563, #00B853);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px auto;
+        font-size: 1.8rem;
+        color: #000;
+        box-shadow: 0 10px 30px rgba(0, 213, 99, 0.3);
+        animation: icon-pulse 3s ease-in-out infinite;
+        position: relative;
+        z-index: 2;
     }
     
     .table-label {
         font-size: 1.1rem;
-        color: #ccc;
-        margin-bottom: 10px;
+        color: rgba(255, 255, 255, 0.8);
+        margin-bottom: 12px;
+        font-weight: 500;
+        position: relative;
+        z-index: 2;
     }
     
     .table-value {
         font-size: 2rem;
         font-weight: 700;
         color: #00D563;
-        margin-bottom: 10px;
+        margin-bottom: 12px;
+        text-shadow: 0 0 15px rgba(0, 213, 99, 0.4);
+        position: relative;
+        z-index: 2;
     }
     
     .table-description {
         font-size: 0.9rem;
-        color: #999;
+        color: rgba(255, 255, 255, 0.7);
+        line-height: 1.4;
+        position: relative;
+        z-index: 2;
     }
     
     .pricing-example {
         background: rgba(0, 213, 99, 0.1);
         border: 1px solid rgba(0, 213, 99, 0.2);
-        border-radius: 12px;
-        padding: 25px;
+        border-radius: 16px;
+        padding: 24px;
         text-align: center;
-        margin-top: 30px;
+        margin-top: 32px;
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+        z-index: 2;
+    }
+    
+    .pricing-example::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(0, 213, 99, 0.2),
+            transparent
+        );
+        animation: shimmer 3s infinite;
     }
     
     .pricing-example strong {
         color: #00D563;
         font-size: 1.1rem;
+        text-shadow: 0 0 10px rgba(0, 213, 99, 0.3);
+        position: relative;
+        z-index: 2;
     }
     
-    /* Calculator Section */
+    /* Calculator Section con glassmorphism */
     .calculator-section {
         background: #000;
-        padding: 80px 0;
+        padding: 120px 0;
+        position: relative;
+    }
+    
+    .calculator-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 70% 50%, rgba(0, 213, 99, 0.05) 0%, transparent 50%);
     }
     
     .calculator-card {
@@ -282,6 +489,26 @@
         max-width: 600px;
         margin: 0 auto;
         backdrop-filter: blur(10px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        position: relative;
+        overflow: hidden;
+        z-index: 2;
+    }
+    
+    .calculator-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(0, 213, 99, 0.1),
+            transparent
+        );
+        animation: shimmer 4s infinite;
     }
     
     .calculator-title {
@@ -290,106 +517,213 @@
         font-weight: 700;
         color: #00D563;
         margin-bottom: 30px;
+        text-shadow: 0 0 15px rgba(0, 213, 99, 0.3);
+        position: relative;
+        z-index: 2;
     }
     
     .input-group {
-        margin-bottom: 20px;
+        margin-bottom: 24px;
+        position: relative;
+        z-index: 2;
     }
     
     .input-label {
         display: block;
-        color: #ccc;
-        margin-bottom: 8px;
-        font-weight: 500;
+        color: #00D563;
+        margin-bottom: 12px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-shadow: 0 0 8px rgba(0, 213, 99, 0.2);
     }
     
     .input-field {
         width: 100%;
-        padding: 15px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 8px;
-        background: rgba(255, 255, 255, 0.1);
-        color: #fff;
+        padding: 14px 16px;
+        border: 2px solid rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.08);
+        color: #ffffff;
         font-size: 1rem;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
     
     .input-field:focus {
         outline: none;
         border-color: #00D563;
-        box-shadow: 0 0 0 2px rgba(0, 213, 99, 0.2);
+        background: rgba(0, 213, 99, 0.1);
+        box-shadow: 0 0 20px rgba(0, 213, 99, 0.3);
+        transform: translateY(-1px);
+    }
+    
+    .input-field::placeholder {
+        color: rgba(255, 255, 255, 0.5);
     }
     
     .calculate-btn {
         width: 100%;
-        padding: 16px;
-        background: #00D563;
+        padding: 18px 32px;
+        background: linear-gradient(135deg, #00D563 0%, #00ff75 100%);
         color: #000;
         border: none;
-        border-radius: 12px;
+        border-radius: 16px;
         font-size: 1.1rem;
-        font-weight: 600;
+        font-weight: 700;
         cursor: pointer;
         transition: all 0.3s ease;
-        margin-bottom: 20px;
+        margin-bottom: 24px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 8px 25px rgba(0, 213, 99, 0.3);
+        position: relative;
+        overflow: hidden;
+        z-index: 2;
+    }
+    
+    .calculate-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.2),
+            transparent
+        );
+        animation: shimmer 3s infinite;
     }
     
     .calculate-btn:hover {
-        background: #00B853;
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(0, 213, 99, 0.3);
+        background: linear-gradient(135deg, #00B853 0%, #00D563 100%);
+        transform: translateY(-4px);
+        box-shadow: 0 15px 40px rgba(0, 213, 99, 0.4);
     }
     
     .result-display {
         text-align: center;
-        padding: 20px;
+        padding: 24px;
         background: rgba(0, 213, 99, 0.1);
         border: 1px solid rgba(0, 213, 99, 0.2);
-        border-radius: 12px;
-        margin-top: 20px;
+        border-radius: 16px;
+        margin-top: 24px;
         display: none;
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+        z-index: 2;
+    }
+    
+    .result-display::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(0, 213, 99, 0.2),
+            transparent
+        );
+        animation: shimmer 3s infinite;
     }
     
     .result-amount {
-        font-size: 2rem;
+        font-size: 2.2rem;
         font-weight: 700;
         color: #00D563;
-        margin-bottom: 10px;
+        margin-bottom: 12px;
+        text-shadow: 0 0 20px rgba(0, 213, 99, 0.5);
+        position: relative;
+        z-index: 2;
     }
     
     .result-breakdown {
-        color: #ccc;
-        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.95rem;
+        line-height: 1.4;
+        position: relative;
+        z-index: 2;
     }
     
-    /* Information Section */
+    /* Information Section con glassmorphism */
     .info-section {
         background: #0a0a0a;
-        padding: 80px 0;
+        padding: 120px 0;
+        position: relative;
+    }
+    
+    .info-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 30% 50%, rgba(0, 213, 99, 0.05) 0%, transparent 50%);
     }
     
     .info-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 40px;
+        gap: 32px;
+        position: relative;
+        z-index: 2;
     }
     
     .info-card {
         background: rgba(255, 255, 255, 0.05);
         border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 16px;
-        padding: 30px;
+        border-radius: 24px;
+        padding: 32px;
         backdrop-filter: blur(10px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .info-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(0, 213, 99, 0.1),
+            transparent
+        );
+        animation: shimmer 6s infinite;
+    }
+    
+    .info-card:hover {
+        transform: translateY(-8px);
+        border-color: rgba(0, 213, 99, 0.3);
+        box-shadow: 0 30px 60px rgba(0, 213, 99, 0.15);
     }
     
     .info-icon {
-        width: 60px;
-        height: 60px;
+        width: 64px;
+        height: 64px;
         background: linear-gradient(135deg, #00D563, #00B853);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-bottom: 20px;
+        margin-bottom: 24px;
+        box-shadow: 0 10px 30px rgba(0, 213, 99, 0.3);
+        animation: icon-pulse 3s ease-in-out infinite;
+        position: relative;
+        z-index: 2;
     }
     
     .info-icon i {
@@ -399,85 +733,113 @@
     
     .info-title {
         font-size: 1.3rem;
-        font-weight: 600;
-        margin-bottom: 15px;
-        color: #fff;
+        font-weight: 700;
+        margin-bottom: 16px;
+        color: #00D563;
+        text-shadow: 0 0 10px rgba(0, 213, 99, 0.2);
+        position: relative;
+        z-index: 2;
     }
     
     .info-description {
-        color: #ccc;
+        color: rgba(255, 255, 255, 0.8);
         line-height: 1.6;
+        position: relative;
+        z-index: 2;
     }
     
     .info-list {
         list-style: none;
-        margin-top: 15px;
+        margin-top: 16px;
+        position: relative;
+        z-index: 2;
     }
     
     .info-list li {
-        padding: 5px 0;
-        color: #ccc;
+        padding: 8px 0;
+        color: rgba(255, 255, 255, 0.8);
         position: relative;
-        padding-left: 20px;
+        padding-left: 24px;
+        line-height: 1.4;
     }
     
     .info-list li:before {
-        content: "✓";
-        color: #00D563;
-        font-weight: bold;
+        content: '';
+        width: 6px;
+        height: 6px;
+        background: #00D563;
+        border-radius: 50%;
         position: absolute;
         left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        box-shadow: 0 0 8px rgba(0, 213, 99, 0.5);
     }
     
-    /* CTA Section */
+    /* CTA Section con glassmorphism - IGUAL A SERVICIOS.HTML */
     .cta-section {
-        background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
-        padding: 80px 0;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        padding: 60px 40px;
+        text-align: center;
+        margin: 80px auto;
+        max-width: 800px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
         position: relative;
+        overflow: hidden;
     }
     
     .cta-section::before {
         content: '';
         position: absolute;
         top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: radial-gradient(circle at 70% 50%, rgba(0, 213, 99, 0.1) 0%, transparent 50%);
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(0, 213, 99, 0.1),
+            transparent
+        );
+        animation: shimmer 4s infinite;
     }
     
     .cta-content {
-        text-align: center;
-        max-width: 600px;
-        margin: 0 auto;
         position: relative;
         z-index: 2;
     }
     
     .cta-title {
-        font-size: clamp(2rem, 4vw, 2.5rem);
+        font-size: clamp(1.5rem, 3vw, 2.5rem);
         font-weight: 700;
         margin-bottom: 20px;
+        color: #00D563;
+        text-shadow: 0 0 15px rgba(0, 213, 99, 0.4);
         line-height: 1.2;
     }
     
     .cta-subtitle {
         font-size: 1.125rem;
-        color: #ccc;
+        color: rgba(255, 255, 255, 0.8);
         margin-bottom: 40px;
         line-height: 1.6;
     }
     
     .cta-buttons {
         display: flex;
-        gap: 16px;
+        gap: 20px;
         justify-content: center;
         flex-wrap: wrap;
+        position: relative;
+        z-index: 2;
     }
     
     .btn-uber {
-        padding: 16px 32px;
-        border-radius: 12px;
+        padding: 18px 32px;
+        border-radius: 16px;
         font-size: 1rem;
         font-weight: 600;
         text-decoration: none;
@@ -487,52 +849,165 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        min-width: 180px;
+        min-width: 200px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .btn-uber::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.2),
+            transparent
+        );
+        animation: shimmer 3s infinite;
     }
     
     .btn-primary {
-        background: #00D563;
+        background: linear-gradient(135deg, #00D563 0%, #00ff75 100%);
         color: #000;
+        box-shadow: 0 8px 25px rgba(0, 213, 99, 0.3);
     }
     
     .btn-primary:hover {
-        background: #00B853;
-        transform: translateY(-2px);
-        box-shadow: 0 8px 30px rgba(0, 213, 99, 0.3);
+        background: linear-gradient(135deg, #00B853 0%, #00D563 100%);
+        transform: translateY(-4px);
+        box-shadow: 0 15px 40px rgba(0, 213, 99, 0.4);
         color: #000;
         text-decoration: none;
     }
     
     .btn-secondary {
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.05);
         color: #fff;
         border: 1px solid rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
     }
     
     .btn-secondary:hover {
-        background: rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.15);
         color: #fff;
         text-decoration: none;
         transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(255, 255, 255, 0.1);
     }
     
     .btn-icon {
-        margin-right: 8px;
+        margin-right: 12px;
         font-size: 1.1rem;
     }
     
-    /* Responsive */
-    @media (max-width: 768px) {
+    /* Animaciones glassmorphism */
+    @keyframes shimmer {
+        0% {
+            left: -100%;
+        }
+        100% {
+            left: 100%;
+        }
+    }
+    
+    @keyframes icon-pulse {
+        0%, 100% {
+            transform: scale(1);
+            box-shadow: 0 10px 30px rgba(0, 213, 99, 0.3);
+        }
+        50% {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(0, 213, 99, 0.5);
+        }
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .pricing-card {
+        animation: fadeInUp 0.6s ease forwards;
+    }
+    
+    .pricing-card:nth-child(1) { animation-delay: 0.1s; }
+    .pricing-card:nth-child(2) { animation-delay: 0.2s; }
+    .pricing-card:nth-child(3) { animation-delay: 0.3s; }
+    
+    .info-card {
+        animation: fadeInUp 0.6s ease forwards;
+    }
+    
+    .info-card:nth-child(1) { animation-delay: 0.1s; }
+    .info-card:nth-child(2) { animation-delay: 0.2s; }
+    .info-card:nth-child(3) { animation-delay: 0.3s; }
+    
+    /* Responsive glassmorphism */
+    @media (max-width: 968px) {
         .pricing-grid {
             grid-template-columns: 1fr;
+            gap: 24px;
         }
         
         .table-grid {
             grid-template-columns: 1fr;
+            gap: 24px;
         }
         
         .info-grid {
             grid-template-columns: 1fr;
+            gap: 24px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .container {
+            padding: 0 16px;
+        }
+        
+        .hero-section {
+            padding: 60px 0;
+        }
+        
+        .hero-content {
+            padding: 40px 24px;
+        }
+        
+        .pricing-showcase,
+        .main-pricing,
+        .calculator-section,
+        .info-section,
+        .cta-section {
+            padding: 80px 0;
+        }
+        
+        .section-header {
+            padding: 32px 24px;
+        }
+        
+        .pricing-table,
+        .calculator-card {
+            padding: 32px 24px;
+        }
+        
+        .info-card {
+            padding: 24px;
+        }
+        
+        .cta-content {
+            padding: 32px 24px;
         }
         
         .cta-buttons {
@@ -545,9 +1020,9 @@
             max-width: 280px;
         }
         
-        .pricing-table,
-        .calculator-card {
-            padding: 25px;
+        .cta-section {
+            margin: 60px 16px;
+            padding: 40px 24px;
         }
     }
     
@@ -556,9 +1031,26 @@
             padding: 0 16px;
         }
         
-        .pricing-card,
+        .hero-content {
+            padding: 32px 20px;
+        }
+        
+        .pricing-card .card-content,
         .info-card {
             padding: 20px;
+        }
+        
+        .pricing-table,
+        .calculator-card {
+            padding: 24px 20px;
+        }
+        
+        .cta-section {
+            padding: 32px 20px;
+        }
+        
+        .table-item {
+            padding: 24px 16px;
         }
     }
 </style>
@@ -677,23 +1169,29 @@
             
             <div class="table-grid">
                 <div class="table-item">
-                    <div class="table-icon">🚀</div>
+                    <div class="table-icon">
+    <i class="fas fa-rocket"></i>
+</div>
                     <div class="table-label">Tarifa Base</div>
                     <div class="table-value">$30.000</div>
                     <div class="table-description">Costo inicial del servicio</div>
                 </div>
                 
                 <div class="table-item">
-                    <div class="table-icon">📏</div>
+                    <div class="table-icon">
+    <i class="fas fa-route"></i>
+</div>
                     <div class="table-label">Por Kilómetro</div>
                     <div class="table-value">$1.500</div>
                     <div class="table-description">Cada kilómetro recorrido</div>
                 </div>
                 
                 <div class="table-item">
-                    <div class="table-icon">💎</div>
+                    <div class="table-icon">
+    <i class="fas fa-gem"></i>
+</div>
                     <div class="table-label">Tarifa Mínima</div>
-                    <div class="table-value">$35.000</div>
+                    <div class="table-value">$30.000</div>
                     <div class="table-description">Costo mínimo garantizado</div>
                 </div>
             </div>
@@ -718,7 +1216,7 @@
             </div>
             
             <button class="calculate-btn" onclick="calculatePrice()">
-                💰 Calcular Precio
+                Calcular Precio
             </button>
             
             <div id="result" class="result-display">
@@ -803,11 +1301,11 @@
             
             <div class="cta-buttons">
                 <a href="{% url 'solicitar_servicio' %}" class="btn-uber btn-primary">
-                    <span class="btn-icon">🚚</span>
+                    <span class="btn-icon"></span>
                     Solicitar Grúa Ahora
                 </a>
                 <a href="{% url 'registro' %}" class="btn-uber btn-secondary">
-                    <span class="btn-icon">📱</span>
+                    <span class="btn-icon"></span>
                     Crear Cuenta
                 </a>
             </div>
@@ -829,7 +1327,7 @@ function calculatePrice() {
     
     const basePrice = 30000;
     const pricePerKm = 1500;
-    const minimumPrice = 35000;
+    const minimumPrice = 30000;
     
     const calculatedPrice = basePrice + (distance * pricePerKm);
     const finalPrice = Math.max(calculatedPrice, minimumPrice);

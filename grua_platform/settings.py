@@ -53,6 +53,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'grua_app.context_processors.disponibilidad_context',
             ],
         },
     },
@@ -90,7 +91,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Internationalization
-LANGUAGE_CODE = 'es-es'
+LANGUAGE_CODE = 'es-CL'  # ← CAMBIADO PARA CHILE
 TIME_ZONE = 'America/Santiago'
 USE_I18N = True
 USE_TZ = True
@@ -99,9 +100,10 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# ✅ ESTO ES LO QUE FALTABA - DIRECTORIOS DE ARCHIVOS ESTÁTICOS
+# ✅ DIRECTORIOS DE ARCHIVOS ESTÁTICOS (CORREGIDO)
 STATICFILES_DIRS = [
-    BASE_DIR / 'static',  # ← APUNTA A TU CARPETA static/
+    BASE_DIR / 'static',  # Carpeta principal
+    BASE_DIR / 'grua_app' / 'static',  # ← AGREGAR ESTA LÍNEA
 ]
 
 # ✅ CONFIGURACIÓN PARA WHITENOISE (SERVIR ESTÁTICOS EN PRODUCCIÓN)
@@ -124,55 +126,113 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'amiasolutionsia@gmail.com')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'alexismkt1989@gmail.com')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'iifv wcls xqtq vekg')
+DEFAULT_FROM_EMAIL = 'alexismkt1989@gmail.com'
+EMAIL_USE_SSL = False
+SERVER_EMAIL = 'alexismkt1989@gmail.com'
 
 # CSRF trusted origins for deployment
 CSRF_TRUSTED_ORIGINS = [
     'https://gruastyle.com',
     'https://www.gruastyle.com',
     'https://grua-style-pwa-production.up.railway.app',
-    'https://grua-style-pwa-production-e1a8f1c34a86.herokuapp.com'
-]
-
-# Debug settings print (para development)
-if DEBUG:
-    print(f"🔍 DEBUG SETTINGS.PY:")
-    print(f" EMAIL_HOST env: {os.environ.get('EMAIL_HOST_USER')}")
-    print(f" EMAIL_HOST_USER env: {os.environ.get('EMAIL_HOST_USER')}")
-    print(f" Todas las variables env que empiecen con EMAIL:")
-
-# CONFIGURACIÓN DE EMAIL CON GMAIL
-# AGREGAR ESTAS LÍNEAS AL FINAL DE TU settings.py
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'alexismkt1989@gmail.com'  # CAMBIAR por tu email de Gmail
-EMAIL_HOST_PASSWORD = 'iifv wcls xqtq vekg'  # Tu contraseña de aplicación
-DEFAULT_FROM_EMAIL = 'alexismkt1989@gmail.com'  # CAMBIAR por tu email de Gmail
-
-# También puedes agregar estas opciones adicionales:
-EMAIL_USE_SSL = False  # False porque usamos TLS
-SERVER_EMAIL = 'alexismkt1989@gmail.com'  # CAMBIAR por tu email de Gmail
-# Configuración CSRF para Railway
-import os
-
-# CSRF Settings para Railway
-CSRF_TRUSTED_ORIGINS = [
+    'https://grua-style-pwa-production-e1a8f1c34a86.herokuapp.com',
     'https://web-production-f080f.up.railway.app',
     'https://*.railway.app',
-    'https://gruastyle.com',
-    'https://www.gruastyle.com',
 ]
 
-# Si está en Railway, usar configuración específica
+# Configuración CSRF para Railway
 if 'RAILWAY_ENVIRONMENT' in os.environ or 'railway' in os.environ.get('RAILWAY_DEPLOYMENT_ID', ''):
     CSRF_COOKIE_SECURE = False
     CSRF_COOKIE_SAMESITE = 'Lax'
     SESSION_COOKIE_SECURE = False
     SECURE_SSL_REDIRECT = False
+
+# ========================================
+# 🆕 CONFIGURACIÓN MERCADO PAGO
+# ========================================
+
+# Función para obtener variables de entorno con valores por defecto
+def get_env_var(var_name, default_value=''):
+    return os.environ.get(var_name, default_value)
+
+# Credenciales Mercado Pago
+MERCADOPAGO_PUBLIC_KEY = 'APP_USR-c040be87-5ea3-48e7-ad51-9be676f8a4c4'
+MERCADOPAGO_ACCESS_TOKEN = 'APP_USR-5083384518821496-081312-681624599b206b49d80fb21f12356329-2544553674'
+MERCADOPAGO_WEBHOOK_SECRET = 'webhook-secret-temporal'
+MERCADOPAGO_SANDBOX = False
+
+# URL base para webhooks
+BASE_HOST = get_env_var('BASE_HOST', 'http://127.0.0.1:8000')
+
+# Datos de transferencia bancaria para mostrar al usuario
+BANK_TRANSFER_INFO = {
+    'bank_name': 'Banco de Chile',
+    'account_type': 'Cuenta Corriente',
+    'account_number': '123456789',
+    'rut': '12.345.678-9',
+    'account_holder': 'Grúa Style SpA',
+    'email': 'pagos@gruastyle.cl',
+    'phone': '+56 9 1234 5678'
+}
+
+# Configuración de tarifas
+PAYMENT_CONFIG = {
+    'currency': 'CLP',
+    'max_installments': 6,  # Máximo 6 cuotas
+    'min_amount': 10000,    # Monto mínimo $10.000 CLP
+    'webhook_timeout': 30,  # Timeout para webhooks en segundos
+}
+
+# Debug settings print (para development)
+if DEBUG:
+    print(f"🔍 DEBUG SETTINGS.PY:")
+    print(f" EMAIL_HOST_USER: {EMAIL_HOST_USER}")
+    print(f" MERCADOPAGO_SANDBOX: {MERCADOPAGO_SANDBOX}")
+    print(f" BASE_HOST: {BASE_HOST}")
+    print(f" MERCADOPAGO_PUBLIC_KEY: {MERCADOPAGO_PUBLIC_KEY[:20]}..." if MERCADOPAGO_PUBLIC_KEY else "No configurado")
+
+# ========================================
+# SISTEMA DE NOTIFICACIONES
+# ========================================
+
+# Email del administrador para alertas
+NOTIFICATIONS_ADMIN_EMAIL = 'monardes.luis@gmail.com'  # CAMBIA POR TU EMAIL REAL
+
+# ========================================
+# SISTEMA DE NOTIFICACIONES TELEGRAM
+# ========================================
+
+# Token del bot de Telegram (obtenido de @BotFather)
+TELEGRAM_BOT_TOKEN = '8379152044:AAHoS8b2RCdZ2SBGENvVkIlYT3RpmqXjuE8'  # Reemplazar con el token real
+
+# Chat ID del administrador (obtenido de @userinfobot)
+TELEGRAM_ADMIN_CHAT_ID = '6810175002'  # Reemplazar con tu chat ID
+
+# ========================================
+# CONFIGURACIÓN PARA PRODUCCIÓN
+# ========================================
+
+# Detectar si estamos en Railway (producción)
+if 'RAILWAY_ENVIRONMENT' in os.environ:
+    DEBUG = False
+    ALLOWED_HOSTS = ['gruastyle.com', 'www.gruastyle.com', '*.railway.app', '*.up.railway.app']
     
-# Permitir todos los hosts en producción
-ALLOWED_HOSTS = ['*']
+    # Base de datos PostgreSQL en Railway
+    DATABASES = {
+        'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
+    }
+    
+    # Configuración HTTPS y seguridad
+    SECURE_SSL_REDIRECT = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+    
+    # URLs base para producción
+    BASE_HOST = 'https://www.gruastyle.com'
+    
+    print("🚀 MODO PRODUCCIÓN ACTIVADO")
+else:
+    print("💻 MODO DESARROLLO LOCAL")

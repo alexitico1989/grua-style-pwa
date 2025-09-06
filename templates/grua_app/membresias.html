@@ -22,7 +22,7 @@
     }
     
     .container {
-        max-width: 1200px;
+        max-width: 1400px;
         margin: 0 auto;
         padding: 0 20px;
     }
@@ -115,24 +115,30 @@
 
     .plans-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-        gap: 40px;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
         margin-top: 60px;
         position: relative;
         z-index: 2;
+        max-width: 1200px;
+        margin: 60px auto 0;
     }
 
     .plan-card {
         background: rgba(255, 255, 255, 0.05);
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 24px;
-        padding: 40px 30px;
+        padding: 30px;
         text-align: center;
         position: relative;
         transition: all 0.4s ease;
         backdrop-filter: blur(15px);
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
         overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        min-height: 650px;
     }
 
     .plan-card::before {
@@ -159,8 +165,8 @@
         background: rgba(0, 213, 99, 0.1);
     }
 
-    .plan-card.featured::after {
-        content: "⭐ MÁS POPULAR";
+    /*.plan-card.featured::after {
+        content: "⭐ PREFERIDO EMPRESAS";
         position: absolute;
         top: -15px;
         left: 50%;
@@ -175,7 +181,7 @@
         box-shadow: 0 5px 15px rgba(0, 213, 99, 0.4);
         animation: pulse-glow 2s ease-in-out infinite alternate;
         z-index: 3;
-    }
+    }*/
 
     .plan-card.featured:hover {
         transform: scale(1.05) translateY(-10px);
@@ -184,6 +190,9 @@
     .plan-content {
         position: relative;
         z-index: 2;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
     }
 
     .plan-icon {
@@ -198,40 +207,73 @@
     .plan-name {
         font-size: 1.8rem;
         font-weight: 700;
-        margin-bottom: 15px;
+        margin-bottom: 25px;
         color: #fff;
         text-shadow: 0 0 10px rgba(0, 213, 99, 0.2);
     }
 
-    .plan-price {
-        font-size: 3rem;
-        font-weight: 800;
-        color: #00D563;
-        margin-bottom: 10px;
-        text-shadow: 0 0 20px rgba(0, 213, 99, 0.4);
-        line-height: 1;
+    .pricing-options {
+        margin-bottom: 30px;
     }
 
-    .plan-period {
-        font-size: 1rem;
+    .pricing-option {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 15px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .pricing-option:hover {
+        border-color: rgba(0, 213, 99, 0.3);
+        background: rgba(0, 213, 99, 0.1);
+    }
+
+    .pricing-option.selected {
+        border-color: #00D563;
+        background: rgba(0, 213, 99, 0.15);
+        box-shadow: 0 0 20px rgba(0, 213, 99, 0.2);
+    }
+
+    .pricing-duration {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #00D563;
+        margin-bottom: 8px;
+    }
+
+    .pricing-price {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: #fff;
+        margin-bottom: 5px;
+    }
+
+    .pricing-details {
+        font-size: 0.9rem;
         color: rgba(255, 255, 255, 0.7);
-        margin-bottom: 30px;
+        line-height: 1.4;
     }
 
     .plan-features {
         list-style: none;
         padding: 0;
-        margin: 30px 0;
+        margin: 0 0 25px 0;
         text-align: left;
+        flex: 1;
     }
 
     .plan-features li {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         padding: 12px 0;
         color: rgba(255, 255, 255, 0.9);
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         transition: all 0.3s ease;
+        line-height: 1.4;
     }
 
     .plan-features li:last-child {
@@ -251,6 +293,8 @@
         font-size: 1.1rem;
         width: 20px;
         text-align: center;
+        margin-top: 2px;
+        flex-shrink: 0;
     }
 
     .plan-button {
@@ -270,6 +314,7 @@
         overflow: hidden;
         text-decoration: none;
         display: inline-block;
+        margin-top: auto;
     }
 
     .plan-button::before {
@@ -537,6 +582,23 @@
     }
 
     /* Responsive */
+    @media (max-width: 1200px) {
+    .plans-grid {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+        
+        .plan-card {
+            min-height: 600px;
+            padding: 25px;
+        }
+        
+        .plan-features li {
+            font-size: 0.85rem;
+            padding: 6px 0;
+        }
+    }
+
     @media (max-width: 968px) {
         .plans-grid {
             grid-template-columns: 1fr;
@@ -572,8 +634,8 @@
             font-size: 2.5rem;
         }
 
-        .plan-price {
-            font-size: 2.5rem;
+        .pricing-price {
+            font-size: 2rem;
         }
 
         .benefits-title,
@@ -598,6 +660,11 @@
             padding-left: 20px;
             padding-right: 20px;
         }
+
+        .plans-grid {
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
     }
 </style>
 {% endblock %}
@@ -610,61 +677,118 @@
             <i class="fas fa-crown hero-icon"></i>
             <h1 class="hero-title">Membresías Premium</h1>
             <p class="hero-subtitle">
-                Accede a beneficios exclusivos, descuentos especiales y servicios prioritarios. 
-                Elige el plan perfecto para tus necesidades.
+                Accede a beneficios exclusivos, viajes gratis, descuentos especiales y servicios prioritarios. 
+                Elige el plan perfecto para tus necesidades de transporte de grúa.
             </p>
         </div>
     </div>
 </section>
 
 <!-- Plans Section -->
-<section class="plans-section">
+<section class="plans-section" id="plans">
     <div class="container">
         <div class="plans-grid">
-            <!-- Plan Básico -->
+            <!-- Plan Básica -->
             <div class="plan-card">
                 <div class="plan-content">
                     <i class="fas fa-star plan-icon"></i>
-                    <h3 class="plan-name">Básico</h3>
-                    <div class="plan-price">$19.990</div>
-                    <div class="plan-period">por mes</div>
+                    <h3 class="plan-name">Membresía Básica</h3>
+                    
+                    <div class="pricing-options">
+                        <div class="pricing-option selected" onclick="selectPlan(this, 'basica', '3')">
+                            <div class="pricing-duration">3 Meses</div>
+                            <div class="pricing-price">$59.990</div>
+                            <div class="pricing-details">
+                                • Tarifa base: $25.000<br>
+                                • Tarifa x Km: $1.300
+                            </div>
+                        </div>
+                        
+                        <div class="pricing-option" onclick="selectPlan(this, 'basica', '6')">
+                            <div class="pricing-duration">6 Meses</div>
+                            <div class="pricing-price">$109.990</div>
+                            <div class="pricing-details">
+                                • 1 Viaje Gratis región metropolitana<br>
+                                • Tarifa base: $25.000 • Tarifa x Km: $1.300
+                            </div>
+                        </div>
+                        
+                        <div class="pricing-option" onclick="selectPlan(this, 'basica', '12')">
+                            <div class="pricing-duration">1 Año</div>
+                            <div class="pricing-price">$199.990</div>
+                            <div class="pricing-details">
+                                • 3 Viajes Gratis región metropolitana<br>
+                                • Tarifa base: $25.000 • Tarifa x Km: $1.300
+                            </div>
+                        </div>
+                    </div>
                     
                     <ul class="plan-features">
                         <li>
                             <i class="fas fa-check"></i>
-                            Servicio de grúa 24/7
+                            Servicio de grúa 24/7 en toda la región metropolitana
                         </li>
                         <li>
                             <i class="fas fa-check"></i>
-                            2 servicios incluidos por mes
+                            Tarifa preferencial garantizada durante toda la membresía
                         </li>
                         <li>
                             <i class="fas fa-check"></i>
-                            10% de descuento en servicios adicionales
+                            Soporte por chat y teléfono
                         </li>
                         <li>
                             <i class="fas fa-check"></i>
-                            Soporte por chat básico
+                            Tiempo de respuesta estándar (30-45 min)
                         </li>
                         <li>
                             <i class="fas fa-check"></i>
-                            Tiempo de respuesta estándar
+                            Sin compromisos adicionales
                         </li>
                     </ul>
                     
-                    <a href="{% url 'pago_membresia' %}?plan=basico" class="plan-button">
-                        Seleccionar Básico
+                    <a href="{% url 'pago_membresia' %}?plan=basica&duration=3" class="plan-button" id="btn-basica">
+                        Seleccionar Básica
                     </a>
                 </div>
             </div>
 
-            <!-- Plan Premium -->
-            <div class="plan-card featured">
+            <!-- Plan Pro -->
+            <div class="plan-card">
                 <div class="plan-content">
                     <i class="fas fa-gem plan-icon"></i>
-                    <h3 class="plan-name">Premium</h3>
-                    <div class="plan-price">$29.990</div>
-                    <div class="plan-period">por mes</div>
+                    <h3 class="plan-name">Membresía Pro</h3>
+                    
+                    <div class="pricing-options">
+                        <div class="pricing-option selected" onclick="selectPlan(this, 'pro', '3')">
+                            <div class="pricing-duration">3 Meses</div>
+                            <div class="pricing-price">$99.990</div>
+                            <div class="pricing-details">
+                                • 1 Viaje a mitad de precio región metropolitana<br>
+                                • Tarifa base: $20.000 • Tarifa x Km: $1.300<br>
+                                • Sin tarifa mínima
+                            </div>
+                        </div>
+                        
+                        <div class="pricing-option" onclick="selectPlan(this, 'pro', '6')">
+                            <div class="pricing-duration">6 Meses</div>
+                            <div class="pricing-price">$189.990</div>
+                            <div class="pricing-details">
+                                • 2 viajes gratis región metropolitana<br>
+                                • Tarifa base: $20.000 • Tarifa x Km: $1.300<br>
+                                • Sin tarifa mínima
+                            </div>
+                        </div>
+                        
+                        <div class="pricing-option" onclick="selectPlan(this, 'pro', '12')">
+                            <div class="pricing-duration">1 Año</div>
+                            <div class="pricing-price">$349.000</div>
+                            <div class="pricing-details">
+                                • 5 viajes gratis región metropolitana<br>
+                                • Un servicio de revisión técnica a domicilio<br>
+                                • Taza de regalo
+                            </div>
+                        </div>
+                    </div>
                     
                     <ul class="plan-features">
                         <li>
@@ -673,77 +797,121 @@
                         </li>
                         <li>
                             <i class="fas fa-check"></i>
-                            5 servicios incluidos por mes
+                            Tarifas preferenciales más bajas que plan básico
                         </li>
                         <li>
                             <i class="fas fa-check"></i>
-                            20% de descuento en servicios adicionales
+                            Sin tarifa mínima en servicios
                         </li>
                         <li>
                             <i class="fas fa-check"></i>
-                            Soporte premium por teléfono
+                            Soporte premium por teléfono y WhatsApp
                         </li>
                         <li>
                             <i class="fas fa-check"></i>
-                            Tiempo de respuesta prioritario
+                            Tiempo de respuesta mejorado (20-30 min)
                         </li>
                         <li>
                             <i class="fas fa-check"></i>
-                            Asistencia mecánica básica incluida
+                            Viajes gratis incluidos según duración
                         </li>
                     </ul>
                     
-                    <a href="{% url 'pago_membresia' %}?plan=premium" class="plan-button">
-                        Seleccionar Premium
+                    <a href="{% url 'pago_membresia' %}?plan=pro&duration=3" class="plan-button" id="btn-pro">
+                        Seleccionar Pro
                     </a>
                 </div>
             </div>
 
-            <!-- Plan VIP -->
-            <div class="plan-card">
+            <!-- Plan Premium (Empresas) -->
+            <div class="plan-card featured">
                 <div class="plan-content">
-                    <i class="fas fa-crown plan-icon"></i>
-                    <h3 class="plan-name">VIP</h3>
-                    <div class="plan-price">$49.990</div>
-                    <div class="plan-period">por mes</div>
+                    <i class="fas fa-building plan-icon"></i>
+                    <h3 class="plan-name">Membresía Premium</h3>
+                    <div style="font-size: 0.9rem; color: #00D563; margin-bottom: 20px; font-weight: 600;">
+                        (Preferido para Empresas)
+                    </div>
+                    
+                    <div class="pricing-options">
+                        <div class="pricing-option selected" onclick="selectPlan(this, 'premium', '3')">
+                            <div class="pricing-duration">3 Meses</div>
+                            <div class="pricing-price">$299.000</div>
+                            <div class="pricing-details">
+                                • 2 viajes gratis región metropolitana<br>
+                                • 2 viajes precio fijo $20.000 toda RM<br>
+                                • Tarifa base: $20.000 • Tarifa x Km: $1.200<br>
+                                • Sin tarifa mínima
+                            </div>
+                        </div>
+                        
+                        <div class="pricing-option" onclick="selectPlan(this, 'premium', '6')">
+                            <div class="pricing-duration">6 Meses</div>
+                            <div class="pricing-price">$549.000</div>
+                            <div class="pricing-details">
+                                • 4 viajes gratis región metropolitana<br>
+                                • 3 viajes precio fijo $20.000 toda RM<br>
+                                • Tarifa base: $20.000 • Tarifa x Km: $1.200<br>
+                                • Sin tarifa mínima
+                            </div>
+                        </div>
+                        
+                        <div class="pricing-option" onclick="selectPlan(this, 'premium', '12')">
+                            <div class="pricing-duration">1 Año</div>
+                            <div class="pricing-price">$999.000</div>
+                            <div class="pricing-details">
+                                • 10 viajes gratis región metropolitana<br>
+                                • 10 viajes precio fijo $20.000 toda RM<br>
+                                • Un servicio de revisión técnica a domicilio<br>
+                                • Taza de regalo • Asistencia prioritaria
+                            </div>
+                        </div>
+                    </div>
                     
                     <ul class="plan-features">
                         <li>
                             <i class="fas fa-check"></i>
-                            Servicio exclusivo 24/7
+                            Servicio exclusivo 24/7 para empresas
                         </li>
                         <li>
                             <i class="fas fa-check"></i>
-                            Servicios ilimitados
+                            Tarifas corporativas preferenciales
                         </li>
                         <li>
                             <i class="fas fa-check"></i>
-                            30% de descuento en servicios externos
+                            Sin tarifa mínima en todos los servicios
                         </li>
                         <li>
                             <i class="fas fa-check"></i>
-                            Soporte VIP dedicado 24/7
+                            Viajes a precio fijo en toda la región metropolitana
                         </li>
                         <li>
                             <i class="fas fa-check"></i>
-                            Tiempo de respuesta inmediato
+                            Soporte VIP dedicado 24/7 con ejecutivo asignado
                         </li>
                         <li>
                             <i class="fas fa-check"></i>
-                            Asistencia mecánica completa
+                            Tiempo de respuesta prioritario (15-20 min)
                         </li>
                         <li>
                             <i class="fas fa-check"></i>
-                            Seguimiento GPS en tiempo real
+                            Facturación empresarial y reportes detallados
                         </li>
                         <li>
                             <i class="fas fa-check"></i>
-                            Conductor personal asignado
+                            Seguimiento GPS en tiempo real de la flota
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            Servicio de revisión técnica a domicilio incluido
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            Kit de bienvenida con merchandising
                         </li>
                     </ul>
                     
-                    <a href="{% url 'pago_membresia' %}?plan=vip" class="plan-button">
-                        Seleccionar VIP
+                    <a href="{% url 'pago_membresia' %}?plan=premium&duration=3" class="plan-button" id="btn-premium">
+                        Seleccionar Premium
                     </a>
                 </div>
             </div>
@@ -759,34 +927,50 @@
             
             <div class="benefits-grid">
                 <div class="benefit-card">
-                    <i class="fas fa-bolt benefit-icon"></i>
-                    <h3 class="benefit-title">Respuesta Rápida</h3>
+                    <i class="fas fa-map-marker-alt benefit-icon"></i>
+                    <h3 class="benefit-title">Viajes Gratis Incluidos</h3>
                     <p class="benefit-description">
-                        Tiempos de respuesta mejorados con prioridad sobre usuarios regulares.
+                        Viajes sin costo en la región metropolitana según tu plan elegido. Ahorra desde el primer uso.
                     </p>
                 </div>
                 
                 <div class="benefit-card">
                     <i class="fas fa-piggy-bank benefit-icon"></i>
-                    <h3 class="benefit-title">Ahorro Garantizado</h3>
+                    <h3 class="benefit-title">Tarifas Preferenciales</h3>
                     <p class="benefit-description">
-                        Descuentos significativos que se pagan solos con el uso regular.
+                        Descuentos garantizados en tarifa base y por kilómetro durante toda tu membresía.
+                    </p>
+                </div>
+                
+                <div class="benefit-card">
+                    <i class="fas fa-clock benefit-icon"></i>
+                    <h3 class="benefit-title">Respuesta Prioritaria</h3>
+                    <p class="benefit-description">
+                        Tiempos de respuesta mejorados con prioridad sobre usuarios regulares según tu plan.
                     </p>
                 </div>
                 
                 <div class="benefit-card">
                     <i class="fas fa-headset benefit-icon"></i>
-                    <h3 class="benefit-title">Soporte Premium</h3>
+                    <h3 class="benefit-title">Soporte Especializado</h3>
                     <p class="benefit-description">
-                        Atención personalizada y soporte técnico especializado 24/7.
+                        Atención personalizada por WhatsApp, teléfono y chat con ejecutivos especializados.
                     </p>
                 </div>
                 
                 <div class="benefit-card">
-                    <i class="fas fa-shield-alt benefit-icon"></i>
-                    <h3 class="benefit-title">Servicios Incluidos</h3>
+                    <i class="fas fa-tools benefit-icon"></i>
+                    <h3 class="benefit-title">Servicios Adicionales</h3>
                     <p class="benefit-description">
-                        Servicios mensuales incluidos sin costos adicionales.
+                        Revisión técnica a domicilio y servicios especiales incluidos en planes superiores.
+                    </p>
+                </div>
+                
+                <div class="benefit-card">
+                    <i class="fas fa-building benefit-icon"></i>
+                    <h3 class="benefit-title">Soluciones Empresariales</h3>
+                    <p class="benefit-description">
+                        Facturación empresarial, reportes detallados y atención especializada para empresas.
                     </p>
                 </div>
             </div>
@@ -801,41 +985,61 @@
         
         <div class="faq-item">
             <div class="faq-question" onclick="toggleFAQ(this)">
-                ¿Puedo cambiar mi plan en cualquier momento?
+                ¿Cómo funcionan los viajes gratis incluidos?
                 <i class="fas fa-chevron-down"></i>
             </div>
             <div class="faq-answer">
-                Sí, puedes cambiar tu plan en cualquier momento. Los cambios se aplicarán en tu próximo ciclo de facturación.
+                Los viajes gratis se acreditan automáticamente en tu cuenta al contratar la membresía y están disponibles para usar durante todo el período contratado en la región metropolitana.
             </div>
         </div>
         
         <div class="faq-item">
             <div class="faq-question" onclick="toggleFAQ(this)">
-                ¿Qué pasa si no uso todos mis servicios incluidos?
+                ¿Qué pasa si no uso todos mis viajes gratis?
                 <i class="fas fa-chevron-down"></i>
             </div>
             <div class="faq-answer">
-                Los servicios no utilizados no se acumulan para el siguiente mes, pero siempre tendrás acceso a descuentos en servicios adicionales.
+                Los viajes gratis no utilizados no se acumulan para el siguiente período, pero siempre tendrás acceso a las tarifas preferenciales de tu membresía.
             </div>
         </div>
         
         <div class="faq-item">
             <div class="faq-question" onclick="toggleFAQ(this)">
-                ¿Cómo funciona la renovación automática?
+                ¿Las tarifas preferenciales aplican fuera de la región metropolitana?
                 <i class="fas fa-chevron-down"></i>
             </div>
             <div class="faq-answer">
-                Tu membresía se renovará automáticamente cada mes. Puedes cancelar en cualquier momento sin penalizaciones.
+                Sí, las tarifas preferenciales de tu membresía aplican en todo el territorio nacional. Los viajes gratis solo aplican en la región metropolitana.
             </div>
         </div>
         
         <div class="faq-item">
             <div class="faq-question" onclick="toggleFAQ(this)">
-                ¿Hay período de prueba?
+                ¿Puedo cambiar mi plan durante la membresía?
                 <i class="fas fa-chevron-down"></i>
             </div>
             <div class="faq-answer">
-                Ofrecemos 7 días de prueba gratuita para que puedas experimentar todos los beneficios de tu membresía elegida.
+                Puedes hacer upgrade a un plan superior en cualquier momento pagando la diferencia prorrateada. Los downgrades se aplican en la renovación.
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                ¿Cómo funciona la revisión técnica a domicilio?
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                Para planes Pro anual y Premium, incluimos un servicio de revisión técnica donde nuestro técnico va a tu ubicación. Solo debes coordinar la cita con 48 horas de anticipación.
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                ¿La membresía Premium es solo para empresas?
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                No, aunque está optimizada para empresas, cualquier usuario puede contratar la membresía Premium y disfrutar de todos sus beneficios y servicios exclusivos.
             </div>
         </div>
     </div>
@@ -847,10 +1051,9 @@
         <div class="cta-content">
             <h2 class="cta-title">¿Listo para comenzar?</h2>
             <p class="cta-subtitle">
-                Únete a cientos de clientes satisfechos que ya disfrutan de nuestros servicios premium
+                Únete a cientos de clientes satisfechos que ya ahorran con nuestras membresías premium
             </p>
             <a href="#plans" class="cta-button">
-                <i class="fas fa-rocket"></i>
                 Elegir Mi Plan
             </a>
         </div>
@@ -858,6 +1061,24 @@
 </section>
 
 <script>
+function selectPlan(element, planType, duration) {
+    // Remover selección anterior en la misma tarjeta
+    const card = element.closest('.plan-card');
+    const options = card.querySelectorAll('.pricing-option');
+    options.forEach(option => option.classList.remove('selected'));
+    
+    // Agregar selección al elemento clickeado
+    element.classList.add('selected');
+    
+    // Actualizar el enlace del botón
+    const button = card.querySelector('.plan-button');
+    button.href = `{% url 'pago_membresia' %}?plan=${planType}&duration=${duration}`;
+    
+    // Opcional: cambiar texto del botón según duración
+    const durationText = duration === '3' ? '3 Meses' : duration === '6' ? '6 Meses' : '1 Año';
+    button.innerHTML = `Seleccionar ${planType.charAt(0).toUpperCase() + planType.slice(1)} - ${durationText}`;
+}
+
 function toggleFAQ(element) {
     const faqItem = element.parentElement;
     const isActive = faqItem.classList.contains('active');
@@ -913,7 +1134,7 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(element);
     });
 
-    console.log('✅ Membresías page loaded successfully');
+    console.log('✅ Membresías actualizadas cargadas correctamente');
 });
 </script>
 

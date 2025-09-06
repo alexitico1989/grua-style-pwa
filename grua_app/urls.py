@@ -3,6 +3,16 @@ from django.http import HttpResponse
 import json
 from . import views
 
+# 🆕 IMPORTAR VISTAS DE MERCADO PAGO
+#from .views.payment_views import (
+    #PaymentSelectionView,
+    #MercadoPagoCheckoutView, 
+    #BankTransferView,
+    #PaymentResultView,
+    #MercadoPagoWebhookView,
+    #PaymentStatusView
+#)
+
 
 def manifest_view(request):
     """Vista para servir el manifest.json dinámicamente"""
@@ -94,18 +104,21 @@ urlpatterns = [
     path('perfil/', views.perfil, name='perfil'),
     path('editar-perfil/', views.editar_perfil, name='editar_perfil'),
     path('cambiar-password/', views.cambiar_password, name='cambiar_password'),
-    path('historial-servicios/', views.dashboard, name='historial_servicios'),
+    # ===== VISTA ESPECÍFICA PARA HISTORIAL (CORREGIDA) =====
+    path('historial-servicios/', views.historial_servicios, name='historial_servicios'),
 
     # Membresías
     path('membresias/', views.membresias, name='membresias'),
     path('pago-membresia/', views.pago_membresia, name='pago_membresia'),
     path('procesar-pago-membresia/', views.procesar_pago_membresia, name='procesar_pago_membresia'),
     path('cancelar-membresia/', views.cancelar_membresia, name='cancelar_membresia'),
-
+    path('membresia/result/<int:membresia_id>/', views.membresia_payment_result, name='membresia_payment_result'),
+    path('membresia/transferencia/<int:membresia_id>/', views.confirmacion_transferencia_membresia, name='confirmacion_transferencia_membresia'),
     # ===== PÁGINAS ADICIONALES =====
     path('servicios/', views.servicios, name='servicios'),
     path('precios/', views.precios, name='precios'),
     path('contacto/', views.contacto, name='contacto'),
+    
     
     # ===== PÁGINAS DE SERVICIOS ESPECIALIZADOS =====
     path('asistencia-mecanica/', views.asistencia_mecanica, name='asistencia_mecanica'),
@@ -114,6 +127,27 @@ urlpatterns = [
     # ===== SERVICIOS DE GRÚA =====
     path('solicitar-servicio/', views.solicitar_servicio, name='solicitar_servicio'),
     path('confirmacion/<int:solicitud_id>/', views.confirmacion_solicitud, name='confirmacion_solicitud'),
+    path('detalles/<int:solicitud_id>/', views.ver_detalles_solicitud, name='ver_detalles_solicitud'),
+    # Agregar estas URLs para manejo de pagos pendientes
+    path('completar-pago-pendiente/<int:solicitud_id>/', views.completar_pago_pendiente, name='completar_pago_pendiente'),
+    path('cambiar-a-efectivo/<int:solicitud_id>/', views.cambiar_a_efectivo, name='cambiar_a_efectivo'),
+    path('cambiar-a-transferencia/<int:solicitud_id>/', views.cambiar_a_transferencia, name='cambiar_a_transferencia'),
+    path('cancelar-solicitud-pendiente/<int:solicitud_id>/', views.cancelar_solicitud_pendiente, name='cancelar_solicitud_pendiente'),
+    # URL para limpiar pagos expirados manualmente (solo administradores)
+    path('admin/limpiar-solicitudes/', views.limpiar_solicitudes_manual, name='limpiar_solicitudes'),
+    path('eliminar-solicitud-pendiente/<int:solicitud_id>/', views.eliminar_solicitud_pendiente, name='eliminar_solicitud_pendiente'),
+    path('cambiar-a-mercadopago/<int:solicitud_id>/', views.cambiar_a_mercadopago, name='cambiar_a_mercadopago'),
+
+    # 🆕 ===== NUEVAS RUTAS DE MERCADO PAGO =====
+    # Selección y checkout de pagos
+    #path('payment/select/<int:solicitud_id>/', PaymentSelectionView.as_view(), name='payment_selection'),
+    #path('payment/mercadopago/<int:solicitud_id>/', MercadoPagoCheckoutView.as_view(), name='mercadopago_checkout'),
+    #path('payment/transfer/<int:solicitud_id>/', BankTransferView.as_view(), name='bank_transfer'),
+    #path('payment/result/<int:payment_id>/', PaymentResultView.as_view(), name='payment_result'),
+    
+    # APIs de Mercado Pago
+    #path('api/mercadopago/webhook/', MercadoPagoWebhookView.as_view(), name='mercadopago_webhook'),
+    #path('api/payment-status/<int:payment_id>/', PaymentStatusView.as_view(), name='payment_status'),
 
     # ===== RUTAS COMPLETAS DE ASISTENCIA MECÁNICA =====
     # Vista principal de asistencia
@@ -138,8 +172,19 @@ urlpatterns = [
     path('pdf/comprobante/<int:solicitud_id>/', views.descargar_pdf_comprobante, name='descargar_pdf_comprobante'),
     path('imprimir/<int:solicitud_id>/', views.imprimir_solicitud, name='imprimir_solicitud'),
     path('reenviar-comprobante/<int:solicitud_id>/', views.reenviar_comprobante, name='reenviar_comprobante'),
-
-    # Pagos (Grúa)
+   
+    # 🆕 ===== API DE GEOCODIFICACIÓN =====
+    path('api/geocodificar/', views.geocodificar_coordenadas, name='geocodificar_coordenadas'),
+    
+    # 🆕 ===== SISTEMA COMPLETO DE MERCADO PAGO =====
+    path('payment/select/<int:solicitud_id>/', views.payment_selection, name='payment_selection'),
+    path('payment/mercadopago/<int:solicitud_id>/', views.mercadopago_checkout, name='mercadopago_checkout'),
+    path('payment/result/<int:solicitud_id>/', views.payment_result, name='payment_result'),
+    path('payment/transfer/<int:solicitud_id>/', views.bank_transfer_mp, name='bank_transfer_mp'),
+   
+    # 🔄 ===== PAGOS EXISTENTES (MANTENIDOS PARA COMPATIBILIDAD) =====
+    # Nota: Estas rutas se mantienen para no romper funcionalidad existente
+    # Gradualmente se pueden migrar a usar las nuevas rutas de Mercado Pago
     path('procesar-pago/<int:solicitud_id>/', views.procesar_pago, name='procesar_pago'),
     path('transferencia/<int:solicitud_id>/', views.procesar_transferencia, name='procesar_transferencia'),
     path('efectivo/<int:solicitud_id>/', views.procesar_efectivo, name='procesar_efectivo'),
@@ -148,7 +193,8 @@ urlpatterns = [
     path('confirmacion-efectivo/<int:solicitud_id>/', 
          views.confirmacion_efectivo, name='confirmacion_efectivo'),
 
-    # WebPay
+    # 🗑️ WebPay (DEPRECATED - Reemplazado por Mercado Pago)
+    # Mantenidas para compatibilidad, pero se recomienda usar las nuevas rutas de MP
     path('webpay/iniciar/<int:solicitud_id>/', views.iniciar_pago_webpay, name='iniciar_pago_webpay'),
     path('webpay/return/', views.webpay_return, name='webpay_return'),
     path('pago-exitoso/<int:solicitud_id>/', views.pago_exitoso, name='pago_exitoso'),
@@ -158,4 +204,8 @@ urlpatterns = [
     path('verify-reset-code/', views.verify_reset_code, name='verify_reset_code'),
     path('reset-password-confirm/', views.reset_password_confirm, name='reset_password_confirm'),
     path('resend-reset-code/', views.resend_reset_code, name='resend_reset_code'),
+    
+    # 🆕 ===== RUTAS ADICIONALES ÚTILES =====
+    # Tracking de servicios (si no existe)
+    # path('tracking/<int:solicitud_id>/', views.tracking_servicio, name='tracking_servicio'),
 ]
